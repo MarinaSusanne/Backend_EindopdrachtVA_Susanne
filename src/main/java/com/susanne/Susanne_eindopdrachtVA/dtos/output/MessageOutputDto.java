@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 
 @Getter
@@ -14,5 +15,5 @@ import java.time.LocalDate;
 public class MessageOutputDto {
     private Long id;
     private String content;
-    private LocalDate submitDate;
+    private LocalDateTime submitDate;
 }

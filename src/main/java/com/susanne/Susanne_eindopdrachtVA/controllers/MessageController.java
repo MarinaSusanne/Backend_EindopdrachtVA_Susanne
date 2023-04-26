@@ -27,11 +27,31 @@ public class MessageController {
         return ResponseEntity.ok(messageOutput);
     }
 
+    @GetMapping("find/{id}")
+    public ResponseEntity<MessageOutputDto> getOneMessageById(@PathVariable Long id) {
+        MessageOutputDto messageOutputDto = messageService.getOneMessageById(id);
+        return ResponseEntity.ok(messageOutputDto);
+    }
+
+    //TODO: toevoegen getMapping op basis van auteur
+
     @PostMapping()
     public ResponseEntity<MessageOutputDto> createMessage(@Valid @RequestBody MessageInputDto messageInputDto) {
         MessageOutputDto messageOutputDto = messageService.createMessage(messageInputDto);
         URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentRequest().path("/" + messageOutputDto.getId()).toUriString());
         return ResponseEntity.created(uri).body(messageOutputDto);
+
+    }
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Object> deleteMessage(@PathVariable Long id) {
+        messageService.deleteMessage(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<MessageOutputDto> updateMessage(@PathVariable Long id, @Valid @RequestBody MessageInputDto updateMessage) {
+        MessageOutputDto messageOutputDto = messageService.updateMessage(id, updateMessage);
+        return ResponseEntity.ok().body(messageOutputDto);
 
     }
 }

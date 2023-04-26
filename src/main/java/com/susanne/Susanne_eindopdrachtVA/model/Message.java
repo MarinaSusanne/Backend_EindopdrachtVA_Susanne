@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Table (name="messages")
@@ -16,7 +17,7 @@ public class Message {
     private String content;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDate submitDate;
+    private LocalDateTime submitDate;
 
     public Message() {
     }
@@ -37,11 +38,11 @@ public class Message {
         this.content = content;
     }
 
-    public LocalDate getSubmitDate() {
+    public LocalDateTime getSubmitDate() {
         return submitDate;
     }
 
-    public void setSubmitDate(LocalDate submitDate) {
+    public void setSubmitDate(LocalDateTime submitDate) {
         this.submitDate = submitDate;
     }
 }

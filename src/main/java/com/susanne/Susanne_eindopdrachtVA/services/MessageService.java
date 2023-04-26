@@ -6,6 +6,7 @@ import com.susanne.Susanne_eindopdrachtVA.model.Message;
 import com.susanne.Susanne_eindopdrachtVA.repository.MessageRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,8 +23,7 @@ public class MessageService {
         Iterable<Message> messages = messageRepository.findAll();
         List <MessageOutputDto> messageOutputDtos = new ArrayList<>();
         for (Message m : messages) {
-        MessageOutputDto mdto = new MessageOutputDto();
-        mdto = transferEntityToDto(m);
+        MessageOutputDto mdto = transferEntityToDto(m);
         messageOutputDtos.add(mdto);
         }
         return messageOutputDtos;
@@ -33,9 +33,15 @@ public class MessageService {
 
     public MessageOutputDto createMessage(MessageInputDto inputDto){
         Message message = transferDtoToEntity(inputDto);
+        message.setSubmitDate(LocalDateTime.now());
         messageRepository.save(message);
         return transferEntityToDto(message);
     }
+
+
+
+
+
 
     public Message transferDtoToEntity (MessageInputDto inputDto){
         Message message = new Message();
@@ -46,6 +52,7 @@ public class MessageService {
 
     public MessageOutputDto transferEntityToDto (Message message){
         MessageOutputDto outputDto = new MessageOutputDto();
+        outputDto.setId(message.getId());
         outputDto.setContent(message.getContent());
         outputDto.setSubmitDate(message.getSubmitDate());
         return outputDto;

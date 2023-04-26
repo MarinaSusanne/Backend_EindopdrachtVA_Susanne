@@ -7,21 +7,19 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 
 @Getter
 @Setter
 public class MessageInputDto {
-    private Long id;
+
 
     @NotNull(message = "Content is required")
-    @Size (min = 200, message = "content must be less than 500 characters")
+    @Size (max = 500, message = "content must be less than 500 characters")
     private String content;
 
-    private LocalDate submitDate;
+    private LocalDateTime submitDate;
 
-    @PrePersist
-    public void prePersist() {
-        this.submitDate = LocalDate.now();
-    }
+
 }
