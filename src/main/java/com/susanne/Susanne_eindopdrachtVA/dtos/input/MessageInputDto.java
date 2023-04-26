@@ -21,5 +21,4 @@ public class MessageInputDto {
 
     private LocalDateTime submitDate;
 
-
 }

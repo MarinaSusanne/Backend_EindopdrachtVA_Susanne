@@ -49,8 +49,8 @@ public class MessageController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<MessageOutputDto> updateMessage(@PathVariable Long id, @Valid @RequestBody MessageInputDto updateMessage) {
-        MessageOutputDto messageOutputDto = messageService.updateMessage(id, updateMessage);
+    public ResponseEntity<MessageOutputDto> updateMessage(@PathVariable Long id, @Valid @RequestBody MessageInputDto upMessage) {
+        MessageOutputDto messageOutputDto = messageService.updateMessage(id, upMessage);
         return ResponseEntity.ok().body(messageOutputDto);
 
     }

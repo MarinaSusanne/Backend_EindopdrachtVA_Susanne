@@ -19,6 +19,8 @@ public class Message {
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime submitDate;
 
+    //TODO: formatting time werkt nog niet
+
     public Message() {
     }
 
