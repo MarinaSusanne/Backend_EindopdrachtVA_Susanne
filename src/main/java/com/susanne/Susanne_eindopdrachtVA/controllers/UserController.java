@@ -1,6 +1,7 @@
 package com.susanne.Susanne_eindopdrachtVA.controllers;
 
 import com.susanne.Susanne_eindopdrachtVA.dtos.input.UserInputDto;
+import com.susanne.Susanne_eindopdrachtVA.dtos.input.UserPutInputDto;
 import com.susanne.Susanne_eindopdrachtVA.dtos.output.UserOutputDto;
 import com.susanne.Susanne_eindopdrachtVA.services.UserService;
 import jakarta.validation.Valid;
@@ -49,7 +50,7 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<UserOutputDto> updateUser(@PathVariable Long id, @Valid @RequestBody UserInputDto upUser) {
+    public ResponseEntity<UserOutputDto> updateUser(@PathVariable Long id, @Valid @RequestBody UserPutInputDto upUser) {
         UserOutputDto userOutputDto = userService.updateUser(id, upUser);
         return ResponseEntity.ok().body(userOutputDto);
 

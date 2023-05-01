@@ -38,7 +38,8 @@ public class User {
     @Lob
     private byte[] photo;
 
-
+    public User() {
+    }
 
     public Long getId() {
         return id;

@@ -3,6 +3,7 @@ package com.susanne.Susanne_eindopdrachtVA.services;
 import com.susanne.Susanne_eindopdrachtVA.dtos.input.MessageInputDto;
 import com.susanne.Susanne_eindopdrachtVA.dtos.output.MessageOutputDto;
 import com.susanne.Susanne_eindopdrachtVA.exceptions.RecordNotFoundException;
+import com.susanne.Susanne_eindopdrachtVA.mappers.MessageMapper;
 import com.susanne.Susanne_eindopdrachtVA.model.Message;
 import com.susanne.Susanne_eindopdrachtVA.repository.MessageRepository;
 import org.springframework.stereotype.Service;
@@ -17,16 +18,18 @@ import java.util.Optional;
 public class MessageService {
 
     private final MessageRepository messageRepository;
+    private final MessageMapper messageMapper;
 
-    public MessageService(MessageRepository messageRepository) {
+    public MessageService(MessageRepository messageRepository, MessageMapper messageMapper) {
         this.messageRepository = messageRepository;
+        this.messageMapper = messageMapper;
     }
 
     public List<MessageOutputDto> getAllMessages(){
         Iterable<Message> messages = messageRepository.findAll();
         List <MessageOutputDto> messageOutputDtos = new ArrayList<>();
         for (Message m : messages) {
-        MessageOutputDto mdto = transferEntityToDto(m);
+        MessageOutputDto mdto = messageMapper.messageToMessageDto(m);
         messageOutputDtos.add(mdto);
         }
         return messageOutputDtos;
@@ -34,16 +37,16 @@ public class MessageService {
 
     public MessageOutputDto getOneMessageById(Long id){
         Message message = messageRepository.findById(id).orElseThrow(() -> new RecordNotFoundException("Message not found"));
-        return transferEntityToDto(message);
+        return messageMapper.messageToMessageDto(message);
     }
 
     //TODO: eventueel nog een exceptions gooien als er geen messages zijn?
 
     public MessageOutputDto createMessage(MessageInputDto inputDto){
-        Message message = transferDtoToEntity(inputDto);
+        Message message = messageMapper.messageDtoToMessage(inputDto);
         message.setSubmitDate(LocalDateTime.now());
         messageRepository.save(message);
-        return transferEntityToDto(message);
+        return messageMapper.messageToMessageDto(message);
     }
 
     public void deleteMessage(@RequestBody Long id) {
@@ -57,7 +60,7 @@ public class MessageService {
             message.setContent(upMessage.getContent());
             message.setSubmitDate(LocalDateTime.now());
             Message updatedMessage = messageRepository.save(message);
-            return transferEntityToDto(updatedMessage);
+            return messageMapper.messageToMessageDto(updatedMessage);
 
         }
         else{
@@ -65,18 +68,5 @@ public class MessageService {
         }
     }
 
-    public Message transferDtoToEntity (MessageInputDto inputDto){
-        Message message = new Message();
-        message.setContent(inputDto.getContent());
-        message.setSubmitDate(inputDto.getSubmitDate());
-        return message;
-    }
 
-    public MessageOutputDto transferEntityToDto (Message message){
-        MessageOutputDto outputDto = new MessageOutputDto();
-        outputDto.setId(message.getId());
-        outputDto.setContent(message.getContent());
-        outputDto.setSubmitDate(message.getSubmitDate());
-        return outputDto;
-    }
 }
