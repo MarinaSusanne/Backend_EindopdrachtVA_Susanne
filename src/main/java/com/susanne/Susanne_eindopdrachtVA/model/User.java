@@ -1,13 +1,17 @@
 package com.susanne.Susanne_eindopdrachtVA.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import org.hibernate.validator.internal.util.logging.Messages;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name= "users")
-
 public class User {
 
     @Id
@@ -37,6 +41,19 @@ public class User {
 
     @Lob
     private byte[] photo;
+
+    @OneToMany(mappedBy = "user")
+    @JsonIgnore
+    private List<Message> messages;
+
+
+    @ManyToOne
+    @JoinColumn(name = "group_id")
+    private Group group;
+
+    @OneToMany(mappedBy = "admin")
+    @JsonIgnore
+    private List<Group> groups;
 
     public User() {
     }
@@ -135,12 +152,19 @@ public class User {
         this.photo = photo;
     }
 
+    public List<Message> getMessages() {
+        return messages;
+    }
 
-    // TODO: toevoegen relatie groep (one to many)
-    // TODO: toevoegen relatie met bericht (one to many)
+    public void setMessages(List<Message> messages) {
+        this.messages = messages;
+    }
+
+
+    }
+
+
     // TODO: toevoegen relatie met opdracht (many to many)
-    // TODO: wat doe ik met de admin? (enkel als Role?)
-    // TODO: Check, wat doe ik qua constructors?
+    // TODO: Check, wat doe ik qua constructors? Of een Builder Pattern?
 
 
-}

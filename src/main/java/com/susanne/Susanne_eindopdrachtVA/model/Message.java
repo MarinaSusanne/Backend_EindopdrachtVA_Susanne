@@ -20,7 +20,13 @@ public class Message {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime submitDate;
 
-    //TODO: formatting time werkt nog niet
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "message_board_id")
+    private MessageBoard messageBoard;
 
     public Message() {
     }
@@ -48,8 +54,21 @@ public class Message {
     public void setSubmitDate(LocalDateTime submitDate) {
         this.submitDate = submitDate;
     }
+
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public MessageBoard getMessageBoard() {
+        return messageBoard;
+    }
+
+    public void setMessageBoard(MessageBoard messageBoard) {
+        this.messageBoard = messageBoard;
+    }
 }
-
-
-//TODO: relatie met auteur/user leggen (one to many)
-//TODO: relatie met prikbord (one to many)

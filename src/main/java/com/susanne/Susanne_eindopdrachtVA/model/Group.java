@@ -1,9 +1,11 @@
 package com.susanne.Susanne_eindopdrachtVA.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 @Table (name="groups")
@@ -23,7 +25,68 @@ public class Group {
 
     private String groupInfo;
 
+    @OneToMany(mappedBy = "group")
+    @JsonIgnore
+    private List<User> users;
+
+    @ManyToOne
+    @JoinColumn(name = "admin_id")
+    private User admin;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public int getGroupNumber() {
+        return groupNumber;
+    }
+
+    public void setGroupNumber(int groupNumber) {
+        this.groupNumber = groupNumber;
+    }
+
+    public LocalDate getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(LocalDate startDate) {
+        this.startDate = startDate;
+    }
+
+    public LocalDate getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(LocalDate endDate) {
+        this.endDate = endDate;
+    }
+
+    public String getGroupInfo() {
+        return groupInfo;
+    }
+
+    public void setGroupInfo(String groupInfo) {
+        this.groupInfo = groupInfo;
+    }
+
+    public List<User> getUsers() {
+        return users;
+    }
+
+    public void setUsers(List<User> users) {
+        this.users = users;
+    }
+
+    public User getAdmin() {
+        return admin;
+    }
+
+    public void setAdmin(User admin) {
+        this.admin = admin;
+    }
 }
 
-
-//TODO: relatie met groepsleden (wat doe ik dan met een admin, alles is one to many, behalve de admin, die is manytomany
