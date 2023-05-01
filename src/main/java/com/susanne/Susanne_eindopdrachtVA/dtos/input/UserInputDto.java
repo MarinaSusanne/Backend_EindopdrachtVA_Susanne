@@ -1,5 +1,6 @@
 package com.susanne.Susanne_eindopdrachtVA.dtos.input;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
@@ -34,6 +35,7 @@ public class UserInputDto {
 
     private String city;
 
+    @JsonFormat(pattern="yyyy-MM-dd")
     private LocalDate dateOfBirth;
 
     private byte[] photo;

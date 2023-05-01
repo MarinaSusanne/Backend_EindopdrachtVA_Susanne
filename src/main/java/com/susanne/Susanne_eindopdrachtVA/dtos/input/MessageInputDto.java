@@ -1,5 +1,6 @@
 package com.susanne.Susanne_eindopdrachtVA.dtos.input;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.PrePersist;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -19,6 +20,7 @@ public class MessageInputDto {
     @Size (max = 500, message = "content must be less than 500 characters")
     private String content;
 
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     private LocalDateTime submitDate;
 
 }

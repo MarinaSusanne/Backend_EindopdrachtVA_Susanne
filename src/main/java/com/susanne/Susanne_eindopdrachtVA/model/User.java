@@ -8,7 +8,7 @@ import java.time.LocalDate;
 @Entity
 @Table(name= "users")
 
-public class  User {
+public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,7 +32,7 @@ public class  User {
 
     private String city;
 
-    @DateTimeFormat(pattern = "yyyy-mm-dd")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate dateOfBirth;
 
     @Lob

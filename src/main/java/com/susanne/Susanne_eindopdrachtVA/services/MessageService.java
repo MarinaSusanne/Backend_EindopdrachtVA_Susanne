@@ -55,6 +55,7 @@ public class MessageService {
         if (messageOptional.isPresent()){
             Message message = messageOptional.get();
             message.setContent(upMessage.getContent());
+            message.setSubmitDate(LocalDateTime.now());
             Message updatedMessage = messageRepository.save(message);
             return transferEntityToDto(updatedMessage);
 
@@ -63,7 +64,6 @@ public class MessageService {
             throw new RecordNotFoundException("No message found!");
         }
     }
-    //TODO: bij PUTRequest raak ik de datum kwijt. Check waarom.
 
     public Message transferDtoToEntity (MessageInputDto inputDto){
         Message message = new Message();

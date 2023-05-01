@@ -1,5 +1,6 @@
 package com.susanne.Susanne_eindopdrachtVA.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -16,7 +17,7 @@ public class Message {
 
     private String content;
 
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime submitDate;
 
     //TODO: formatting time werkt nog niet
