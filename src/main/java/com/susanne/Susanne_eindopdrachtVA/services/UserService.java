@@ -5,8 +5,10 @@ import com.susanne.Susanne_eindopdrachtVA.dtos.input.UserPutInputDto;
 import com.susanne.Susanne_eindopdrachtVA.dtos.output.UserOutputDto;
 import com.susanne.Susanne_eindopdrachtVA.exceptions.RecordNotFoundException;
 import com.susanne.Susanne_eindopdrachtVA.mappers.UserMapper;
+import com.susanne.Susanne_eindopdrachtVA.model.Message;
 import com.susanne.Susanne_eindopdrachtVA.model.User;
 import com.susanne.Susanne_eindopdrachtVA.repository.UserRepository;
+import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -41,6 +43,21 @@ public class UserService {
         User user = userRepository.findById(id).orElseThrow(() -> new RecordNotFoundException("User not found"));
         return userMapper.userToUserDto(user);
     }
+
+    public List<Message> getUserMessages(Long userId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new RecordNotFoundException("User not found"));
+        return user.getMessages();
+    }
+
+    public List<Message> getUserMessagesByName(String username) {
+        User user = userRepository.findByName(username);
+        if (user == null) {
+            throw new RecordNotFoundException("User not found");
+        }
+        return user.getMessages();
+    }
+
+    //TODO: aanpassen exception handling!
 
        public UserOutputDto createUser(UserInputDto inputDto) {
         User user = userMapper.userDtoToUser(inputDto);

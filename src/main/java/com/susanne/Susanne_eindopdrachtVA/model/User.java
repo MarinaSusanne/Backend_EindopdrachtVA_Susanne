@@ -66,6 +66,10 @@ public class User {
         this.id = id;
     }
 
+    public String getName() {
+        return username;
+    }
+
     public String getUsername() {
         return username;
     }

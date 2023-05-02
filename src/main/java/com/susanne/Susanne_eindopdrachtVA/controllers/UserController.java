@@ -3,6 +3,7 @@ package com.susanne.Susanne_eindopdrachtVA.controllers;
 import com.susanne.Susanne_eindopdrachtVA.dtos.input.UserInputDto;
 import com.susanne.Susanne_eindopdrachtVA.dtos.input.UserPutInputDto;
 import com.susanne.Susanne_eindopdrachtVA.dtos.output.UserOutputDto;
+import com.susanne.Susanne_eindopdrachtVA.model.Message;
 import com.susanne.Susanne_eindopdrachtVA.services.UserService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -34,15 +35,23 @@ public class UserController {
         return ResponseEntity.ok(userOutputDto);
     }
 
-    //TODO: toevoegen getMapping op basis van naam
+    @GetMapping("/{userId}/messages")
+    public List<Message> getUserMessages(@PathVariable Long userId) {
+        return userService.getUserMessages(userId);
+    }
+
+    @GetMapping("/messages")
+    public List<Message> getUserMessagesByName(@RequestParam String username) {
+        return userService.getUserMessagesByName(username);
+    }
 
     @PostMapping()
     public ResponseEntity<UserOutputDto> createUser(@Valid @RequestBody UserInputDto UserInputDto) {
         UserOutputDto userOutputDto = userService.createUser(UserInputDto);
         URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentRequest().path("/" + userOutputDto.getId()).toUriString());
         return ResponseEntity.created(uri).body(userOutputDto);
-
     }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Object> deleteUser(@PathVariable Long id) {
         userService.deleteUser(id);
@@ -53,7 +62,10 @@ public class UserController {
     public ResponseEntity<UserOutputDto> updateUser(@PathVariable Long id, @Valid @RequestBody UserPutInputDto upUser) {
         UserOutputDto userOutputDto = userService.updateUser(id, upUser);
         return ResponseEntity.ok().body(userOutputDto);
-
     }
+
+
+
+
 }
 

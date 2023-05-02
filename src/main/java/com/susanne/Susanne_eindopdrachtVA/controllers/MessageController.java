@@ -2,23 +2,30 @@ package com.susanne.Susanne_eindopdrachtVA.controllers;
 
 import com.susanne.Susanne_eindopdrachtVA.dtos.input.MessageInputDto;
 import com.susanne.Susanne_eindopdrachtVA.dtos.output.MessageOutputDto;
+import com.susanne.Susanne_eindopdrachtVA.exceptions.BadRequestException;
+import com.susanne.Susanne_eindopdrachtVA.model.User;
+import com.susanne.Susanne_eindopdrachtVA.repository.UserRepository;
 import com.susanne.Susanne_eindopdrachtVA.services.MessageService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/messages")
 public class MessageController {
 
     private final MessageService messageService;
+    private final UserRepository userRepository;
 
-    public MessageController(MessageService messageService) {
+    public MessageController(MessageService messageService, UserRepository userRepository) {
         this.messageService = messageService;
+        this.userRepository = userRepository;
     }
 
     @GetMapping()
@@ -27,21 +34,32 @@ public class MessageController {
         return ResponseEntity.ok(messageOutput);
     }
 
-    @GetMapping("find/{id}")
-    public ResponseEntity<MessageOutputDto> getOneMessageById(@PathVariable Long id) {
-        MessageOutputDto messageOutputDto = messageService.getOneMessageById(id);
-        return ResponseEntity.ok(messageOutputDto);
+//    @GetMapping("find/{id}")
+//    public ResponseEntity<MessageOutputDto> getOneMessageById(@PathVariable Long id) {
+//        MessageOutputDto messageOutputDto = messageService.getOneMessageById(id);
+//        return ResponseEntity.ok(messageOutputDto);
+//    }
+
+    @GetMapping("/find-by-user/{userId}")
+    public ResponseEntity<List<MessageOutputDto>> getMessagesByUser(@PathVariable Long userId) {
+        List<MessageOutputDto> messages = messageService.getMessagesByUser(userId);
+        return ResponseEntity.ok(messages);
     }
 
-    //TODO: toevoegen getMapping op basis van auteur
-
-    @PostMapping()
-    public ResponseEntity<MessageOutputDto> createMessage(@Valid @RequestBody MessageInputDto messageInputDto) {
-        MessageOutputDto messageOutputDto = messageService.createMessage(messageInputDto);
-        URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentRequest().path("/" + messageOutputDto.getId()).toUriString());
-        return ResponseEntity.created(uri).body(messageOutputDto);
-
+    @PostMapping("/{id}")
+    @ResponseBody
+    public ResponseEntity<Object> createAndAssignMessage(@Valid @PathVariable Long id, @RequestBody MessageInputDto messageInputDto) {
+        Optional<User> optionalUser = userRepository.findById(id);
+        if (optionalUser.isEmpty()) {
+            return ResponseEntity.badRequest().body("Gebruiker bestaat niet.");
+        } else {
+            User user = optionalUser.get();
+            MessageOutputDto messageOutputDto = messageService.createAndAssignMessage(user, messageInputDto);
+            URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentRequest().path("/" + messageOutputDto.getId()).toUriString());
+            return ResponseEntity.created(uri).body(messageOutputDto);
+        }
     }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Object> deleteMessage(@PathVariable Long id) {
         messageService.deleteMessage(id);
@@ -49,9 +67,13 @@ public class MessageController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<MessageOutputDto> updateMessage(@PathVariable Long id, @Valid @RequestBody MessageInputDto upMessage) {
-        MessageOutputDto messageOutputDto = messageService.updateMessage(id, upMessage);
-        return ResponseEntity.ok().body(messageOutputDto);
-
+    public ResponseEntity<MessageOutputDto> updateMessage(@PathVariable Long id, @Valid @RequestBody MessageInputDto upMessage, BindingResult br) {
+        if (br.hasErrors()) {
+            String errorMessage = "Fout bij het verwerken van de request";
+            throw new BadRequestException(errorMessage);
+        } else {
+            MessageOutputDto messageOutputDto = messageService.updateMessage(id, upMessage);
+            return ResponseEntity.ok().body(messageOutputDto);
+        }
     }
 }

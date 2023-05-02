@@ -5,17 +5,16 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 import java.io.Serial;
 
-@ResponseStatus(code = HttpStatus.NOT_FOUND)
-public class RecordNotFoundException extends RuntimeException {
+@ResponseStatus(code = HttpStatus.BAD_REQUEST)
+public class BadRequestException extends RuntimeException {
     @Serial
     private static final long serialVersionUID = 1L;
 
-    public RecordNotFoundException() {
+    public BadRequestException() {
         super();
     }
 
-    public RecordNotFoundException(String message) {
+    public BadRequestException(String message) {
         super(message);
     }
-
 }
