@@ -16,7 +16,7 @@ public class MessageBoard {
 
     private String name;
 
-    @OneToMany(mappedBy = "message_board")
+    @OneToMany(mappedBy = "messageBoard")
     @JsonIgnore
     private List<Message> messages;
 
@@ -58,4 +58,3 @@ public class MessageBoard {
 }
 
 
-//TODO: check of er ook een tabel moet voor messageboard

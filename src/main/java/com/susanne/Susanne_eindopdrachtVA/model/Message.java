@@ -71,4 +71,5 @@ public class Message {
     public void setMessageBoard(MessageBoard messageBoard) {
         this.messageBoard = messageBoard;
     }
+
 }

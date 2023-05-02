@@ -15,7 +15,7 @@ public class Group {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private int groupNumber;
+    private String groupName;
 
     @DateTimeFormat(pattern = "yyyy-mm-dd")
     private LocalDate startDate;;
@@ -41,12 +41,12 @@ public class Group {
         this.id = id;
     }
 
-    public int getGroupNumber() {
-        return groupNumber;
+    public String getGroupName() {
+        return groupName;
     }
 
-    public void setGroupNumber(int groupNumber) {
-        this.groupNumber = groupNumber;
+    public void setGroupName(String groupName) {
+        this.groupName = groupName;
     }
 
     public LocalDate getStartDate() {
