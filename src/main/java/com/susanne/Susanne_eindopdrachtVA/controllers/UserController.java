@@ -2,6 +2,7 @@ package com.susanne.Susanne_eindopdrachtVA.controllers;
 
 import com.susanne.Susanne_eindopdrachtVA.dtos.input.UserInputDto;
 import com.susanne.Susanne_eindopdrachtVA.dtos.input.UserPutInputDto;
+import com.susanne.Susanne_eindopdrachtVA.dtos.output.MessageOutputDto;
 import com.susanne.Susanne_eindopdrachtVA.dtos.output.UserOutputDto;
 import com.susanne.Susanne_eindopdrachtVA.model.Message;
 import com.susanne.Susanne_eindopdrachtVA.services.UserService;
@@ -36,13 +37,9 @@ public class UserController {
     }
 
     @GetMapping("/{userId}/messages")
-    public List<Message> getUserMessages(@PathVariable Long userId) {
-        return userService.getUserMessages(userId);
-    }
-
-    @GetMapping("/messages")
-    public List<Message> getUserMessagesByName(@RequestParam String username) {
-        return userService.getUserMessagesByName(username);
+    public ResponseEntity<List<MessageOutputDto>> getUserMessagesByUserId(@PathVariable Long userId) {
+         List<MessageOutputDto> messageOutputDtos = userService.getUserMessagesByUserId(userId);
+         return ResponseEntity.ok(messageOutputDtos);
     }
 
     @PostMapping()

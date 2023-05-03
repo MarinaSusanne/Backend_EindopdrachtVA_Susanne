@@ -36,12 +36,7 @@ public class MessageService {
         return messageOutputDtos;
     }
 
-    public MessageOutputDto getOneMessageById(Long id){
-        Message message = messageRepository.findById(id).orElseThrow(() -> new RecordNotFoundException("Message not found"));
-        return messageMapper.messageToMessageDto(message);
-    }
-
-    public List<MessageOutputDto> getMessagesByUser(Long userId) {
+     public List<MessageOutputDto> getMessagesByUser(Long userId) {
         Optional<List<Message>> optionalMessages = messageRepository.findByUser_Id(userId);
         if (optionalMessages.isPresent()) {
             List<Message> messages = optionalMessages.get();

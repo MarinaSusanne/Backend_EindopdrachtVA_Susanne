@@ -34,30 +34,27 @@ public class MessageController {
         return ResponseEntity.ok(messageOutput);
     }
 
-//    @GetMapping("find/{id}")
-//    public ResponseEntity<MessageOutputDto> getOneMessageById(@PathVariable Long id) {
-//        MessageOutputDto messageOutputDto = messageService.getOneMessageById(id);
-//        return ResponseEntity.ok(messageOutputDto);
-//    }
-
     @GetMapping("/find-by-user/{userId}")
     public ResponseEntity<List<MessageOutputDto>> getMessagesByUser(@PathVariable Long userId) {
         List<MessageOutputDto> messages = messageService.getMessagesByUser(userId);
         return ResponseEntity.ok(messages);
     }
 
+    //TODO:let op, heb nu twee keer een GET methode om messages op te halen
+
+
     @PostMapping("/{id}")
     @ResponseBody
     public ResponseEntity<Object> createAndAssignMessage(@Valid @PathVariable Long id, @RequestBody MessageInputDto messageInputDto) {
         Optional<User> optionalUser = userRepository.findById(id);
         if (optionalUser.isEmpty()) {
-            return ResponseEntity.badRequest().body("Gebruiker bestaat niet.");
-        } else {
+            return ResponseEntity.badRequest().body("User does not exist");
+        }
             User user = optionalUser.get();
             MessageOutputDto messageOutputDto = messageService.createAndAssignMessage(user, messageInputDto);
             URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentRequest().path("/" + messageOutputDto.getId()).toUriString());
             return ResponseEntity.created(uri).body(messageOutputDto);
-        }
+
     }
 
     @DeleteMapping("/{id}")
@@ -71,9 +68,8 @@ public class MessageController {
         if (br.hasErrors()) {
             String errorMessage = "Fout bij het verwerken van de request";
             throw new BadRequestException(errorMessage);
-        } else {
+        }
             MessageOutputDto messageOutputDto = messageService.updateMessage(id, upMessage);
             return ResponseEntity.ok().body(messageOutputDto);
         }
     }
-}

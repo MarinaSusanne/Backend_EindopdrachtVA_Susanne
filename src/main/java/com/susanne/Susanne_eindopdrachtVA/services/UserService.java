@@ -2,13 +2,17 @@ package com.susanne.Susanne_eindopdrachtVA.services;
 
 import com.susanne.Susanne_eindopdrachtVA.dtos.input.UserInputDto;
 import com.susanne.Susanne_eindopdrachtVA.dtos.input.UserPutInputDto;
+import com.susanne.Susanne_eindopdrachtVA.dtos.output.MessageOutputDto;
 import com.susanne.Susanne_eindopdrachtVA.dtos.output.UserOutputDto;
 import com.susanne.Susanne_eindopdrachtVA.exceptions.RecordNotFoundException;
+import com.susanne.Susanne_eindopdrachtVA.mappers.MessageMapper;
 import com.susanne.Susanne_eindopdrachtVA.mappers.UserMapper;
 import com.susanne.Susanne_eindopdrachtVA.model.Message;
 import com.susanne.Susanne_eindopdrachtVA.model.User;
 import com.susanne.Susanne_eindopdrachtVA.repository.UserRepository;
+import org.hibernate.validator.internal.util.logging.Messages;
 import org.springframework.data.crossstore.ChangeSetPersister;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -23,10 +27,12 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final UserMapper userMapper;
+    private final MessageMapper messageMapper;
 
-    public UserService(UserRepository userRepository, UserMapper userMapper) {
+    public UserService(UserRepository userRepository, UserMapper userMapper, MessageMapper messageMapper) {
         this.userRepository = userRepository;
         this.userMapper = userMapper;
+        this.messageMapper = messageMapper;
     }
 
     public List<UserOutputDto> getAllUsers() {
@@ -44,22 +50,22 @@ public class UserService {
         return userMapper.userToUserDto(user);
     }
 
-    public List<Message> getUserMessages(Long userId) {
+    public List<MessageOutputDto> getUserMessagesByUserId(Long userId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new RecordNotFoundException("User not found"));
-        return user.getMessages();
-    }
-
-    public List<Message> getUserMessagesByName(String username) {
-        User user = userRepository.findByName(username);
-        if (user == null) {
-            throw new RecordNotFoundException("User not found");
+        List<Message> messages = user.getMessages();
+        if (messages == null) {
+            throw new RecordNotFoundException("No messages found");
+        } else {
+            List<MessageOutputDto> messageOutputDtos = new ArrayList<>();
+            for (Message m : messages) {
+                MessageOutputDto mdto = messageMapper.messageToMessageDto(m);
+                messageOutputDtos.add(mdto);
+            }
+            return messageOutputDtos;
         }
-        return user.getMessages();
     }
 
-    //TODO: aanpassen exception handling!
-
-       public UserOutputDto createUser(UserInputDto inputDto) {
+    public UserOutputDto createUser(UserInputDto inputDto) {
         User user = userMapper.userDtoToUser(inputDto);
         userRepository.save(user);
         return userMapper.userToUserDto(user);
@@ -82,6 +88,7 @@ public class UserService {
     }
     }
     //TODO: nog andere methoden toevoegen
+    //TODO:exception handling
 
 
  

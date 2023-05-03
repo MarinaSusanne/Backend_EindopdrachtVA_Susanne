@@ -12,6 +12,7 @@ public class MessageMapper {
         Message message = new Message();
         message.setContent(inputDto.getContent());
         message.setSubmitDate(inputDto.getSubmitDate());
+        message.setUser(inputDto.getUser());
         return message;
     }
 
@@ -20,6 +21,7 @@ public class MessageMapper {
         outputDto.setId(message.getId());
         outputDto.setContent(message.getContent());
         outputDto.setSubmitDate(message.getSubmitDate());
+        outputDto.setUserId(message.getUser().getId());
         return outputDto;
     }
 }

@@ -15,3 +15,5 @@ VALUES (110, 'Marina123', 'MarinaTesttest1!', 'marina@marina.nl', 'Marina', 'Jan
 -- INSERT INTO authorities (username, authority) VALUES ('user', 'ROLE_USER');
 -- INSERT INTO authorities (username, authority) VALUES ('admin', 'ROLE_USER');
 -- INSERT INTO authorities (username, authority) VALUES ('admin', 'ROLE_ADMIN');
+-- Gouden kraan: sequence generator
+
