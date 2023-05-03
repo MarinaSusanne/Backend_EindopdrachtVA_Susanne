@@ -2,6 +2,7 @@ package com.susanne.Susanne_eindopdrachtVA.mappers;
 
 import com.susanne.Susanne_eindopdrachtVA.dtos.input.UserInputDto;
 import com.susanne.Susanne_eindopdrachtVA.dtos.input.UserPutInputDto;
+import com.susanne.Susanne_eindopdrachtVA.dtos.output.UserLeanOutputDto;
 import com.susanne.Susanne_eindopdrachtVA.dtos.output.UserOutputDto;
 import com.susanne.Susanne_eindopdrachtVA.model.User;
 import org.springframework.stereotype.Component;
@@ -42,6 +43,15 @@ public class UserMapper {
         user.setPhoto(inputDto.getPhoto());
         return user;
     }
+
+    public static UserLeanOutputDto userToUserLeanDto(User user) {
+        UserLeanOutputDto outputDto = new UserLeanOutputDto();
+        outputDto.setId(user.getId());
+        outputDto.setFirstName(user.getFirstName());
+        outputDto.setLastName(user.getLastName());
+        return outputDto;
+    }
+
 
     public User updateUser (User user, UserPutInputDto upUser) {
 

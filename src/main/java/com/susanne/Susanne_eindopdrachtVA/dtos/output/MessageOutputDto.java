@@ -21,6 +21,5 @@ public class MessageOutputDto {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime submitDate;
 
-    private Long userId;
-
+    private UserLeanOutputDto userLeanOutputDto;
 }

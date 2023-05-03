@@ -2,6 +2,7 @@ package com.susanne.Susanne_eindopdrachtVA.mappers;
 
 import com.susanne.Susanne_eindopdrachtVA.dtos.input.MessageInputDto;
 import com.susanne.Susanne_eindopdrachtVA.dtos.output.MessageOutputDto;
+import com.susanne.Susanne_eindopdrachtVA.dtos.output.UserLeanOutputDto;
 import com.susanne.Susanne_eindopdrachtVA.model.Message;
 import org.springframework.stereotype.Component;
 
@@ -21,7 +22,15 @@ public class MessageMapper {
         outputDto.setId(message.getId());
         outputDto.setContent(message.getContent());
         outputDto.setSubmitDate(message.getSubmitDate());
-        outputDto.setUserId(message.getUser().getId());
+        return outputDto;
+    }
+
+    public MessageOutputDto messageToMessageDtoWithLeanUser (Message message, UserLeanOutputDto userLeanOutputDto){
+        MessageOutputDto outputDto = new MessageOutputDto();
+        outputDto.setId(message.getId());
+        outputDto.setContent(message.getContent());
+        outputDto.setSubmitDate(message.getSubmitDate());
+        outputDto.setUserLeanOutputDto(userLeanOutputDto);
         return outputDto;
     }
 }

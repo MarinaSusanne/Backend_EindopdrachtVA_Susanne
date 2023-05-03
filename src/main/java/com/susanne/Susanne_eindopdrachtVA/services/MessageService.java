@@ -2,8 +2,10 @@ package com.susanne.Susanne_eindopdrachtVA.services;
 
 import com.susanne.Susanne_eindopdrachtVA.dtos.input.MessageInputDto;
 import com.susanne.Susanne_eindopdrachtVA.dtos.output.MessageOutputDto;
+import com.susanne.Susanne_eindopdrachtVA.dtos.output.UserLeanOutputDto;
 import com.susanne.Susanne_eindopdrachtVA.exceptions.RecordNotFoundException;
 import com.susanne.Susanne_eindopdrachtVA.mappers.MessageMapper;
+import com.susanne.Susanne_eindopdrachtVA.mappers.UserMapper;
 import com.susanne.Susanne_eindopdrachtVA.model.Message;
 import com.susanne.Susanne_eindopdrachtVA.model.User;
 import com.susanne.Susanne_eindopdrachtVA.repository.MessageRepository;
@@ -56,7 +58,8 @@ public class MessageService {
         message.setSubmitDate(LocalDateTime.now());
         message.setUser(user);
         messageRepository.save(message);
-        return messageMapper.messageToMessageDto(message);
+        UserLeanOutputDto userLeanOutputDto = UserMapper.userToUserLeanDto(user);
+        return messageMapper.messageToMessageDtoWithLeanUser(message, userLeanOutputDto);
     }
 
 
