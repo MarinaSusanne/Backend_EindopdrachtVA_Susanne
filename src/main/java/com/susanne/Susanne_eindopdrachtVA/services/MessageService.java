@@ -7,7 +7,9 @@ import com.susanne.Susanne_eindopdrachtVA.exceptions.RecordNotFoundException;
 import com.susanne.Susanne_eindopdrachtVA.mappers.MessageMapper;
 import com.susanne.Susanne_eindopdrachtVA.mappers.UserMapper;
 import com.susanne.Susanne_eindopdrachtVA.model.Message;
+import com.susanne.Susanne_eindopdrachtVA.model.MessageBoard;
 import com.susanne.Susanne_eindopdrachtVA.model.User;
+import com.susanne.Susanne_eindopdrachtVA.repository.MessageBoardRepository;
 import com.susanne.Susanne_eindopdrachtVA.repository.MessageRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -23,9 +25,12 @@ public class MessageService {
     private final MessageRepository messageRepository;
     private final MessageMapper messageMapper;
 
-    public MessageService(MessageRepository messageRepository, MessageMapper messageMapper) {
+    private final MessageBoardRepository messageBoardRepository;
+
+    public MessageService(MessageRepository messageRepository, MessageMapper messageMapper, MessageBoardRepository messageBoardRepository) {
         this.messageRepository = messageRepository;
         this.messageMapper = messageMapper;
+        this.messageBoardRepository = messageBoardRepository;
     }
 
     public List<MessageOutputDto> getAllMessages(){
@@ -38,30 +43,34 @@ public class MessageService {
         return messageOutputDtos;
     }
 
-     public List<MessageOutputDto> getMessagesByUser(Long userId) {
-        Optional<List<Message>> optionalMessages = messageRepository.findByUser_Id(userId);
-        if (optionalMessages.isPresent()) {
-            List<Message> messages = optionalMessages.get();
-            List<MessageOutputDto> messageOutputDtos = new ArrayList<>();
-            for (Message m : messages) {
-                MessageOutputDto mdto = messageMapper.messageToMessageDto(m);
-                messageOutputDtos.add(mdto);
-            }
-            return messageOutputDtos;
-        } else {
-            throw new RecordNotFoundException("User not found");
-        }
-    }
+//     public List<MessageOutputDto> getMessagesByUser(Long userId) {
+//         Optional<List<Message>> optionalMessages = messageRepository.findByUser_Id(userId);
+//         if (optionalMessages.isPresent()) {
+//             List<Message> messages = optionalMessages.get();
+//             List<MessageOutputDto> messageOutputDtos = new ArrayList<>();
+//             for (Message m : messages) {
+//                 MessageOutputDto mdto = messageMapper.messageToMessageDto(m);
+//                 messageOutputDtos.add(mdto);
+//             }
+//             return messageOutputDtos;
+//         }
+//         throw new RecordNotFoundException("User not found");
+//     }
 
     public MessageOutputDto createAndAssignMessage(User user, MessageInputDto inputDto){
         Message message = messageMapper.messageDtoToMessage(inputDto);
         message.setSubmitDate(LocalDateTime.now());
         message.setUser(user);
+        MessageBoard messageBoard = user.getGroup().getMessageBoard();
+        message.setMessageBoard(messageBoard);
+        messageBoard.addMessagetoMessageList(message);
+        messageBoardRepository.save(messageBoard);
         messageRepository.save(message);
         UserLeanOutputDto userLeanOutputDto = UserMapper.userToUserLeanDto(user);
         return messageMapper.messageToMessageDtoWithLeanUser(message, userLeanOutputDto);
     }
 
+    //TODO:uitsplitsen methode hierboven?
 
     public void deleteMessage(@RequestBody Long id) {
         messageRepository.deleteById(id);

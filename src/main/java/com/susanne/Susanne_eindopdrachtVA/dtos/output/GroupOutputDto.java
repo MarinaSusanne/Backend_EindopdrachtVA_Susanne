@@ -18,6 +18,6 @@ public class GroupOutputDto {
     private String groupInfo;
     private User admin;
     private List<UserLeanOutputDto> userLeanOutputDto;
-
 }
+
 //TODO:vraag Mark List<User> of een outputDto

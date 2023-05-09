@@ -24,11 +24,6 @@ public class GroupController {
         this.groupService = groupService;
     }
 
-    @GetMapping("/{groupName}/users")
-    public ResponseEntity<List<UserLeanOutputDto>> getUsersByGroupName(@PathVariable String groupName) {
-        List<UserLeanOutputDto> userLeanOutput = groupService.getUsersByGroupName(groupName);
-        return ResponseEntity.ok(userLeanOutput);
-    }
 
     @GetMapping ("/{id}/users")
     public ResponseEntity<List<UserLeanOutputDto>> getUsersByGroupId(@PathVariable Long id) {
@@ -43,7 +38,7 @@ public class GroupController {
     }
 
     @GetMapping("/admin/all")
-    public ResponseEntity<List<GroupOutputDto>> getMyActiveGroups () {
+    public ResponseEntity<List<GroupOutputDto>> getMyActiveGroups() {
         List<GroupOutputDto> groupOutputDtos = groupService.getMyActiveGroups();
         return ResponseEntity.ok(groupOutputDtos);
     }
@@ -55,7 +50,7 @@ public class GroupController {
     }
     @PostMapping("/admin")
     public ResponseEntity<GroupOutputDto> createGroup (@Valid @RequestBody GroupInputDto groupInputDto) {
-        GroupOutputDto groupOutputDto = groupService.createGroup(GroupInputDto);
+        GroupOutputDto groupOutputDto = groupService.createGroup(groupInputDto);
         URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentRequest().path("/" + groupOutputDto.getId()).toUriString());
         return ResponseEntity.created(uri).body(groupOutputDto);
     }

@@ -29,6 +29,11 @@ public class MessageController {
         this.userRepository = userRepository;
     }
 
+    @GetMapping()
+    public ResponseEntity<List<MessageOutputDto>> getAllMessages() {
+        List<MessageOutputDto> messageOutput = messageService.getAllMessages();
+        return ResponseEntity.ok(messageOutput);
+    }
     @PostMapping("/{id}")
     @ResponseBody
     public ResponseEntity<Object> createAndAssignMessage(@Valid @PathVariable Long id, @RequestBody MessageInputDto messageInputDto) {
@@ -36,12 +41,10 @@ public class MessageController {
         if (optionalUser.isEmpty()) {
             return ResponseEntity.badRequest().body("User does not exist");
         }
-            User user = optionalUser.get();
-//            MessageBoard messageBoard = user.getGroup().getMessageBoard ();
-//            messageBoard in ArrayList van messageboard .add
-            MessageOutputDto messageOutputDto = messageService.createAndAssignMessage(user, messageInputDto);
-            URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentRequest().path("/" + messageOutputDto.getId()).toUriString());
-            return ResponseEntity.created(uri).body(messageOutputDto);
+        User user = optionalUser.get();
+        MessageOutputDto messageOutputDto = messageService.createAndAssignMessage(user, messageInputDto);
+        URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentRequest().path("/" + messageOutputDto.getId()).toUriString());
+        return ResponseEntity.created(uri).body(messageOutputDto);
     }
 
     @PutMapping("/{id}")
@@ -50,21 +53,15 @@ public class MessageController {
             String errorMessage = "Fout bij het verwerken van de request";
             throw new BadRequestException(errorMessage);
         }
-            MessageOutputDto messageOutputDto = messageService.updateMessage(id, upMessage);
-            return ResponseEntity.ok().body(messageOutputDto);
-        }
+        MessageOutputDto messageOutputDto = messageService.updateMessage(id, upMessage);
+        return ResponseEntity.ok().body(messageOutputDto);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Object> deleteMessage(@PathVariable Long id) {
+        messageService.deleteMessage(id);
+        return ResponseEntity.noContent().build();
     }
 
 
-
-//    @DeleteMapping("/{id}")
-//    public ResponseEntity<Object> deleteMessage(@PathVariable Long id) {
-//        messageService.deleteMessage(id);
-//        return ResponseEntity.noContent().build();
-//    }
-
-//    @GetMapping()
-//    public ResponseEntity<List<MessageOutputDto>> getAllMessages() {
-//        List<MessageOutputDto> messageOutput = messageService.getAllMessages();
-//        return ResponseEntity.ok(messageOutput);
-//    }
+}

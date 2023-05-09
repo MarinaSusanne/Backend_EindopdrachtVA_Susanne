@@ -33,12 +33,16 @@ public class Group {
     @JoinColumn(name = "admin_id")
     private User admin;
 
+    @OneToOne
+    private MessageBoard messageBoard;
+
     public Group() {
     }
 
     public Long getId() {
         return id;
     }
+
 
     public void setId(Long id) {
         this.id = id;
@@ -90,6 +94,14 @@ public class Group {
 
     public void setAdmin(User admin) {
         this.admin = admin;
+    }
+
+    public MessageBoard getMessageBoard() {
+        return messageBoard;
+    }
+
+    public void setMessageBoard(MessageBoard messageBoard) {
+        this.messageBoard = messageBoard;
     }
 }
 

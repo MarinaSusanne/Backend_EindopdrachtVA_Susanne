@@ -50,6 +50,8 @@ public class MessageBoard {
         this.messages = messages;
     }
 
+    public void addMessagetoMessageList (Message message){this.messages.add(message);}
+
     public Group getGroup() {
         return group;
     }

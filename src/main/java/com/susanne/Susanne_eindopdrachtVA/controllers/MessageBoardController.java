@@ -26,7 +26,7 @@ public class MessageBoardController {
 
     @GetMapping("/{id}")
     public ResponseEntity<List<MessageOutputDto>> getMessagesFromBoard(@PathVariable Long id) {
-        List<MessageOutputDto> messageOutputDtos = messageBoardService.getMessagesFromBoard();
+        List<MessageOutputDto> messageOutputDtos = messageBoardService.getMessagesFromBoard(id);
         return ResponseEntity.ok(messageOutputDtos);
     }
 
