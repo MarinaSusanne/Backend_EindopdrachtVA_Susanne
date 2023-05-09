@@ -12,7 +12,9 @@ import java.util.List;
 public class MessageBoardOutputDto {
 
     private Long id;
+    private String boardInfo;
     private List<Message> messages;
     private Group group;
-
 }
+
+//TODO:check Mark, model eruit of een dto?

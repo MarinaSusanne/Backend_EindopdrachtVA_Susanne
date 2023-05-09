@@ -16,8 +16,8 @@ public class GroupOutputDto {
     private LocalDate startDate;
     private LocalDate endDate;
     private String groupInfo;
-    private List<User> users;
     private User admin;
+    private List<UserLeanOutputDto> userLeanOutputDto;
 
 }
-
+//TODO:vraag Mark List<User> of een outputDto

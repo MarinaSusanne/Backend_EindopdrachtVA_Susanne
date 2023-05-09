@@ -14,6 +14,7 @@ public class MessageBoard {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private String boardInfo;
 
     @OneToMany(mappedBy = "messageBoard")
     @JsonIgnore
@@ -22,12 +23,23 @@ public class MessageBoard {
     @OneToOne
     private Group group;
 
+    public MessageBoard() {
+    }
+
     public Long getId() {
         return id;
     }
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getBoardInfo() {
+        return boardInfo;
+    }
+
+    public void setBoardInfo(String boardInfo) {
+        this.boardInfo = boardInfo;
     }
 
     public List<Message> getMessages() {
@@ -45,6 +57,7 @@ public class MessageBoard {
     public void setGroup(Group group) {
         this.group = group;
     }
+
 
 }
 

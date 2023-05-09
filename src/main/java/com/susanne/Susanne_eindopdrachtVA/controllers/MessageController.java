@@ -3,6 +3,7 @@ package com.susanne.Susanne_eindopdrachtVA.controllers;
 import com.susanne.Susanne_eindopdrachtVA.dtos.input.MessageInputDto;
 import com.susanne.Susanne_eindopdrachtVA.dtos.output.MessageOutputDto;
 import com.susanne.Susanne_eindopdrachtVA.exceptions.BadRequestException;
+import com.susanne.Susanne_eindopdrachtVA.model.MessageBoard;
 import com.susanne.Susanne_eindopdrachtVA.model.User;
 import com.susanne.Susanne_eindopdrachtVA.repository.UserRepository;
 import com.susanne.Susanne_eindopdrachtVA.services.MessageService;
@@ -28,21 +29,6 @@ public class MessageController {
         this.userRepository = userRepository;
     }
 
-    @GetMapping()
-    public ResponseEntity<List<MessageOutputDto>> getAllMessages() {
-        List<MessageOutputDto> messageOutput = messageService.getAllMessages();
-        return ResponseEntity.ok(messageOutput);
-    }
-
-    @GetMapping("/find-by-user/{userId}")
-    public ResponseEntity<List<MessageOutputDto>> getMessagesByUser(@PathVariable Long userId) {
-        List<MessageOutputDto> messages = messageService.getMessagesByUser(userId);
-        return ResponseEntity.ok(messages);
-    }
-
-    //TODO:let op, heb nu twee keer een GET methode om messages op te halen
-
-
     @PostMapping("/{id}")
     @ResponseBody
     public ResponseEntity<Object> createAndAssignMessage(@Valid @PathVariable Long id, @RequestBody MessageInputDto messageInputDto) {
@@ -51,16 +37,11 @@ public class MessageController {
             return ResponseEntity.badRequest().body("User does not exist");
         }
             User user = optionalUser.get();
+//            MessageBoard messageBoard = user.getGroup().getMessageBoard ();
+//            messageBoard in ArrayList van messageboard .add
             MessageOutputDto messageOutputDto = messageService.createAndAssignMessage(user, messageInputDto);
             URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentRequest().path("/" + messageOutputDto.getId()).toUriString());
             return ResponseEntity.created(uri).body(messageOutputDto);
-
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Object> deleteMessage(@PathVariable Long id) {
-        messageService.deleteMessage(id);
-        return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/{id}")
@@ -73,3 +54,17 @@ public class MessageController {
             return ResponseEntity.ok().body(messageOutputDto);
         }
     }
+
+
+
+//    @DeleteMapping("/{id}")
+//    public ResponseEntity<Object> deleteMessage(@PathVariable Long id) {
+//        messageService.deleteMessage(id);
+//        return ResponseEntity.noContent().build();
+//    }
+
+//    @GetMapping()
+//    public ResponseEntity<List<MessageOutputDto>> getAllMessages() {
+//        List<MessageOutputDto> messageOutput = messageService.getAllMessages();
+//        return ResponseEntity.ok(messageOutput);
+//    }

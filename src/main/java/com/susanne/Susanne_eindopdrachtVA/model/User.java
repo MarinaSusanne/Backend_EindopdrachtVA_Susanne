@@ -90,7 +90,7 @@ public class User {
         return email;
     }
 
-    public void setEmail(String email) {
+      public void setEmail(String email) {
         this.email = email;
     }
 
@@ -164,8 +164,23 @@ public class User {
         this.messages = messages;
     }
 
-
+    public Group getGroup() {
+        return group;
     }
+
+    public void setGroup(Group group) {
+        this.group = group;
+    }
+    public List<Group> getGroups() {
+            return groups;
+        }
+
+    public void setGroups(List<Group> groups) {
+            this.groups = groups;
+        }
+    }
+
+    //TODO: check gaat dit goed dat er twee keer een group getter en setter is
 
 
     // TODO: toevoegen relatie met opdracht (many to many)

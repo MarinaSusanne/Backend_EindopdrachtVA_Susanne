@@ -25,6 +25,8 @@ public class GroupInputDto {
     private String groupInfo;
 
     private User admin;
+
+    private List<User> users;
+
 }
 
-//TODO: moet hier ook List van Users bij?

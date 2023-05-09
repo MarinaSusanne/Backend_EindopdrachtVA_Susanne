@@ -14,7 +14,6 @@ import java.time.LocalDateTime;
 @Setter
 public class MessageInputDto {
 
-
     @NotNull(message = "Content is required")
     @Size (max = 500, message = "content must be less than 500 characters")
     private String content;

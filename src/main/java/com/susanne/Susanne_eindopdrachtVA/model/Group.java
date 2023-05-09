@@ -33,6 +33,9 @@ public class Group {
     @JoinColumn(name = "admin_id")
     private User admin;
 
+    public Group() {
+    }
+
     public Long getId() {
         return id;
     }

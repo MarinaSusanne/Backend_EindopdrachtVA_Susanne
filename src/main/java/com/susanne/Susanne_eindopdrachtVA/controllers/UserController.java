@@ -30,15 +30,15 @@ public class UserController {
         return ResponseEntity.ok(userOutput);
     }
 
-    @GetMapping("find/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<UserOutputDto> getOneUserById(@PathVariable Long id) {
         UserOutputDto userOutputDto = userService.getOneUserById(id);
         return ResponseEntity.ok(userOutputDto);
     }
 
-    @GetMapping("/{userId}/messages")
-    public ResponseEntity<List<MessageOutputDto>> getUserMessagesByUserId(@PathVariable Long userId) {
-         List<MessageOutputDto> messageOutputDtos = userService.getUserMessagesByUserId(userId);
+    @GetMapping("/{id}/messages")
+    public ResponseEntity<List<MessageOutputDto>> getUserMessagesByUserId(@PathVariable Long id) {
+         List<MessageOutputDto> messageOutputDtos = userService.getUserMessagesByUserId(id);
          return ResponseEntity.ok(messageOutputDtos);
     }
 
@@ -55,13 +55,11 @@ public class UserController {
         return ResponseEntity.noContent().build();
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/admin/{id}")
     public ResponseEntity<UserOutputDto> updateUser(@PathVariable Long id, @Valid @RequestBody UserPutInputDto upUser) {
         UserOutputDto userOutputDto = userService.updateUser(id, upUser);
         return ResponseEntity.ok().body(userOutputDto);
     }
-
-
 
 
 }

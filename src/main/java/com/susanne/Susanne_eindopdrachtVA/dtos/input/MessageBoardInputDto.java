@@ -7,9 +7,6 @@ import lombok.Setter;
 @Setter
 public class MessageBoardInputDto {
 
-
-
+    private String boardInfo;
 
 }
-
-//TODO: moet hier wel een input dto? Ik maak automatisch een messgaeboard aan bij aanmaak van een groep
