@@ -10,6 +10,7 @@ import com.susanne.Susanne_eindopdrachtVA.model.Group;
 import com.susanne.Susanne_eindopdrachtVA.model.Message;
 import com.susanne.Susanne_eindopdrachtVA.model.User;
 import com.susanne.Susanne_eindopdrachtVA.repository.GroupRepository;
+import com.susanne.Susanne_eindopdrachtVA.repository.UserRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
@@ -22,9 +23,12 @@ public class GroupServiceImpl implements GroupService {
     private final GroupRepository groupRepository;
     private final ModelMapper modelMapper;
 
-    public GroupServiceImpl(GroupRepository groupRepository, ModelMapper modelMapper) {
+    private final UserRepository userRepository;
+
+    public GroupServiceImpl(GroupRepository groupRepository, ModelMapper modelMapper, UserRepository userRepository) {
         this.groupRepository = groupRepository;
         this.modelMapper = modelMapper;
+        this.userRepository = userRepository;
     }
 
 
@@ -47,6 +51,9 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     public GroupOutputDto getMyGroup(Long id) {
+        User user = userRepository.findById(id).orElseThrow(() -> new RecordNotFoundException("No user found"));
+    //HIER WAS IK!!!!!
+
         return null;
     }
 
@@ -62,6 +69,7 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     public GroupOutputDto createGroup(GroupInputDto groupInputDto) {
+        //TODO: bij createGroup ook gelijk een messageBoard aanmaken!
         return null;
     }
 
@@ -76,4 +84,3 @@ public class GroupServiceImpl implements GroupService {
 
 
 
-//TODO: bij createGroup ook gelijk een messageBoard aanmaken!
