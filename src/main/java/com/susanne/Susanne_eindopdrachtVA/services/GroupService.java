@@ -13,13 +13,14 @@ import java.util.List;
 public interface GroupService {
         List<UserLeanOutputDto> getUsersByGroupId(@PathVariable Long id);
 
-        GroupOutputDto getMyGroup (@PathVariable Long id);
+        GroupOutputDto getMyGroup(@PathVariable Long id);
 
         List<GroupOutputDto> getMyActiveGroups();
 
-        GroupOutputDto getSpecificGroup (@PathVariable Long id);
+        GroupOutputDto getSpecificGroup(@PathVariable Long id);
 
-        GroupOutputDto createGroup (@Valid @RequestBody GroupInputDto groupInputDto);
-
-        GroupOutputDto updateGroup(@PathVariable Long id, @Valid @RequestBody GroupInputDto upGroup);
+        GroupOutputDto createGroup(@Valid @RequestBody GroupInputDto groupInputDto);
 }
+
+//        GroupOutputDto updateGroup(@PathVariable Long id, @Valid @RequestBody GroupInputDto upGroup);
+//}

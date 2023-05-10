@@ -26,7 +26,8 @@ public class GroupInputDto {
 
     private User admin;
 
-    private List<User> users;
+    @NotNull
+    private List<Long> userId;
 
 }
 

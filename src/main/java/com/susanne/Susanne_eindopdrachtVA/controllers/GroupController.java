@@ -55,11 +55,11 @@ public class GroupController {
         return ResponseEntity.created(uri).body(groupOutputDto);
     }
 
-    @PutMapping("/admin/{id}")
-    public ResponseEntity<GroupOutputDto> updateGroup(@PathVariable Long id, @Valid @RequestBody GroupInputDto upGroup) {
-         GroupOutputDto groupOutputDto = groupService.updateGroup(id, upGroup);
-         return ResponseEntity.ok().body(groupOutputDto);
-    }
+//    @PutMapping("/admin/{id}")
+//    public ResponseEntity<GroupOutputDto> updateGroup(@PathVariable Long id, @Valid @RequestBody GroupInputDto upGroup) {
+//         GroupOutputDto groupOutputDto = groupService.updateGroup(id, upGroup);
+//         return ResponseEntity.ok().body(groupOutputDto);
+//    }
 
 }
 

@@ -4,6 +4,7 @@ import com.susanne.Susanne_eindopdrachtVA.dtos.input.UserInputDto;
 import com.susanne.Susanne_eindopdrachtVA.dtos.input.UserPutInputDto;
 import com.susanne.Susanne_eindopdrachtVA.dtos.output.MessageOutputDto;
 import com.susanne.Susanne_eindopdrachtVA.dtos.output.UserOutputDto;
+import com.susanne.Susanne_eindopdrachtVA.exceptions.NoUsersWithoutGroupException;
 import com.susanne.Susanne_eindopdrachtVA.exceptions.RecordNotFoundException;
 import com.susanne.Susanne_eindopdrachtVA.mappers.MessageMapper;
 import com.susanne.Susanne_eindopdrachtVA.mappers.UserMapper;
@@ -63,6 +64,22 @@ public class UserService {
             }
             return messageOutputDtos;
         }
+    }
+
+    public List<UserOutputDto> getUsersWithoutGroup() {
+        Iterable<User> users = userRepository.findAll();
+        List<UserOutputDto> userOutputDtos = new ArrayList<>();
+        for (User u : users) {
+            if (u.getGroup() == null) {
+                UserOutputDto udto = userMapper.userToUserDto(u);
+                userOutputDtos.add(udto);
+            }
+
+        }
+        if (userOutputDtos.isEmpty()) {
+            throw new NoUsersWithoutGroupException("Er zijn geen gebruikers zonder groep gevonden.");
+        }
+        return userOutputDtos;
     }
 
     public UserOutputDto createUser(UserInputDto inputDto) {

@@ -42,6 +42,12 @@ public class UserController {
          return ResponseEntity.ok(messageOutputDtos);
     }
 
+    @GetMapping("/nogroup")
+    public ResponseEntity<List<UserOutputDto>> getUsersWithoutGroup() {
+        List<UserOutputDto> userOutput = userService.getUsersWithoutGroup();
+        return ResponseEntity.ok(userOutput);
+    }
+
     @PostMapping()
     public ResponseEntity<UserOutputDto> createUser(@Valid @RequestBody UserInputDto UserInputDto) {
         UserOutputDto userOutputDto = userService.createUser(UserInputDto);
@@ -60,6 +66,8 @@ public class UserController {
         UserOutputDto userOutputDto = userService.updateUser(id, upUser);
         return ResponseEntity.ok().body(userOutputDto);
     }
+
+
 
 }
 
