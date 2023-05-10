@@ -101,49 +101,37 @@ public class GroupServiceImpl implements GroupService {
         return groupOutputDto;
     }
 
-//    @Override
-//    public GroupOutputDto createGroup(GroupInputDto groupInputDto) {
-//        if (groupInputDto.getStartDate().isAfter(groupInputDto.getEndDate())) {
-//            throw new BadRequestException("Start date can not be after end date");
-//        }
-////        modelMapper.addMappings(new PropertyMap<GroupInputDto, Group>() {
-////            @Override
-////            protected void configure() {
-////                skip(groupInputDto::getUserId());
-////                skip(Destination::setUsers);
-////            }
-////        });
-//
-//        modelMapper.typeMap(GroupInputDto.class, Group.class).addMappings(mapper-> mapper.skip(Group::setUsers));
-//
-//        List<Long> userIds = groupInputDto.getUserId();
-//        List<Optional<User>> users = new ArrayList<>();
-//        for (Long u : userIds){
-//            users.add(userRepository.findById(u));
-//        }
-//        Group group = modelMapper.map(groupInputDto, Group.class);
-//        group.setUsers(users);
-//        //Er wordt gelijk een messageboard aangemaakt zodra een groep wordt aangemaakt
-//        MessageBoard messageBoard = new MessageBoard();
-//        messageBoardRepository.save(messageBoard);
-//        group.setMessageBoard(messageBoard);
-//        groupRepository.save(group);
-//        GroupOutputDto groupOutputDto = modelMapper.map(group, GroupOutputDto.class);
-//        return groupOutputDto;
-//    }
-
 
     @Override
     public GroupOutputDto createGroup(GroupInputDto groupInputDto) {
         if (groupInputDto.getStartDate().isAfter(groupInputDto.getEndDate())) {
             throw new BadRequestException("Start date can not be after end date");
         }
-        modelMapper.typeMap(GroupInputDto.class, Group.class).addMappings(mapper -> {
-            mapper.skip(Group::setUsers);});
 
-        List<Long> userIds = groupInputDto.getUserId();
+        List<Long> userIds = groupInputDto.getUsers();
         List<User> userList = new ArrayList<>();
         List<UserLeanOutputDto> userLeanOutputDtos = new ArrayList<>();
+        populateUserData(userIds, userList, userLeanOutputDtos);
+
+        Group group = populateGroup(groupInputDto, userList);
+
+        GroupOutputDto groupOutputDto = modelMapper.map(group, GroupOutputDto.class);
+        groupOutputDto.setUserLeanOutputDto(userLeanOutputDtos);
+        return groupOutputDto;
+    }
+
+    private Group populateGroup(GroupInputDto groupInputDto, List<User> userList) {
+        Group group = modelMapper.map(groupInputDto, Group.class);
+        group.setUsers(userList);
+        //Er wordt gelijk een messageboard aangemaakt zodra een groep wordt aangemaakt
+        MessageBoard messageBoard = new MessageBoard();
+        messageBoardRepository.save(messageBoard);
+        group.setMessageBoard(messageBoard);
+        groupRepository.save(group);
+        return group;
+    }
+
+    private void populateUserData(List<Long> userIds, List<User> userList, List<UserLeanOutputDto> userLeanOutputDtos) {
         for (Long u : userIds) {
             Optional<User> userOptional = userRepository.findById(u);
             if (userOptional.isPresent()) {
@@ -152,27 +140,8 @@ public class GroupServiceImpl implements GroupService {
                 userLeanOutputDtos.add(UserMapper.userToUserLeanDto(user));
             }
         }
-
-        Group group = modelMapper.map(groupInputDto, Group.class);
-        group.setUsers(userList);
-
-        //Er wordt gelijk een messageboard aangemaakt zodra een groep wordt aangemaakt
-        MessageBoard messageBoard = new MessageBoard();
-        messageBoardRepository.save(messageBoard);
-        group.setMessageBoard(messageBoard);
-        groupRepository.save(group);
-        GroupOutputDto groupOutputDto = modelMapper.map(group, GroupOutputDto.class);
-        groupOutputDto.setUserLeanOutputDto(userLeanOutputDtos);
-        return groupOutputDto;
     }
 }
-
-
-
-
-
-
-
 
 
 //    @Override
