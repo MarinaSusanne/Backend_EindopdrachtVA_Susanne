@@ -51,8 +51,8 @@ public class UserService {
         return userMapper.userToUserDto(user);
     }
 
-    public List<MessageOutputDto> getUserMessagesByUserId(Long userId) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new RecordNotFoundException("User not found"));
+    public List<MessageOutputDto> getUserMessagesByUserId(Long Id) {
+        User user = userRepository.findById(Id).orElseThrow(() -> new RecordNotFoundException("User not found"));
         List<Message> messages = user.getMessages();
         if (messages == null) {
             throw new RecordNotFoundException("No messages found");

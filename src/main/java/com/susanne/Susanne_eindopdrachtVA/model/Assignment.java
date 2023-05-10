@@ -14,10 +14,11 @@ public class Assignment {
 
     private String info;
 
+
 }
 
 //TODO: hoe ga ik de opdrachten bewaren? In database of computer?
 //TODO: relatie met een groep (many to many)
 //TODO: relatie met user (many to many)
 //TODO: unieke filename aanmaken op basis van user en tijd, zodat dit lokaal goed gaat (mezelf niet overschrijf)
-//TODO: denk vanuit entiteiten (want heb het al opgebouwd vanuit entiteiten)
+

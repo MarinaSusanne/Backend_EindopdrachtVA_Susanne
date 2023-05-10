@@ -2,27 +2,26 @@ package com.susanne.Susanne_eindopdrachtVA.services;
 
 import com.susanne.Susanne_eindopdrachtVA.dtos.input.GroupInputDto;
 import com.susanne.Susanne_eindopdrachtVA.dtos.output.GroupOutputDto;
-import com.susanne.Susanne_eindopdrachtVA.dtos.output.MessageOutputDto;
 import com.susanne.Susanne_eindopdrachtVA.dtos.output.UserLeanOutputDto;
 import com.susanne.Susanne_eindopdrachtVA.exceptions.BadRequestException;
 import com.susanne.Susanne_eindopdrachtVA.exceptions.RecordNotFoundException;
 import com.susanne.Susanne_eindopdrachtVA.mappers.UserMapper;
-import com.susanne.Susanne_eindopdrachtVA.model.Group;
-import com.susanne.Susanne_eindopdrachtVA.model.Message;
-import com.susanne.Susanne_eindopdrachtVA.model.MessageBoard;
-import com.susanne.Susanne_eindopdrachtVA.model.User;
+import com.susanne.Susanne_eindopdrachtVA.model.*;
 import com.susanne.Susanne_eindopdrachtVA.repository.GroupRepository;
 import com.susanne.Susanne_eindopdrachtVA.repository.MessageBoardRepository;
 import com.susanne.Susanne_eindopdrachtVA.repository.UserRepository;
 import org.modelmapper.ModelMapper;
+import org.springframework.context.annotation.Import;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
+@Import(AppConfig.class)
 public class GroupServiceImpl implements GroupService {
     private final GroupRepository groupRepository;
     private final ModelMapper modelMapper;
@@ -31,11 +30,16 @@ public class GroupServiceImpl implements GroupService {
 
     private final MessageBoardRepository messageBoardRepository;
 
-    public GroupServiceImpl(GroupRepository groupRepository, ModelMapper modelMapper, UserRepository userRepository, MessageBoardRepository messageBoardRepository) {
+    private final UserMapper userMapper;
+
+
+
+    public GroupServiceImpl(GroupRepository groupRepository, ModelMapper modelMapper, UserRepository userRepository, MessageBoardRepository messageBoardRepository, UserMapper userMapper) {
         this.groupRepository = groupRepository;
         this.modelMapper = modelMapper;
         this.userRepository = userRepository;
         this.messageBoardRepository = messageBoardRepository;
+        this.userMapper = userMapper;
     }
 
 
@@ -97,21 +101,79 @@ public class GroupServiceImpl implements GroupService {
         return groupOutputDto;
     }
 
+//    @Override
+//    public GroupOutputDto createGroup(GroupInputDto groupInputDto) {
+//        if (groupInputDto.getStartDate().isAfter(groupInputDto.getEndDate())) {
+//            throw new BadRequestException("Start date can not be after end date");
+//        }
+////        modelMapper.addMappings(new PropertyMap<GroupInputDto, Group>() {
+////            @Override
+////            protected void configure() {
+////                skip(groupInputDto::getUserId());
+////                skip(Destination::setUsers);
+////            }
+////        });
+//
+//        modelMapper.typeMap(GroupInputDto.class, Group.class).addMappings(mapper-> mapper.skip(Group::setUsers));
+//
+//        List<Long> userIds = groupInputDto.getUserId();
+//        List<Optional<User>> users = new ArrayList<>();
+//        for (Long u : userIds){
+//            users.add(userRepository.findById(u));
+//        }
+//        Group group = modelMapper.map(groupInputDto, Group.class);
+//        group.setUsers(users);
+//        //Er wordt gelijk een messageboard aangemaakt zodra een groep wordt aangemaakt
+//        MessageBoard messageBoard = new MessageBoard();
+//        messageBoardRepository.save(messageBoard);
+//        group.setMessageBoard(messageBoard);
+//        groupRepository.save(group);
+//        GroupOutputDto groupOutputDto = modelMapper.map(group, GroupOutputDto.class);
+//        return groupOutputDto;
+//    }
+
+
     @Override
     public GroupOutputDto createGroup(GroupInputDto groupInputDto) {
         if (groupInputDto.getStartDate().isAfter(groupInputDto.getEndDate())) {
             throw new BadRequestException("Start date can not be after end date");
         }
+        modelMapper.typeMap(GroupInputDto.class, Group.class).addMappings(mapper -> {
+            mapper.skip(Group::setUsers);});
+
+        List<Long> userIds = groupInputDto.getUserId();
+        List<User> userList = new ArrayList<>();
+        List<UserLeanOutputDto> userLeanOutputDtos = new ArrayList<>();
+        for (Long u : userIds) {
+            Optional<User> userOptional = userRepository.findById(u);
+            if (userOptional.isPresent()) {
+                User user = userOptional.get();
+                userList.add(user);
+                userLeanOutputDtos.add(UserMapper.userToUserLeanDto(user));
+            }
+        }
+
         Group group = modelMapper.map(groupInputDto, Group.class);
+        group.setUsers(userList);
+
         //Er wordt gelijk een messageboard aangemaakt zodra een groep wordt aangemaakt
         MessageBoard messageBoard = new MessageBoard();
         messageBoardRepository.save(messageBoard);
         group.setMessageBoard(messageBoard);
         groupRepository.save(group);
         GroupOutputDto groupOutputDto = modelMapper.map(group, GroupOutputDto.class);
+        groupOutputDto.setUserLeanOutputDto(userLeanOutputDtos);
         return groupOutputDto;
     }
 }
+
+
+
+
+
+
+
+
 
 //    @Override
 //    public GroupOutputDto updateGroup(Long id, GroupInputDto upGroup) {
