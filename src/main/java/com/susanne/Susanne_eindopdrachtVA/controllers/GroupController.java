@@ -32,9 +32,9 @@ public class GroupController {
         return ResponseEntity.ok(userLeanOutput);
     }
 
-    @GetMapping("/users/{id}")
-    public ResponseEntity <GroupOutputDto> getMyGroup (@PathVariable Long id) {
-        GroupOutputDto groupOutputDto = groupService.getMyGroup(id);
+    @GetMapping("/users/{userId}")
+    public ResponseEntity <GroupOutputDto> getMyGroup (@PathVariable Long userId) {
+        GroupOutputDto groupOutputDto = groupService.getMyGroup(userId);
         return ResponseEntity.ok(groupOutputDto);
     }
 
@@ -44,9 +44,9 @@ public class GroupController {
         return ResponseEntity.ok(groupOutputDtos);
     }
 
-    @GetMapping("/admin/{id}")
-    public ResponseEntity<GroupOutputDto> getSpecificGroup (@PathVariable Long id) {
-        GroupOutputDto groupOutputDto = groupService.getSpecificGroup(id);
+    @GetMapping("/admin/{groupId}")
+    public ResponseEntity<GroupOutputDto> getSpecificGroup (@PathVariable Long groupId) {
+        GroupOutputDto groupOutputDto = groupService.getSpecificGroup(groupId);
         return ResponseEntity.ok(groupOutputDto);
     }
     @PostMapping("/admin")

@@ -33,15 +33,15 @@ public class HandInAssignmentController {
 
     }
 
-    @GetMapping("/users/{id}")
-    public ResponseEntity<List<HandInAssignmentOutputDto>> getAssignmentsByUserId(@PathVariable Long id) {
-        List<HandInAssignmentOutputDto> handInAssignmentOutputDtos = handInAssignmentService.getAssignmentsByUserId(id);
+    @GetMapping("/{userId}")
+    public ResponseEntity<List<HandInAssignmentOutputDto>> getAssignmentsByUserId(@PathVariable Long userId) {
+        List<HandInAssignmentOutputDto> handInAssignmentOutputDtos = handInAssignmentService.getAssignmentsByUserId(userId);
         return ResponseEntity.ok(handInAssignmentOutputDtos);
     }
 
-    @PostMapping("/users/{id}")
-    public ResponseEntity<Object> handInAssignmentByUser (@Valid @PathVariable Long id, @RequestBody HandInAssignmentInputDto handinAssignmentInputDto) {
-        Optional<User> optionalUser = userRepository.findById(id);
+    @PostMapping("/users/{userId}")
+    public ResponseEntity<Object> handInAssignmentByUser (@Valid @PathVariable Long userId, @RequestBody HandInAssignmentInputDto handinAssignmentInputDto) {
+        Optional<User> optionalUser = userRepository.findById(userId);
         if (optionalUser.isEmpty()) {
             return ResponseEntity.badRequest().body("User does not exist");
         }

@@ -35,10 +35,10 @@ public class MessageController {
         List<MessageOutputDto> messageOutput = messageService.getAllMessages();
         return ResponseEntity.ok(messageOutput);
     }
-    @PostMapping("/{id}")
+    @PostMapping("/{userId}")
     @ResponseBody
-    public ResponseEntity<Object> createAndAssignMessage(@Valid @PathVariable Long id, @RequestBody MessageInputDto messageInputDto) {
-        Optional<User> optionalUser = userRepository.findById(id);
+    public ResponseEntity<Object> createAndAssignMessage(@Valid @PathVariable Long userId, @RequestBody MessageInputDto messageInputDto) {
+        Optional<User> optionalUser = userRepository.findById(userId);
         if (optionalUser.isEmpty()) {
             return ResponseEntity.badRequest().body("User does not exist");
         }

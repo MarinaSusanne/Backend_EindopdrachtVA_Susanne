@@ -34,16 +34,16 @@ public class HomeworkAssignmentController {
         this.groupRepository = groupRepository;
     }
 
-    @GetMapping("/groups/{id}")
-    public ResponseEntity<List<HomeworkAssignmentOutputDto>> getAssignmentsByGroupId(@PathVariable Long id) {
-        List<HomeworkAssignmentOutputDto> homeworkAssignmentOutputDtos = homeworkAssignmentService.getAssignmentsByGroupId(id);
+    @GetMapping("/groups/{groupId}")
+    public ResponseEntity<List<HomeworkAssignmentOutputDto>> getAssignmentsByGroupId(@PathVariable Long groupId) {
+        List<HomeworkAssignmentOutputDto> homeworkAssignmentOutputDtos = homeworkAssignmentService.getAssignmentsByGroupId(groupId);
         return ResponseEntity.ok(homeworkAssignmentOutputDtos);
     }
 
 
-    @PostMapping("/admin/groups/{id}")
-    public ResponseEntity<Object> createAndAssignAssignmentToGroup (@Valid @PathVariable Long id, @RequestBody HomeworkAssignmentInputDto homeworkAssignmentInputDto) {
-        Optional<Group> optionalGroup = groupRepository.findById(id);
+    @PostMapping("/admin/groups/{groupId}")
+    public ResponseEntity<Object> createAndAssignAssignmentToGroup (@Valid @PathVariable Long groupId, @RequestBody HomeworkAssignmentInputDto homeworkAssignmentInputDto) {
+        Optional<Group> optionalGroup = groupRepository.findById(groupId);
         if (optionalGroup.isEmpty()) {
             return ResponseEntity.badRequest().body("User does not exist");
         }
@@ -54,7 +54,7 @@ public class HomeworkAssignmentController {
     }
 
     @PutMapping("/admin/{id}")
-    public ResponseEntity<HomeworkAssignmentOutputDto> updateHomeworkAssignmentAssignment(@PathVariable Long id, @Valid @RequestBody HomeworkAssignmentInputDto upHomeworkAssignment, BindingResult br) {
+    public ResponseEntity<HomeworkAssignmentOutputDto> updateHomeworkAssignment(@PathVariable Long id, @Valid @RequestBody HomeworkAssignmentInputDto upHomeworkAssignment, BindingResult br) {
         if (br.hasErrors()) {
             String errorHomeworkAssignment = "Fout bij het verwerken van de request";
             throw new BadRequestException(errorHomeworkAssignment);
