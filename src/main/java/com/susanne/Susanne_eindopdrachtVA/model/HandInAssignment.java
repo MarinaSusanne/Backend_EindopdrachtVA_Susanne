@@ -1,6 +1,5 @@
-package com.susanne.Susanne_eindopdrachtVA.services;
+package com.susanne.Susanne_eindopdrachtVA.model;
 
-import com.susanne.Susanne_eindopdrachtVA.model.User;
 import jakarta.persistence.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -9,8 +8,7 @@ import java.time.LocalDate;
 @Entity
 @Table(name="handin_assignments")
 
-public class HandInAssignmentService {
-
+public class HandInAssignment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -22,12 +20,11 @@ public class HandInAssignmentService {
     @DateTimeFormat(pattern = "yyyy-mm-dd")
     private LocalDate sendDate;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
     private User user;
 
-
-    public HandInAssignmentService() {
+    public HandInAssignment() {
     }
 
     public Long getId() {
@@ -70,4 +67,12 @@ public class HandInAssignmentService {
         this.user = user;
     }
 }
+
+
+
+
+
+
+
+//TODO: unieke filename aanmaken op basis van user en tijd, zodat dit lokaal goed gaat (mezelf niet overschrijf)
 

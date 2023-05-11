@@ -1,8 +1,14 @@
 package com.susanne.Susanne_eindopdrachtVA.dtos.output;
 
+import com.susanne.Susanne_eindopdrachtVA.model.User;
+import lombok.Getter;
+import lombok.Setter;
+
 import java.time.LocalDate;
 
-public class AssignmentOutputDto {
+@Getter
+@Setter
+public class HomeworkAssignmentOutputDto {
 
     private Long id;
 
@@ -12,8 +18,5 @@ public class AssignmentOutputDto {
 
     private LocalDate sendDate;
 
-    private Long authorId;
-
-    private Long recipientId;
-
+    private UserLeanOutputDto author;
 }

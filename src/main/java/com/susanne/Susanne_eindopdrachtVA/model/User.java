@@ -55,6 +55,11 @@ public class User {
     @JsonIgnore
     private List<Group> groups;
 
+    @OneToMany(mappedBy = "handInAssignment")
+    @JsonIgnore
+    private List<HandInAssignment> handInAssignments;
+
+
     public User() {
     }
 
@@ -174,16 +179,24 @@ public class User {
     public List<Group> getGroups() {
             return groups;
         }
-
     public void setGroups(List<Group> groups) {
-            this.groups = groups;
-        }
+        this.groups = groups;
     }
 
+    public List<HandInAssignment> getHandInAssignments() {
+        return handInAssignments;
+    }
+
+    public void setHandInAssignments(List<HandInAssignment> handInAssignments) {
+        this.handInAssignments = handInAssignments;
+    }
+
+    }
+
+
+
+
     //TODO: check gaat dit goed dat er twee keer een group getter en setter is
-
-
-    // TODO: toevoegen relatie met opdracht (many to many)
     // TODO: Check, wat doe ik qua constructors? Of een Builder Pattern?
 
 

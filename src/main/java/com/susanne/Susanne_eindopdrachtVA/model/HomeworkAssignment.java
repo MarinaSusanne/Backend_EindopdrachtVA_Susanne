@@ -1,16 +1,14 @@
-package com.susanne.Susanne_eindopdrachtVA.services;
+package com.susanne.Susanne_eindopdrachtVA.model;
 
-import com.susanne.Susanne_eindopdrachtVA.model.User;
 import jakarta.persistence.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 
 @Entity
-@Table(name="handin_assignments")
+@Table(name="homework_assignments")
 
-public class HandInAssignmentService {
-
+public class HomeworkAssignment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -22,12 +20,12 @@ public class HandInAssignmentService {
     @DateTimeFormat(pattern = "yyyy-mm-dd")
     private LocalDate sendDate;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
+    @OneToOne
+    @JoinColumn(name = "group_id")
+    private Group group;
 
 
-    public HandInAssignmentService() {
+    public HomeworkAssignment() {
     }
 
     public Long getId() {
@@ -62,12 +60,13 @@ public class HandInAssignmentService {
         this.sendDate = sendDate;
     }
 
-    public User getUser() {
-        return user;
+
+    public Group getGroup() {
+        return group;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setGroup(Group group) {
+        this.group = group;
     }
 }
 

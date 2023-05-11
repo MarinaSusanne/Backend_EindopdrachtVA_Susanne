@@ -36,6 +36,10 @@ public class Group {
     @OneToOne
     private MessageBoard messageBoard;
 
+    @OneToMany(mappedBy = "homeworkAssignment")
+    @JsonIgnore
+    private List<HomeworkAssignment> homeworkAssignments;
+
     public Group() {
     }
 
@@ -102,6 +106,14 @@ public class Group {
 
     public void setMessageBoard(MessageBoard messageBoard) {
         this.messageBoard = messageBoard;
+    }
+
+    public List<HomeworkAssignment> getHomeworkAssignments() {
+        return homeworkAssignments;
+    }
+
+    public void setHomeworkAssignments(List<HomeworkAssignment> homeworkAssignments) {
+        this.homeworkAssignments = homeworkAssignments;
     }
 }
 
