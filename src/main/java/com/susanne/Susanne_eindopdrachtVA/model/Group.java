@@ -36,7 +36,7 @@ public class Group {
     @OneToOne
     private MessageBoard messageBoard;
 
-    @OneToMany(mappedBy = "homeworkAssignment")
+    @OneToMany(mappedBy = "group")
     @JsonIgnore
     private List<HomeworkAssignment> homeworkAssignments;
 

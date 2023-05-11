@@ -40,7 +40,7 @@ public class UserMapper {
         user.setZipcode(inputDto.getZipcode());
         user.setCity(inputDto.getCity());
         user.setDateOfBirth(inputDto.getDateOfBirth());
-        user.setPhoto(inputDto.getPhoto());
+        user.setPhoto(inputDto.getPhoto().getBytes());
         return user;
     }
 

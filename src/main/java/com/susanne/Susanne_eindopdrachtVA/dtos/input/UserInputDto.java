@@ -38,7 +38,7 @@ public class UserInputDto {
     @JsonFormat(pattern="yyyy-MM-dd")
     private LocalDate dateOfBirth;
 
-    private byte[] photo;
+    private String photo;
 }
 
 //TODO: toevoegen extra annotaties

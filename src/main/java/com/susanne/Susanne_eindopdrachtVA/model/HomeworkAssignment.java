@@ -6,7 +6,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import java.time.LocalDate;
 
 @Entity
-@Table(name="homework_assignments")
+@Table(name="homeworkAssignments")
 
 public class HomeworkAssignment {
     @Id

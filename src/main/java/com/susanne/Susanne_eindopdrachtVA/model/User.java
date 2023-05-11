@@ -55,7 +55,7 @@ public class User {
     @JsonIgnore
     private List<Group> groups;
 
-    @OneToMany(mappedBy = "handInAssignment")
+    @OneToMany(mappedBy = "user")
     @JsonIgnore
     private List<HandInAssignment> handInAssignments;
 

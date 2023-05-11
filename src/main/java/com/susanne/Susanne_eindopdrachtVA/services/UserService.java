@@ -74,7 +74,6 @@ public class UserService {
                 UserOutputDto udto = userMapper.userToUserDto(u);
                 userOutputDtos.add(udto);
             }
-
         }
         if (userOutputDtos.isEmpty()) {
             throw new NoUsersWithoutGroupException("Er zijn geen gebruikers zonder groep gevonden.");
