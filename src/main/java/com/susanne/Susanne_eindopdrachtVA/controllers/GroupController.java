@@ -1,11 +1,7 @@
 package com.susanne.Susanne_eindopdrachtVA.controllers;
-
 import com.susanne.Susanne_eindopdrachtVA.dtos.input.GroupInputDto;
-import com.susanne.Susanne_eindopdrachtVA.dtos.input.UserInputDto;
 import com.susanne.Susanne_eindopdrachtVA.dtos.output.GroupOutputDto;
 import com.susanne.Susanne_eindopdrachtVA.dtos.output.UserLeanOutputDto;
-import com.susanne.Susanne_eindopdrachtVA.dtos.output.UserOutputDto;
-import com.susanne.Susanne_eindopdrachtVA.model.User;
 import com.susanne.Susanne_eindopdrachtVA.services.GroupService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;

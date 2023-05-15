@@ -11,6 +11,8 @@ import com.susanne.Susanne_eindopdrachtVA.model.MessageBoard;
 import com.susanne.Susanne_eindopdrachtVA.model.User;
 import com.susanne.Susanne_eindopdrachtVA.repository.MessageBoardRepository;
 import com.susanne.Susanne_eindopdrachtVA.repository.MessageRepository;
+import com.susanne.Susanne_eindopdrachtVA.repository.UserRepository;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -27,10 +29,13 @@ public class MessageService {
 
     private final MessageBoardRepository messageBoardRepository;
 
-    public MessageService(MessageRepository messageRepository, MessageMapper messageMapper, MessageBoardRepository messageBoardRepository) {
+    private final UserRepository userRepository;
+
+    public MessageService(MessageRepository messageRepository, MessageMapper messageMapper, MessageBoardRepository messageBoardRepository, UserRepository userRepository) {
         this.messageRepository = messageRepository;
         this.messageMapper = messageMapper;
         this.messageBoardRepository = messageBoardRepository;
+        this.userRepository = userRepository;
     }
 
     public List<MessageOutputDto> getAllMessages(){
@@ -57,7 +62,8 @@ public class MessageService {
 //         throw new RecordNotFoundException("User not found");
 //     }
 
-    public MessageOutputDto createAndAssignMessage(User user, MessageInputDto inputDto){
+    public MessageOutputDto createAndAssignMessage(Long userId, MessageInputDto inputDto){
+        User user = userRepository.findById(userId).orElseThrow(() -> new RecordNotFoundException("User not found"));
         Message message = messageMapper.messageDtoToMessage(inputDto);
         message.setSubmitDate(LocalDateTime.now());
         message.setUser(user);
@@ -70,7 +76,6 @@ public class MessageService {
         return messageMapper.messageToMessageDtoWithLeanUser(message, userLeanOutputDto);
     }
 
-    //TODO:uitsplitsen methode hierboven?
 
     public void deleteMessage(@RequestBody Long id) {
         messageRepository.deleteById(id);

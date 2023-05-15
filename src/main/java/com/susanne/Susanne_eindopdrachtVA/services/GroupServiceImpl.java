@@ -30,16 +30,14 @@ public class GroupServiceImpl implements GroupService {
 
     private final MessageBoardRepository messageBoardRepository;
 
-    private final UserMapper userMapper;
 
 
 
-    public GroupServiceImpl(GroupRepository groupRepository, ModelMapper modelMapper, UserRepository userRepository, MessageBoardRepository messageBoardRepository, UserMapper userMapper) {
+    public GroupServiceImpl(GroupRepository groupRepository, ModelMapper modelMapper, UserRepository userRepository, MessageBoardRepository messageBoardRepository) {
         this.groupRepository = groupRepository;
         this.modelMapper = modelMapper;
         this.userRepository = userRepository;
         this.messageBoardRepository = messageBoardRepository;
-        this.userMapper = userMapper;
     }
 
 

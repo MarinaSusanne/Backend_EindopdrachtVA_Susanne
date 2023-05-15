@@ -3,9 +3,6 @@ package com.susanne.Susanne_eindopdrachtVA.controllers;
 import com.susanne.Susanne_eindopdrachtVA.dtos.input.MessageInputDto;
 import com.susanne.Susanne_eindopdrachtVA.dtos.output.MessageOutputDto;
 import com.susanne.Susanne_eindopdrachtVA.exceptions.BadRequestException;
-import com.susanne.Susanne_eindopdrachtVA.model.MessageBoard;
-import com.susanne.Susanne_eindopdrachtVA.model.User;
-import com.susanne.Susanne_eindopdrachtVA.repository.UserRepository;
 import com.susanne.Susanne_eindopdrachtVA.services.MessageService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -15,7 +12,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
-import java.util.Optional;
+
 
 //@CrossOrigin
 @RestController
@@ -23,11 +20,9 @@ import java.util.Optional;
 public class MessageController {
 
     private final MessageService messageService;
-    private final UserRepository userRepository;
 
-    public MessageController(MessageService messageService, UserRepository userRepository) {
+    public MessageController(MessageService messageService) {
         this.messageService = messageService;
-        this.userRepository = userRepository;
     }
 
     @GetMapping()
@@ -38,12 +33,7 @@ public class MessageController {
     @PostMapping("/{userId}")
     @ResponseBody
     public ResponseEntity<Object> createAndAssignMessage(@Valid @PathVariable Long userId, @RequestBody MessageInputDto messageInputDto) {
-        Optional<User> optionalUser = userRepository.findById(userId);
-        if (optionalUser.isEmpty()) {
-            return ResponseEntity.badRequest().body("User does not exist");
-        }
-        User user = optionalUser.get();
-        MessageOutputDto messageOutputDto = messageService.createAndAssignMessage(user, messageInputDto);
+        MessageOutputDto messageOutputDto = messageService.createAndAssignMessage(userId, messageInputDto);
         URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentRequest().path("/" + messageOutputDto.getId()).toUriString());
         return ResponseEntity.created(uri).body(messageOutputDto);
     }

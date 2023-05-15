@@ -4,7 +4,6 @@ import com.susanne.Susanne_eindopdrachtVA.dtos.input.UserInputDto;
 import com.susanne.Susanne_eindopdrachtVA.dtos.input.UserPutInputDto;
 import com.susanne.Susanne_eindopdrachtVA.dtos.output.MessageOutputDto;
 import com.susanne.Susanne_eindopdrachtVA.dtos.output.UserOutputDto;
-import com.susanne.Susanne_eindopdrachtVA.model.Message;
 import com.susanne.Susanne_eindopdrachtVA.services.UserService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -67,9 +66,6 @@ public class UserController {
         UserOutputDto userOutputDto = userService.updateUser(id, upUser);
         return ResponseEntity.ok().body(userOutputDto);
     }
-
-//postmapping --> assign photo to student (id requestbody, multipartfile file). Link aan photocontroller waar methode is singleFileUpload.
-
 
 }
 

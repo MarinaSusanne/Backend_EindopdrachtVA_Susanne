@@ -1,12 +1,10 @@
 package com.susanne.Susanne_eindopdrachtVA.controllers;
 
 import com.susanne.Susanne_eindopdrachtVA.dtos.input.MessageBoardInputDto;
-import com.susanne.Susanne_eindopdrachtVA.dtos.input.MessageInputDto;
 import com.susanne.Susanne_eindopdrachtVA.dtos.output.MessageBoardOutputDto;
 import com.susanne.Susanne_eindopdrachtVA.dtos.output.MessageOutputDto;
 import com.susanne.Susanne_eindopdrachtVA.exceptions.BadRequestException;
 import com.susanne.Susanne_eindopdrachtVA.services.MessageBoardService;
-import com.susanne.Susanne_eindopdrachtVA.services.UserService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
