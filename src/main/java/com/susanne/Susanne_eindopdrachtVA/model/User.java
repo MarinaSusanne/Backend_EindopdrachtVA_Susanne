@@ -63,6 +63,8 @@ public class User {
     public User() {
     }
 
+
+
     public Long getId() {
         return id;
     }
@@ -172,10 +174,10 @@ public class User {
     public Group getGroup() {
         return group;
     }
-
     public void setGroup(Group group) {
         this.group = group;
     }
+
     public List<Group> getGroups() {
             return groups;
         }

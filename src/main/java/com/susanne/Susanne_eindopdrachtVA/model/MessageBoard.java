@@ -26,6 +26,13 @@ public class MessageBoard {
     public MessageBoard() {
     }
 
+    public MessageBoard(Long id, String boardInfo, List<Message> messages, Group group) {
+        this.id = id;
+        this.boardInfo = boardInfo;
+        this.messages = messages;
+        this.group = group;
+    }
+
     public Long getId() {
         return id;
     }
@@ -50,7 +57,7 @@ public class MessageBoard {
         this.messages = messages;
     }
 
-    public void addMessagetoMessageList (Message message){this.messages.add(message);}
+    public void addMessageToMessageList (Message message){this.messages.add(message);}
 
     public Group getGroup() {
         return group;

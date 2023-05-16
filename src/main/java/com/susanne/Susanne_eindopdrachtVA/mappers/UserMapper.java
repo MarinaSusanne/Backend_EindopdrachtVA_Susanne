@@ -8,10 +8,10 @@ import com.susanne.Susanne_eindopdrachtVA.model.User;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
 
-@Component
+
 public class UserMapper {
 
-    public UserOutputDto userToUserDto(User user) {
+    public static UserOutputDto userToUserDto(User user) {
         UserOutputDto outputDto = new UserOutputDto();
         outputDto.setId(user.getId());
         outputDto.setUsername(user.getUsername());
@@ -28,7 +28,7 @@ public class UserMapper {
     }
 
 
-    public User userDtoToUser(UserInputDto inputDto) {
+    public static User userDtoToUser(UserInputDto inputDto) {
         User user = new User();
         user.setUsername(inputDto.getUsername());
         user.setPassword(inputDto.getPassword());
@@ -53,7 +53,7 @@ public class UserMapper {
     }
 
 
-    public User updateUser (User user, UserPutInputDto upUser) {
+    public static User updateUser (User user, UserPutInputDto upUser) {
 
         if (!ObjectUtils.isEmpty(upUser.getUsername())) {
             user.setUsername(upUser.getUsername());

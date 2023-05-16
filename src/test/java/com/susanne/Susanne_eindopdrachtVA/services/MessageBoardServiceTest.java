@@ -47,10 +47,10 @@ class MessageBoardServiceTest {
 
     @BeforeEach
     void setUp() {
-        message1 = new Message (1L, "Inhoud van een berichtje die heel leuk is!", LocalDate.of(2023,06,12), userLeanOuputDto1 )
-        userLeanOutputDto1 = new UserLeanOutputDto(1L, "Jantje", "Jan");
-        userleanOutputDto2 = new UserLeanOutputDto(2L, "Klaasje", "Klaas");
-        messageOutputDto1 = new MessageOutputDto(1L,"Inhoud van een berichtje", LocalDate.of(2023,08,12),)
+//        message1 = new Message (1L, "Inhoud van een berichtje die heel leuk is!", LocalDate.of(2023,06,12), userLeanOuputDto1 );
+//        userLeanOutputDto1 = new UserLeanOutputDto(1L, "Jantje", "Jan");
+//        userleanOutputDto2 = new UserLeanOutputDto(2L, "Klaasje", "Klaas");
+//        messageOutputDto1 = new MessageOutputDto(1L,"Inhoud van een berichtje", LocalDate.of(2023,08,12),)
     }
 
     @AfterEach

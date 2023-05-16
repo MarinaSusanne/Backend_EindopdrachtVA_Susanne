@@ -22,12 +22,10 @@ public class MessageBoardService {
     private final MessageBoardRepository messageBoardRepository;
     private final MessageRepository messageRepository;
 
-    private final MessageMapper messageMapper;
 
-    public MessageBoardService(MessageBoardRepository messageBoardRepository, MessageRepository messageRepository, MessageMapper messageMapper){
+    public MessageBoardService(MessageBoardRepository messageBoardRepository, MessageRepository messageRepository){
         this.messageBoardRepository = messageBoardRepository;
         this.messageRepository = messageRepository;
-        this.messageMapper = messageMapper;
     }
 
     public List<MessageOutputDto> getMessagesFromBoard(Long id){
@@ -35,7 +33,7 @@ public class MessageBoardService {
         Iterable<Message> messages = messageBoard.getMessages();
         List <MessageOutputDto> messageOutputDtos = new ArrayList<>();
         for (Message m : messages) {
-            MessageOutputDto mdto = messageMapper.messageToMessageDto(m);
+            MessageOutputDto mdto = MessageMapper.messageToMessageDto(m);
             messageOutputDtos.add(mdto);
         }
         return messageOutputDtos;

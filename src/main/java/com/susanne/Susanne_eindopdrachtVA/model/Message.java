@@ -26,6 +26,15 @@ public class Message {
     @JoinColumn(name = "message_board_id")
     private MessageBoard messageBoard;
 
+
+    public Message(Long id, String content, LocalDateTime submitDate, User user, MessageBoard messageBoard) {
+        this.id = id;
+        this.content = content;
+        this.submitDate = submitDate;
+        this.user = user;
+        this.messageBoard = messageBoard;
+    }
+
     public Message() {
     }
 
@@ -69,5 +78,8 @@ public class Message {
     public void setMessageBoard(MessageBoard messageBoard) {
         this.messageBoard = messageBoard;
     }
+
+
+
 
 }
