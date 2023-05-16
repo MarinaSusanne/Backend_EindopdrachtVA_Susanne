@@ -57,7 +57,9 @@ public class MessageBoard {
         this.messages = messages;
     }
 
-    public void addMessageToMessageList (Message message){this.messages.add(message);}
+    public void addMessageToMessageList(Message message) {
+        messages.add(message);
+    }
 
     public Group getGroup() {
         return group;

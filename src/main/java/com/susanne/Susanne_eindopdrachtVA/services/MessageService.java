@@ -58,8 +58,10 @@ public class MessageService {
         message.setUser(user);
         MessageBoard messageBoard = user.getGroup().getMessageBoard();
         message.setMessageBoard(messageBoard);
-        messageBoard.addMessageToMessageList(message);
-        messageBoardRepository.save(messageBoard);
+        if (messageBoard != null) {
+            messageBoard.addMessageToMessageList(message);
+            messageBoardRepository.save(messageBoard);
+        }
         messageRepository.save(message);
         UserLeanOutputDto userLeanOutputDto = UserMapper.userToUserLeanDto(user);
         return MessageMapper.messageToMessageDtoWithLeanUser(message, userLeanOutputDto);

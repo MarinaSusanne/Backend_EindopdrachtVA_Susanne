@@ -171,7 +171,7 @@ class MessageServiceTest {
         message5.setSubmitDate(LocalDateTime.of(2023, 6, 16, 15, 56));
         message5.setUser(user2);
 
-        messages1 = Arrays.asList(message1, message4, message3);
+        messages1 = Arrays.asList(message4, message3);
         messages2 = Arrays.asList(message2, message5);
 
         messageBoard1 = new MessageBoard();
@@ -186,7 +186,7 @@ class MessageServiceTest {
         messageBoard2.setMessages(messages2);
         messageBoard2.setGroup(group2);
 
-        //Hier leg ik in de relaties
+        //Hier leg ik in de relaties die ik niet hierboven al kan maken
         user1.setMessages(messages1);
         user1.setGroup(group1);
         user2.setMessages(messages2);
@@ -197,7 +197,7 @@ class MessageServiceTest {
         group1.setMessageBoard(messageBoard1);
         group2.setMessageBoard(messageBoard2);
 
-        message1.setMessageBoard(messageBoard1);
+//        message1.setMessageBoard(messageBoard1);
         message2.setMessageBoard(messageBoard2);
         message3.setMessageBoard(messageBoard1);
         message4.setMessageBoard(messageBoard1);
