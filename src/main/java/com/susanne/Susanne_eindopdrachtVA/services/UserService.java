@@ -48,7 +48,7 @@ public class UserService {
 
     public UserOutputDto getOneUserById(Long id) {
         User user = userRepository.findById(id).orElseThrow(() -> new RecordNotFoundException("User not found"));
-        return userMapper.userToUserDto(user);
+        return UserMapper.userToUserDto(user);
     }
 
     public List<MessageOutputDto> getUserMessagesByUserId(Long Id) {

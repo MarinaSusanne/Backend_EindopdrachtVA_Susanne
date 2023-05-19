@@ -8,7 +8,7 @@ import com.susanne.Susanne_eindopdrachtVA.model.User;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
 
-
+@Component
 public class UserMapper {
 
     public static UserOutputDto userToUserDto(User user) {

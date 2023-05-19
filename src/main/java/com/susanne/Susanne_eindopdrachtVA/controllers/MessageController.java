@@ -33,7 +33,7 @@ public class MessageController {
     @PostMapping("/{userId}")
     @ResponseBody
     public ResponseEntity<Object> createAndAssignMessage(@Valid @PathVariable Long userId, @RequestBody MessageInputDto messageInputDto) {
-        MessageOutputDto messageOutputDto = messageService.createAndAssignMessage(messageInputDto);
+        MessageOutputDto messageOutputDto = messageService.createAndAssignMessage(userId, messageInputDto);
         URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentRequest().path("/" + messageOutputDto.getId()).toUriString());
         return ResponseEntity.created(uri).body(messageOutputDto);
     }

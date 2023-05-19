@@ -30,12 +30,12 @@ public class MessageBoardController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<MessageBoardOutputDto> updateMessageBoard(@PathVariable Long id, @Valid @RequestBody MessageBoardInputDto upMessageBoard, BindingResult br) {
+    public ResponseEntity<MessageBoardOutputDto> updateMessageBoardInfo(@PathVariable Long id, @Valid @RequestBody MessageBoardInputDto upMessageBoard, BindingResult br) {
         if (br.hasErrors()) {
             String errorMessage = "Fout bij het verwerken van de request";
             throw new BadRequestException(errorMessage);
         }
-        MessageBoardOutputDto messageBoardOutputDto = messageBoardService.updateMessageBoard(id, upMessageBoard);
+        MessageBoardOutputDto messageBoardOutputDto = messageBoardService.updateMessageBoardInfo(id, upMessageBoard);
         return ResponseEntity.ok().body(messageBoardOutputDto);
     }
 

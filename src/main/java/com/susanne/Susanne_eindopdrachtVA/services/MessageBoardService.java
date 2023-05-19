@@ -39,7 +39,7 @@ public class MessageBoardService {
         return messageOutputDtos;
     }
 
-    public MessageBoardOutputDto updateMessageBoard(Long id, MessageBoardInputDto upMessageBoard){
+    public MessageBoardOutputDto updateMessageBoardInfo(Long id, MessageBoardInputDto upMessageBoard){
         Optional<MessageBoard> messageBoardOptional = messageBoardRepository.findById(id);
         if (messageBoardOptional.isPresent()){
             MessageBoard messageBoard = messageBoardOptional.get();

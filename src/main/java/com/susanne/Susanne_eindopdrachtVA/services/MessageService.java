@@ -48,20 +48,13 @@ public class MessageService {
     }
 
 
-    public MessageOutputDto createAndAssignMessage(MessageInputDto inputDto){
-        User user = userRepository.findById(inputDto.getUserId()).orElseThrow(() -> new RecordNotFoundException("User not found"));
+    public MessageOutputDto createAndAssignMessage(Long userId, MessageInputDto inputDto){
+        User user = userRepository.findById(userId).orElseThrow(() -> new RecordNotFoundException("User not found"));
         Message message = MessageMapper.messageDtoToMessage(inputDto);
-        if (message == null) {
-            throw new BadRequestException("Invalid message input");
-        }
         message.setSubmitDate(LocalDateTime.now());
         message.setUser(user);
         MessageBoard messageBoard = user.getGroup().getMessageBoard();
         message.setMessageBoard(messageBoard);
-        if (messageBoard != null) {
-            messageBoard.addMessageToMessageList(message);
-            messageBoardRepository.save(messageBoard);
-        }
         messageRepository.save(message);
         UserLeanOutputDto userLeanOutputDto = UserMapper.userToUserLeanDto(user);
         return MessageMapper.messageToMessageDtoWithLeanUser(message, userLeanOutputDto);
@@ -69,6 +62,9 @@ public class MessageService {
 
 
     public void deleteMessage(@RequestBody Long id) {
+        if (!messageRepository.existsById(id)) {
+            throw new RecordNotFoundException("Bericht niet gevonden met ID: " + id);
+        }
         messageRepository.deleteById(id);
     }
 
@@ -87,7 +83,7 @@ public class MessageService {
         }
     }
 
-    //     public List<MessageOutputDto> getMessagesByUser(Long userId) {
+//     public List<MessageOutputDto> getMessagesByUser(Long userId) {
 //         Optional<List<Message>> optionalMessages = messageRepository.findByUser_Id(userId);
 //         if (optionalMessages.isPresent()) {
 //             List<Message> messages = optionalMessages.get();

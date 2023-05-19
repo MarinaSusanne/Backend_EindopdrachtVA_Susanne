@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import org.hibernate.validator.internal.util.logging.Messages;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -55,10 +56,6 @@ public class MessageBoard {
 
     public void setMessages(List<Message> messages) {
         this.messages = messages;
-    }
-
-    public void addMessageToMessageList(Message message) {
-        messages.add(message);
     }
 
     public Group getGroup() {

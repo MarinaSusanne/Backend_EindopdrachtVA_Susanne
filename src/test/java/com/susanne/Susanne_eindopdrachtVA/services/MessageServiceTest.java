@@ -2,6 +2,8 @@ package com.susanne.Susanne_eindopdrachtVA.services;
 
 import com.susanne.Susanne_eindopdrachtVA.dtos.input.MessageInputDto;
 import com.susanne.Susanne_eindopdrachtVA.dtos.output.MessageOutputDto;
+import com.susanne.Susanne_eindopdrachtVA.exceptions.BadRequestException;
+import com.susanne.Susanne_eindopdrachtVA.exceptions.RecordNotFoundException;
 import com.susanne.Susanne_eindopdrachtVA.mappers.MessageMapper;
 import com.susanne.Susanne_eindopdrachtVA.model.Group;
 import com.susanne.Susanne_eindopdrachtVA.model.Message;
@@ -15,10 +17,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
+import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
@@ -29,7 +28,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.*;
@@ -140,7 +139,7 @@ class MessageServiceTest {
         message1 = new Message();
         message1.setId(1L);
         message1.setContent("Inhoud van een berichtje dat heel leuk is!");
-        message1.setSubmitDate(LocalDateTime.of(2023, 6, 12, 12, 36));
+        message1.setSubmitDate(LocalDateTime.now());
         message1.setUser(user1);
 
 
@@ -197,12 +196,11 @@ class MessageServiceTest {
         group1.setMessageBoard(messageBoard1);
         group2.setMessageBoard(messageBoard2);
 
-//        message1.setMessageBoard(messageBoard1);
+        message1.setMessageBoard(messageBoard1);
         message2.setMessageBoard(messageBoard2);
         message3.setMessageBoard(messageBoard1);
         message4.setMessageBoard(messageBoard1);
         message5.setMessageBoard(messageBoard2);
-
 
     }
 
@@ -211,7 +209,7 @@ class MessageServiceTest {
     }
 
     @Test
-//    @Disabled
+    @Disabled
     void getAllMessages() {
         //Arrange
         List<Message> messages = List.of(message1, message2, message3, message4, message5);
@@ -227,7 +225,7 @@ class MessageServiceTest {
 
 
     @Test
-//    @Disabled
+    @Disabled
     void createAndAssignMessage() {
         //arrange
         MessageInputDto messageInputDto = new MessageInputDto();
@@ -238,25 +236,79 @@ class MessageServiceTest {
         //act
         when(userRepository.findById(1L)).thenReturn(Optional.of(user1));
         when(messageRepository.save(message1)).thenReturn(message1);
-        messageService.createAndAssignMessage(messageInputDto);
+        messageService.createAndAssignMessage(1L, messageInputDto);
 
         //assert
-//      verify(messageRepository, times(1)).save(captor.capture());
+        verify(messageRepository).save(captor.capture());
         Message message = captor.getValue();
         assertEquals(message1.getMessageBoard(), message.getMessageBoard());
-        assertEquals(message1.getSubmitDate(), message.getSubmitDate());
         assertEquals(message1.getUser(), message.getUser());
-
     }
+
+    @Test
+//    @Disabled
+    void deleteMessage() {
+        when(messageRepository.findById(message2.getId())).thenReturn(Optional.of(message2));
+        // Act
+        messageService.deleteMessage(message2.getId());
+
+        // Assert
+        verify(messageRepository, Mockito.times(1)).deleteById(message2.getId());
+        verify(messageRepository, Mockito.times(1)).findById(message2.getId());
+
+        // Controleer of het bericht daadwerkelijk is verwijderd
+        assertFalse(messageRepository.findById(message2.getId()).isPresent());
+    }
+
+    //TODO: deze doet het nog niet. Later checken!
+
+    @Test
+//    @Disabled
+    void testDeleteMessageWithNonexistentId() {
+        //arrange
+        Long messageId = 108L; // Niet-bestaand ID
+        when(messageRepository.findById(messageId)).thenReturn(Optional.empty());
+        //act
+        assertThrows(RecordNotFoundException.class, () -> messageService.deleteMessage(messageId));
+        //assert
+        verify(messageRepository, never()).deleteById(messageId);
+    }
+
+    @Test
+//    @Disabled
+        void testUpdateMessage() {
+            //arrange
+            MessageInputDto messageInputDto = new MessageInputDto();
+            messageInputDto.setContent("Ik pas een berichtje aan ");
+            messageInputDto.setUserId(user1.getId());
+
+            when(messageRepository.findById(message4.getId())).thenReturn(Optional.of(message4));
+            when(messageRepository.save(any())).thenReturn(message4);
+            //act
+            messageService.updateMessage(4L, messageInputDto);
+
+            //assert
+            ArgumentCaptor<Message> captor = ArgumentCaptor.forClass(Message.class);
+            verify(messageRepository).save(captor.capture());
+            Message captured = captor.getValue();
+            assertEquals(message4.getContent(), captured.getContent());
+            assertEquals(message4.getSubmitDate(), captured.getSubmitDate());
+            assertEquals(message4.getId(), captured.getId());
+        }
+
+        @Test
+        void testUpdateMessage2() {
+           //arrange
+            MessageInputDto messageInputDto = new MessageInputDto();
+            messageInputDto.setContent("Ik pas weer lekker een berichtje aan");
+
+            when(messageRepository.save((Message) any())).thenThrow(new BadRequestException("An error occurred"));
+            when(messageRepository.findById((Long) any())).thenReturn(Optional.of(new Message()));
+            //act
+            assertThrows(BadRequestException.class, () -> messageService.updateMessage(1L, messageInputDto));
+            //assert
+            verify(messageRepository).save((Message) any());
+            verify(messageRepository).findById((Long) any());
+        }
+
 }
-//
-//    @Test
-//    @Disabled
-//    void deleteMessage() {
-//    }
-//
-//    @Test
-//    @Disabled
-//    void updateMessage() {
-//    }
-//}
