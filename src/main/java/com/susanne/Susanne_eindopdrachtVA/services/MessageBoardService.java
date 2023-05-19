@@ -20,12 +20,12 @@ import java.util.Optional;
 public class MessageBoardService {
 
     private final MessageBoardRepository messageBoardRepository;
-    private final MessageRepository messageRepository;
 
 
-    public MessageBoardService(MessageBoardRepository messageBoardRepository, MessageRepository messageRepository){
+
+    public MessageBoardService(MessageBoardRepository messageBoardRepository){
         this.messageBoardRepository = messageBoardRepository;
-        this.messageRepository = messageRepository;
+
     }
 
     public List<MessageOutputDto> getMessagesFromBoard(Long id){

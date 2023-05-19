@@ -31,8 +31,9 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.*;
-import static org.springframework.test.web.client.ExpectedCount.times;
+
 
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
@@ -253,8 +254,8 @@ class MessageServiceTest {
         messageService.deleteMessage(message2.getId());
 
         // Assert
-        verify(messageRepository, Mockito.times(1)).deleteById(message2.getId());
-        verify(messageRepository, Mockito.times(1)).findById(message2.getId());
+        verify(messageRepository, times(1)).deleteById(message2.getId());
+        verify(messageRepository, times(1)).findById(message2.getId());
 
         // Controleer of het bericht daadwerkelijk is verwijderd
         assertFalse(messageRepository.findById(message2.getId()).isPresent());

@@ -1,5 +1,7 @@
 package com.susanne.Susanne_eindopdrachtVA.services;
 
+import com.susanne.Susanne_eindopdrachtVA.dtos.input.MessageBoardInputDto;
+import com.susanne.Susanne_eindopdrachtVA.dtos.output.MessageBoardOutputDto;
 import com.susanne.Susanne_eindopdrachtVA.dtos.output.MessageOutputDto;
 import com.susanne.Susanne_eindopdrachtVA.dtos.output.UserLeanOutputDto;
 import com.susanne.Susanne_eindopdrachtVA.exceptions.RecordNotFoundException;
@@ -33,7 +35,9 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.when;
+
 
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
@@ -49,7 +53,7 @@ class MessageBoardServiceTest {
     MessageMapper messageMapper;
 
     @InjectMocks
-    MessageBoardService MessageBoardService;
+    MessageBoardService messageBoardService;
 
     @Captor
     ArgumentCaptor<Message> captor;
@@ -188,7 +192,7 @@ class MessageBoardServiceTest {
         group1.setMessageBoard(messageBoard1);
         group2.setMessageBoard(messageBoard2);
 
-//        message1.setMessageBoard(messageBoard1);
+        message1.setMessageBoard(messageBoard1);
         message2.setMessageBoard(messageBoard2);
         message3.setMessageBoard(messageBoard1);
         message4.setMessageBoard(messageBoard1);
@@ -210,7 +214,7 @@ class MessageBoardServiceTest {
             expectedOutput.add(messageOutputDto);
         }
               // Act
-        List<MessageOutputDto> actualOutput = MessageBoardService.getMessagesFromBoard(messageBoard1.getId());
+        List<MessageOutputDto> actualOutput = messageBoardService.getMessagesFromBoard(messageBoard1.getId());
 
         // Assert
         assertEquals(expectedOutput.size(), actualOutput.size());
@@ -225,7 +229,7 @@ class MessageBoardServiceTest {
         //arrange
         when(messageBoardRepository.findById(any())).thenReturn(Optional.empty());
         //act & assert
-        assertThrows(RecordNotFoundException.class, () -> MessageBoardService.getMessagesFromBoard(101L));
+        assertThrows(RecordNotFoundException.class, () -> messageBoardService.getMessagesFromBoard(101L));
     }
 
 
@@ -233,13 +237,35 @@ class MessageBoardServiceTest {
     @Disabled
     void updateMessageBoardInfo() {
        //arrange
+        String newBoardInfo = "Nieuwe informatie over het prikbord van groep 1";
+        MessageBoardInputDto updatedMessageBoardDto = new MessageBoardInputDto();
+        updatedMessageBoardDto.setBoardInfo(newBoardInfo);
+        when(messageBoardRepository.findById(1L)).thenReturn(Optional.of(messageBoard1));
+        when(messageBoardRepository.save(any(MessageBoard.class))).thenReturn(messageBoard1);
 
+        // act
+        MessageBoardService messageBoardService = new MessageBoardService(messageBoardRepository);
+        MessageBoardOutputDto result = messageBoardService.updateMessageBoardInfo(1L, updatedMessageBoardDto);
 
-       //act
+        //verify and assert
+        verify(messageBoardRepository, times(1)).findById(1L);
+        verify(messageBoardRepository, times(1)).save(any(MessageBoard.class));
+        assertEquals(messageBoard1.getId(), result.getId());
+        assertEquals(updatedMessageBoardDto.getBoardInfo(), result.getBoardInfo());
+    }
 
-        //assert
+    @Test
+    void testUpdateMessageBoard2() {
+        when(messageBoardRepository.save((MessageBoard) any()))
+                .thenThrow(new RecordNotFoundException("An error occurred"));
+        when(messageBoardRepository.findById((Long) any())).thenReturn(Optional.of(new MessageBoard()));
 
-
+        MessageBoardInputDto messageBoardInputDto = new MessageBoardInputDto();
+        messageBoardInputDto.setBoardInfo("Board Info");
+        assertThrows(RecordNotFoundException.class,
+                () -> messageBoardService.updateMessageBoardInfo(112L, messageBoardInputDto));
+        verify(messageBoardRepository).save((MessageBoard) any());
+        verify(messageBoardRepository).findById((Long) any());
 
     }
 }
