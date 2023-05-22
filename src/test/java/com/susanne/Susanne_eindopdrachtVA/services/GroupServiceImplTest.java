@@ -28,6 +28,7 @@ import org.modelmapper.ModelMapper;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -145,6 +146,7 @@ class GroupServiceImplTest {
         group3.setStartDate(LocalDate.of(2023, 7, 29));
         group3.setEndDate(LocalDate.of(2023, 11, 21));
         group3.setGroupInfo("userloze groep");
+        group3.setUsers((Collections.emptyList()));
 
 
         //Hier leg ik in de relaties die ik niet hierboven al kan maken
@@ -192,10 +194,8 @@ class GroupServiceImplTest {
         when(groupRepository.findById(3L)).thenReturn(Optional.of(group3));
 
         // Act & Assert & verify
-        RecordNotFoundException exception = assertThrows(RecordNotFoundException.class, () -> {
-            groupServiceImpl.getMyGroup(user4.getId());
-        });
-        verify(userRepository, times(1)).findById(user4.getId());
+        RecordNotFoundException exception = assertThrows(RecordNotFoundException.class, () -> groupServiceImpl.getUsersByGroupId(3L));
+        verify(groupRepository, times(1)).findById(3L);
         assertEquals("No users found", exception.getMessage());
     }
 
