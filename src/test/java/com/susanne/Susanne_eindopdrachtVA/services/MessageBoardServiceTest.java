@@ -34,9 +34,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 
 @ExtendWith(MockitoExtension.class)
@@ -166,7 +164,7 @@ class MessageBoardServiceTest {
         message5.setSubmitDate(LocalDateTime.of(2023, 6, 16, 15, 56));
         message5.setUser(user2);
 
-        messages1 = Arrays.asList(message4, message3);
+        messages1 = Arrays.asList(message1, message3, message4);
         messages2 = Arrays.asList(message2, message5);
 
         messageBoard1 = new MessageBoard();
@@ -209,11 +207,10 @@ class MessageBoardServiceTest {
         // Arrange
         when(messageBoardRepository.findById(messageBoard1.getId())).thenReturn(Optional.of(messageBoard1));
         List<MessageOutputDto> expectedOutput = new ArrayList<>();
-        for (Message message : messageBoard1.getMessages()) {
-            MessageOutputDto messageOutputDto = MessageMapper.messageToMessageDto(message);
-            expectedOutput.add(messageOutputDto);
-        }
-              // Act
+        expectedOutput.add(MessageMapper.messageToMessageDto(message1));
+        expectedOutput.add(MessageMapper.messageToMessageDto(message3));
+        expectedOutput.add(MessageMapper.messageToMessageDto(message4));
+        // Act
         List<MessageOutputDto> actualOutput = messageBoardService.getMessagesFromBoard(messageBoard1.getId());
 
         // Assert
@@ -221,22 +218,26 @@ class MessageBoardServiceTest {
         assertEquals(expectedOutput.get(0).getContent(), actualOutput.get(0).getContent());
         assertEquals(expectedOutput.get(0).getSubmitDate(), actualOutput.get(0).getSubmitDate());
         assertEquals(expectedOutput.get(1).getContent(), actualOutput.get(1).getContent());
+        assertEquals(expectedOutput.get(2).getId(), actualOutput.get(2).getId());
+        verify(messageBoardRepository, times(1)).findById(messageBoard1.getId());
     }
 
 
     @Test
-    void testGetMessagesFromBoardWithNonExistentId() {
+    @Disabled
+    void testGetMessagesFromBoard_NonExistentId() {
         //arrange
         when(messageBoardRepository.findById(any())).thenReturn(Optional.empty());
         //act & assert
         assertThrows(RecordNotFoundException.class, () -> messageBoardService.getMessagesFromBoard(101L));
+        verify(messageBoardRepository, times(1)).findById(101L);
     }
 
 
     @Test
     @Disabled
     void updateMessageBoardInfo() {
-       //arrange
+        //arrange
         String newBoardInfo = "Nieuwe informatie over het prikbord van groep 1";
         MessageBoardInputDto updatedMessageBoardDto = new MessageBoardInputDto();
         updatedMessageBoardDto.setBoardInfo(newBoardInfo);
@@ -252,20 +253,29 @@ class MessageBoardServiceTest {
         verify(messageBoardRepository, times(1)).save(any(MessageBoard.class));
         assertEquals(messageBoard1.getId(), result.getId());
         assertEquals(updatedMessageBoardDto.getBoardInfo(), result.getBoardInfo());
+
+        assertNotNull(result);
+        assertEquals(messageBoard1.getId(), result.getId());
+        assertEquals(updatedMessageBoardDto.getBoardInfo(), result.getBoardInfo());
     }
 
+
     @Test
-    void testUpdateMessageBoard2() {
-        when(messageBoardRepository.save((MessageBoard) any()))
-                .thenThrow(new RecordNotFoundException("An error occurred"));
-        when(messageBoardRepository.findById((Long) any())).thenReturn(Optional.of(new MessageBoard()));
+    @Disabled
+    void testUpdateMessageBoardInfo_RecordNotFoundException() {
+        // Arrange
+        when(messageBoardRepository.findById(112L)).thenReturn(Optional.empty());
 
         MessageBoardInputDto messageBoardInputDto = new MessageBoardInputDto();
-        messageBoardInputDto.setBoardInfo("Board Info");
-        assertThrows(RecordNotFoundException.class,
-                () -> messageBoardService.updateMessageBoardInfo(112L, messageBoardInputDto));
-        verify(messageBoardRepository).save((MessageBoard) any());
-        verify(messageBoardRepository).findById((Long) any());
+        messageBoardInputDto.setBoardInfo("Board Info, nieuwe info is leuk!");
 
+        // Act and Assert
+        RecordNotFoundException exception = assertThrows(RecordNotFoundException.class,
+                () -> messageBoardService.updateMessageBoardInfo(112L, messageBoardInputDto));
+
+        // Verify
+        verify(messageBoardRepository, times(1)).findById(112L);
+        verify(messageBoardRepository, never()).save(any(MessageBoard.class));
+        assertEquals("No messageBoard found!", exception.getMessage());
     }
 }

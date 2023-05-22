@@ -1,5 +1,9 @@
 package com.susanne.Susanne_eindopdrachtVA.services;
 
+import com.susanne.Susanne_eindopdrachtVA.dtos.output.GroupOutputDto;
+import com.susanne.Susanne_eindopdrachtVA.dtos.output.UserLeanOutputDto;
+import com.susanne.Susanne_eindopdrachtVA.exceptions.RecordNotFoundException;
+import com.susanne.Susanne_eindopdrachtVA.mappers.UserMapper;
 import com.susanne.Susanne_eindopdrachtVA.model.Group;
 import com.susanne.Susanne_eindopdrachtVA.model.Message;
 import com.susanne.Susanne_eindopdrachtVA.model.MessageBoard;
@@ -25,8 +29,13 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.when;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.times;
 
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
@@ -34,13 +43,10 @@ class GroupServiceImplTest {
 
     @Mock
     GroupRepository groupRepository;
-
     @Mock
     ModelMapper modelMapper;
-
     @Mock
     UserRepository userRepository;
-
     @Mock
     MessageBoardRepository messageBoardRepository;
 
@@ -49,24 +55,15 @@ class GroupServiceImplTest {
 
     @Captor
     ArgumentCaptor<Message> captor;
-    Message message1;
-    Message message2;
-    Message message3;
-    Message message4;
-    Message message5;
-    List<Message> messages1;
-    List<Message> messages2;
-    List<Message> messages3;
     List<User> usersList1;
     List<User> usersList2;
-    MessageBoard messageBoard1;
-    MessageBoard messageBoard2;
     User user1;
     User user2;
     User user3;
+    User user4;
     Group group1;
-    Group group2;
-
+     Group group2;
+    Group group3;
 
     @BeforeEach
     void setUp() {
@@ -110,6 +107,22 @@ class GroupServiceImplTest {
         user3.setCity("Den Haag");
         user3.setDateOfBirth(LocalDate.of(1995, 11, 30));
 
+        user4 = new User();
+        user4.setId(4L);
+        user4.setUsername("JanJansen");
+        user4.setEmail("janjansen@example.com");
+        user4.setPassword("wachtwoord123");
+        user4.setFirstName("Jan");
+        user4.setLastName("Jansen");
+        user4.setStreetName("Voorbeeldstraat");
+        user4.setHouseNumber("10");
+        user4.setZipcode("1234 AB");
+        user4.setCity("Amsterdam");
+        user4.setDateOfBirth(LocalDate.of(1985, 9, 20));
+
+        usersList1 = Arrays.asList(user1, user3);
+        usersList2 = Arrays.asList(user2);
+
         group1 = new Group();
         group1.setId(1L);
         group1.setGroupName("Naam van Groep");
@@ -117,9 +130,6 @@ class GroupServiceImplTest {
         group1.setEndDate(LocalDate.of(2023, 12, 22));
         group1.setGroupInfo("groepinfo die vet leuk is");
         group1.setUsers(usersList1);
-
-        usersList1 = Arrays.asList(user1, user3);
-        usersList2 = Arrays.asList(user2);
 
         group2 = new Group();
         group2.setId(2L);
@@ -129,26 +139,18 @@ class GroupServiceImplTest {
         group2.setGroupInfo("groepinfo die nog veel leuker is");
         group2.setUsers(usersList2);
 
-        messageBoard1 = new MessageBoard();
-        messageBoard1.setId(1L);
-        messageBoard1.setBoardInfo("Dit is info over het prikbord van groep 1");
-        messageBoard1.setMessages(messages1);
-        messageBoard1.setGroup(group1);
+        group3 = new Group();
+        group3.setId(3L);
+        group3.setGroupName("Naam van Groep 3");
+        group3.setStartDate(LocalDate.of(2023, 7, 29));
+        group3.setEndDate(LocalDate.of(2023, 11, 21));
+        group3.setGroupInfo("userloze groep");
 
-        messageBoard2 = new MessageBoard();
-        messageBoard2.setId(2L);
-        messageBoard2.setBoardInfo("Dit is info over het prikbord van groep 2");
-        messageBoard2.setMessages(messages2);
-        messageBoard2.setGroup(group2);
 
         //Hier leg ik in de relaties die ik niet hierboven al kan maken
         user1.setGroup(group1);
         user2.setGroup(group2);
         user3.setGroup(group1);
-
-        group1.setMessageBoard(messageBoard1);
-        group2.setMessageBoard(messageBoard2);
-
     }
 
     @AfterEach
@@ -158,16 +160,85 @@ class GroupServiceImplTest {
     @Test
     @Disabled
     void getUsersByGroupId() {
+        when(groupRepository.findById(1L)).thenReturn(Optional.of(group1));
+        List<User> testUsers = group1.getUsers();
+        UserLeanOutputDto testLean1 = UserMapper.userToUserLeanDto(testUsers.get(0));
+        UserLeanOutputDto testLean2 = UserMapper.userToUserLeanDto(testUsers.get(1));
+
+        // Assert
+        List<UserLeanOutputDto> result = groupServiceImpl.getUsersByGroupId(group1.getId());
+
+        assertEquals(testUsers.size(), result.size());
+        assertEquals(testLean1.getId(), result.get(0).getId());
+        assertEquals(testLean1.getFirstName(), result.get(0).getFirstName());
+        assertEquals(testLean2.getId(), result.get(1).getId());
+        assertEquals(testLean2.getLastName(), result.get(1).getLastName());
+        }
+
+    @Test
+//    @Disabled
+    void testGetUsersByGroupId_NoGroupFound() {
+        // Arrange
+        when(groupRepository.findById(101L)).thenReturn(Optional.empty());
+        //act & assert
+        RecordNotFoundException exception = assertThrows(RecordNotFoundException.class, () -> groupServiceImpl.getUsersByGroupId(101L));
+        verify(groupRepository, times(1)).findById(101L);
+        assertEquals("No group found", exception.getMessage());
     }
+
+    @Test
+    void testGetUsersByGroupId_NoUsersFound() {
+        // Arrange
+        when(groupRepository.findById(3L)).thenReturn(Optional.of(group3));
+
+        // Act & Assert & verify
+        RecordNotFoundException exception = assertThrows(RecordNotFoundException.class, () -> {
+            groupServiceImpl.getMyGroup(user4.getId());
+        });
+        verify(userRepository, times(1)).findById(user4.getId());
+        assertEquals("No users found", exception.getMessage());
+    }
+
+
 
     @Test
     @Disabled
     void getMyGroup() {
+        //arrange
+        when(userRepository.findById(1L)).thenReturn(Optional.of(user1));
+        Group testGroup = user1.getGroup();
+
+        // Act
+        GroupOutputDto result = groupServiceImpl.getMyGroup(1L);
+        when(modelMapper.map(testGroup, GroupOutputDto.class)).thenReturn(new GroupOutputDto());
+
+        // Assert
+        assertEquals(testGroup.getId(), result.getId());
+        assertEquals(testGroup.getGroupName(), result.getGroupName());
+        verify(userRepository).findById(1L);
+        verify(modelMapper).map(testGroup, GroupOutputDto.class);
     }
 
     @Test
     @Disabled
+    void testGetMyGroup_UserNotInGroup() {
+        // Arrange
+        when(userRepository.findById(user4.getId())).thenReturn(Optional.of(user4));
+
+        // Act & Assert & verify
+        RecordNotFoundException exception = assertThrows(RecordNotFoundException.class, () -> {
+            groupServiceImpl.getMyGroup(user4.getId());
+        });
+        verify(userRepository, times(1)).findById(user4.getId());
+        assertEquals("User is not part of a group", exception.getMessage());
+    }
+
+
+    @Test
+    @Disabled
     void getMyActiveGroups() {
+
+
     }
 
     @Test

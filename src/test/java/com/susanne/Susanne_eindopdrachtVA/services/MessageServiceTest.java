@@ -173,6 +173,7 @@ class MessageServiceTest {
 
         messages1 = Arrays.asList(message4, message3);
         messages2 = Arrays.asList(message2, message5);
+        messages3 = Arrays.asList(message1);
 
         messageBoard1 = new MessageBoard();
         messageBoard1.setId(1L);
@@ -222,6 +223,8 @@ class MessageServiceTest {
         // Assert
         assertEquals(message1.getContent(), result.get(0).getContent());
         assertEquals(message2.getSubmitDate(), result.get(1).getSubmitDate());
+        assertEquals(message3.getId(), result.get(2).getId());
+        assertEquals(message5.getContent(), result.get(4).getContent());
     }
 
 
@@ -249,26 +252,24 @@ class MessageServiceTest {
     @Test
 //    @Disabled
     void deleteMessage() {
-        when(messageRepository.findById(message2.getId())).thenReturn(Optional.of(message2));
+        when(messageRepository.existsById(message2.getId())).thenReturn(true);
         // Act
-        messageService.deleteMessage(message2.getId());
+        messageService.deleteMessage(2L);
 
         // Assert
         verify(messageRepository, times(1)).deleteById(message2.getId());
-        verify(messageRepository, times(1)).findById(message2.getId());
+        verify(messageRepository, times(1)).existsById(2L);
 
         // Controleer of het bericht daadwerkelijk is verwijderd
         assertFalse(messageRepository.findById(message2.getId()).isPresent());
     }
-
-    //TODO: deze doet het nog niet. Later checken!
 
     @Test
 //    @Disabled
     void testDeleteMessageWithNonexistentId() {
         //arrange
         Long messageId = 108L; // Niet-bestaand ID
-        when(messageRepository.findById(messageId)).thenReturn(Optional.empty());
+        when(messageRepository.existsById(messageId)).thenReturn(false);
         //act
         assertThrows(RecordNotFoundException.class, () -> messageService.deleteMessage(messageId));
         //assert

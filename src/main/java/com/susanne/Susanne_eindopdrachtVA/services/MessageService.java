@@ -1,21 +1,16 @@
 package com.susanne.Susanne_eindopdrachtVA.services;
-
 import com.susanne.Susanne_eindopdrachtVA.dtos.input.MessageInputDto;
 import com.susanne.Susanne_eindopdrachtVA.dtos.output.MessageOutputDto;
 import com.susanne.Susanne_eindopdrachtVA.dtos.output.UserLeanOutputDto;
-import com.susanne.Susanne_eindopdrachtVA.exceptions.BadRequestException;
 import com.susanne.Susanne_eindopdrachtVA.exceptions.RecordNotFoundException;
 import com.susanne.Susanne_eindopdrachtVA.mappers.MessageMapper;
 import com.susanne.Susanne_eindopdrachtVA.mappers.UserMapper;
 import com.susanne.Susanne_eindopdrachtVA.model.Message;
 import com.susanne.Susanne_eindopdrachtVA.model.MessageBoard;
 import com.susanne.Susanne_eindopdrachtVA.model.User;
-import com.susanne.Susanne_eindopdrachtVA.repository.MessageBoardRepository;
 import com.susanne.Susanne_eindopdrachtVA.repository.MessageRepository;
 import com.susanne.Susanne_eindopdrachtVA.repository.UserRepository;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -26,29 +21,24 @@ import java.util.Optional;
 public class MessageService {
 
     private final MessageRepository messageRepository;
-
-    private final MessageBoardRepository messageBoardRepository;
-
     private final UserRepository userRepository;
 
-    public MessageService(MessageRepository messageRepository, MessageBoardRepository messageBoardRepository, UserRepository userRepository) {
+    public MessageService(MessageRepository messageRepository, UserRepository userRepository) {
         this.messageRepository = messageRepository;
-        this.messageBoardRepository = messageBoardRepository;
         this.userRepository = userRepository;
     }
 
-    public List<MessageOutputDto> getAllMessages(){
+    public List<MessageOutputDto> getAllMessages() {
         Iterable<Message> messages = messageRepository.findAll();
-        List <MessageOutputDto> messageOutputDtos = new ArrayList<>();
+        List<MessageOutputDto> messageOutputDtos = new ArrayList<>();
         for (Message m : messages) {
-        MessageOutputDto mdto = MessageMapper.messageToMessageDto(m);
-        messageOutputDtos.add(mdto);
+            MessageOutputDto mdto = MessageMapper.messageToMessageDto(m);
+            messageOutputDtos.add(mdto);
         }
         return messageOutputDtos;
     }
 
-
-    public MessageOutputDto createAndAssignMessage(Long userId, MessageInputDto inputDto){
+    public MessageOutputDto createAndAssignMessage(Long userId, MessageInputDto inputDto) {
         User user = userRepository.findById(userId).orElseThrow(() -> new RecordNotFoundException("User not found"));
         Message message = MessageMapper.messageDtoToMessage(inputDto);
         message.setSubmitDate(LocalDateTime.now());
@@ -61,40 +51,25 @@ public class MessageService {
     }
 
 
-    public void deleteMessage(@RequestBody Long id) {
+    public void deleteMessage(Long id) {
         if (!messageRepository.existsById(id)) {
             throw new RecordNotFoundException("Bericht niet gevonden met ID: " + id);
         }
         messageRepository.deleteById(id);
     }
 
-    public MessageOutputDto updateMessage(Long id, MessageInputDto upMessage){
+    public MessageOutputDto updateMessage(Long id, MessageInputDto upMessage) {
         Optional<Message> messageOptional = messageRepository.findById(id);
-        if (messageOptional.isPresent()){
+        if (messageOptional.isPresent()) {
             Message message = messageOptional.get();
             message.setContent(upMessage.getContent());
             message.setSubmitDate(LocalDateTime.now());
             Message updatedMessage = messageRepository.save(message);
             return MessageMapper.messageToMessageDto(updatedMessage);
 
-        }
-        else{
+        } else {
             throw new RecordNotFoundException("No message found!");
         }
     }
-
-//     public List<MessageOutputDto> getMessagesByUser(Long userId) {
-//         Optional<List<Message>> optionalMessages = messageRepository.findByUser_Id(userId);
-//         if (optionalMessages.isPresent()) {
-//             List<Message> messages = optionalMessages.get();
-//             List<MessageOutputDto> messageOutputDtos = new ArrayList<>();
-//             for (Message m : messages) {
-//                 MessageOutputDto mdto = messageMapper.messageToMessageDto(m);
-//                 messageOutputDtos.add(mdto);
-//             }
-//             return messageOutputDtos;
-//         }
-//         throw new RecordNotFoundException("User not found");
-//     }
-
 }
+

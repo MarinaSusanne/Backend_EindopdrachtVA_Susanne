@@ -64,8 +64,7 @@ public class GroupServiceImpl implements GroupService {
         if (group == null) {
             throw new RecordNotFoundException("User is not part of a group");
         }
-        GroupOutputDto groupOutputDto = modelMapper.map(group, GroupOutputDto.class);
-        return groupOutputDto;
+        return modelMapper.map(group, GroupOutputDto.class);
     }
 
     @Override

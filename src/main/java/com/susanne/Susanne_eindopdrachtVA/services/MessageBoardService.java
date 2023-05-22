@@ -1,5 +1,4 @@
 package com.susanne.Susanne_eindopdrachtVA.services;
-
 import com.susanne.Susanne_eindopdrachtVA.dtos.input.MessageBoardInputDto;
 import com.susanne.Susanne_eindopdrachtVA.dtos.output.MessageBoardOutputDto;
 import com.susanne.Susanne_eindopdrachtVA.dtos.output.MessageOutputDto;
@@ -8,10 +7,7 @@ import com.susanne.Susanne_eindopdrachtVA.mappers.MessageMapper;
 import com.susanne.Susanne_eindopdrachtVA.model.Message;
 import com.susanne.Susanne_eindopdrachtVA.model.MessageBoard;
 import com.susanne.Susanne_eindopdrachtVA.repository.MessageBoardRepository;
-import com.susanne.Susanne_eindopdrachtVA.repository.MessageRepository;
 import org.springframework.stereotype.Service;
-
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -20,7 +16,6 @@ import java.util.Optional;
 public class MessageBoardService {
 
     private final MessageBoardRepository messageBoardRepository;
-
 
 
     public MessageBoardService(MessageBoardRepository messageBoardRepository){
@@ -36,8 +31,7 @@ public class MessageBoardService {
             MessageOutputDto mdto = MessageMapper.messageToMessageDto(m);
             messageOutputDtos.add(mdto);
         }
-        return messageOutputDtos;
-    }
+        return messageOutputDtos;}
 
     public MessageBoardOutputDto updateMessageBoardInfo(Long id, MessageBoardInputDto upMessageBoard){
         Optional<MessageBoard> messageBoardOptional = messageBoardRepository.findById(id);
@@ -56,6 +50,4 @@ public class MessageBoardService {
             throw new RecordNotFoundException("No messageBoard found!");
         }
     }
-
-
 }
