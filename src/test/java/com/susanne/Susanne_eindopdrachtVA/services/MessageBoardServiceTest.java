@@ -202,7 +202,7 @@ class MessageBoardServiceTest {
     }
 
     @Test
-    @Disabled
+//    @Disabled
     void getMessagesFromBoard() {
         // Arrange
         when(messageBoardRepository.findById(messageBoard1.getId())).thenReturn(Optional.of(messageBoard1));
@@ -224,7 +224,7 @@ class MessageBoardServiceTest {
 
 
     @Test
-    @Disabled
+//    @Disabled
     void testGetMessagesFromBoard_NonExistentId() {
         //arrange
         when(messageBoardRepository.findById(any())).thenReturn(Optional.empty());
@@ -235,7 +235,7 @@ class MessageBoardServiceTest {
 
 
     @Test
-    @Disabled
+//    @Disabled
     void updateMessageBoardInfo() {
         //arrange
         String newBoardInfo = "Nieuwe informatie over het prikbord van groep 1";
@@ -261,7 +261,7 @@ class MessageBoardServiceTest {
 
 
     @Test
-    @Disabled
+//    @Disabled
     void testUpdateMessageBoardInfo_RecordNotFoundException() {
         // Arrange
         when(messageBoardRepository.findById(112L)).thenReturn(Optional.empty());

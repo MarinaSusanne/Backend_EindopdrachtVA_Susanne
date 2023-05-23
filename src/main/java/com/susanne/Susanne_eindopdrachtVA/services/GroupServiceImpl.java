@@ -14,6 +14,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Import;
 import org.springframework.stereotype.Service;
 
+import java.sql.SQLOutput;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -64,29 +65,43 @@ public class GroupServiceImpl implements GroupService {
         if (group == null) {
             throw new RecordNotFoundException("User is not part of a group");
         }
-        return modelMapper.map(group, GroupOutputDto.class);
+        GroupOutputDto groupOutputDto = modelMapper.map(group, GroupOutputDto.class);
+//        List<User> userList = group.getUsers();
+//        List<UserLeanOutputDto> userLeanOutputDtos = new ArrayList<>();
+//        for (User u : userList) {
+//            userLeanOutputDtos.add(UserMapper.userToUserLeanDto(u));
+//        }
+//        groupOutputDto.setUserLeanOutputDto(userLeanOutputDtos);
+        return groupOutputDto;
     }
 
     @Override
     public List<GroupOutputDto> getMyActiveGroups() {
         List<Group> groups = groupRepository.findAll();
         List<GroupOutputDto> activeGroups = new ArrayList<>();
-
         LocalDate currentDate = LocalDate.now();
+
         for (Group g : groups) {
             LocalDate startDate = g.getStartDate();
             LocalDate endDate = g.getEndDate();
             if (startDate != null && endDate != null &&
                     currentDate.isAfter(startDate) && currentDate.isBefore(endDate)) {
                 GroupOutputDto groupOutputDto = modelMapper.map(g, GroupOutputDto.class);
+//                System.out.println(groupOutputDto);
+//                List<User> userList = g.getUsers();
+//                List<UserLeanOutputDto> userLeanOutputDtos = new ArrayList<>();
+//                for (User u : userList) {
+//                     userLeanOutputDtos.add(UserMapper.userToUserLeanDto(u));
+//                    }
+//                groupOutputDto.setUserLeanOutputDto(userLeanOutputDtos);
                 activeGroups.add(groupOutputDto);
+                }
             }
+            if (activeGroups.isEmpty()) {
+                throw new RecordNotFoundException("No active groups found");
+            }
+            return activeGroups;
         }
-        if (activeGroups.isEmpty()) {
-            throw new RecordNotFoundException("No active groups found");
-        }
-        return activeGroups;
-    }
 
     @Override
     public GroupOutputDto getSpecificGroup(Long id) {

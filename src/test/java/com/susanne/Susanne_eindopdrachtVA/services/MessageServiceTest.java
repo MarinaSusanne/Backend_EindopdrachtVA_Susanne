@@ -41,13 +41,6 @@ class MessageServiceTest {
 
     @Mock
     MessageRepository messageRepository;
-
-    @Mock
-    MessageMapper messageMapper;
-
-    @Mock
-    MessageBoardRepository messageBoardRepository;
-
     @Mock
     UserRepository userRepository;
 
@@ -211,7 +204,7 @@ class MessageServiceTest {
     }
 
     @Test
-    @Disabled
+//    @Disabled
     void getAllMessages() {
         //Arrange
         List<Message> messages = List.of(message1, message2, message3, message4, message5);
@@ -229,7 +222,7 @@ class MessageServiceTest {
 
 
     @Test
-    @Disabled
+//    @Disabled
     void createAndAssignMessage() {
         //arrange
         MessageInputDto messageInputDto = new MessageInputDto();

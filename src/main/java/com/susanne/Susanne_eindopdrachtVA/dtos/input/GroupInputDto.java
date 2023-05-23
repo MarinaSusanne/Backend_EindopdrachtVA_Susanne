@@ -16,7 +16,6 @@ public class GroupInputDto {
     @NotNull
     private String groupName;
 
-    @Future
     private LocalDate startDate;
 
     @Future

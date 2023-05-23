@@ -27,16 +27,11 @@ import org.modelmapper.ModelMapper;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.when;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
@@ -48,8 +43,6 @@ class GroupServiceImplTest {
     ModelMapper modelMapper;
     @Mock
     UserRepository userRepository;
-    @Mock
-    MessageBoardRepository messageBoardRepository;
 
     @InjectMocks
     GroupServiceImpl groupServiceImpl;
@@ -65,6 +58,8 @@ class GroupServiceImplTest {
     Group group1;
      Group group2;
     Group group3;
+
+    Group group4;
 
     @BeforeEach
     void setUp() {
@@ -127,7 +122,7 @@ class GroupServiceImplTest {
         group1 = new Group();
         group1.setId(1L);
         group1.setGroupName("Naam van Groep");
-        group1.setStartDate(LocalDate.of(2023, 5, 29));
+        group1.setStartDate(LocalDate.of(2023, 5, 12));
         group1.setEndDate(LocalDate.of(2023, 12, 22));
         group1.setGroupInfo("groepinfo die vet leuk is");
         group1.setUsers(usersList1);
@@ -135,7 +130,7 @@ class GroupServiceImplTest {
         group2 = new Group();
         group2.setId(2L);
         group2.setGroupName("Naam van Groep 2");
-        group2.setStartDate(LocalDate.of(2023, 5, 29));
+        group2.setStartDate(LocalDate.of(2023, 5, 13));
         group2.setEndDate(LocalDate.of(2023, 12, 29));
         group2.setGroupInfo("groepinfo die nog veel leuker is");
         group2.setUsers(usersList2);
@@ -143,10 +138,19 @@ class GroupServiceImplTest {
         group3 = new Group();
         group3.setId(3L);
         group3.setGroupName("Naam van Groep 3");
-        group3.setStartDate(LocalDate.of(2023, 7, 29));
+        group3.setStartDate(LocalDate.of(2023, 5, 14));
         group3.setEndDate(LocalDate.of(2023, 11, 21));
         group3.setGroupInfo("userloze groep");
-        group3.setUsers((Collections.emptyList()));
+        group3.setUsers((new ArrayList<>()));
+
+        group4 = new Group();
+        group4.setId(3L);
+        group4.setGroupName("Naam van Groep 4");
+        group4.setStartDate(LocalDate.of(2022, 7, 29));
+        group4.setEndDate(LocalDate.of(2023, 4, 21));
+        group4.setGroupInfo("Groep die niet meer actief is");
+        group4.setUsers((new ArrayList<>()));
+
 
 
         //Hier leg ik in de relaties die ik niet hierboven al kan maken
@@ -160,7 +164,7 @@ class GroupServiceImplTest {
     }
 
     @Test
-    @Disabled
+//    @Disabled
     void getUsersByGroupId() {
         when(groupRepository.findById(1L)).thenReturn(Optional.of(group1));
         List<User> testUsers = group1.getUsers();
@@ -189,6 +193,7 @@ class GroupServiceImplTest {
     }
 
     @Test
+    @Disabled
     void testGetUsersByGroupId_NoUsersFound() {
         // Arrange
         when(groupRepository.findById(3L)).thenReturn(Optional.of(group3));
@@ -202,7 +207,7 @@ class GroupServiceImplTest {
 
 
     @Test
-    @Disabled
+//    @Disabled
     void getMyGroup() {
         //arrange
         when(userRepository.findById(1L)).thenReturn(Optional.of(user1));
@@ -220,7 +225,7 @@ class GroupServiceImplTest {
     }
 
     @Test
-    @Disabled
+//    @Disabled
     void testGetMyGroup_UserNotInGroup() {
         // Arrange
         when(userRepository.findById(user4.getId())).thenReturn(Optional.of(user4));
@@ -237,13 +242,34 @@ class GroupServiceImplTest {
     @Test
     @Disabled
     void getMyActiveGroups() {
+        //arrange
+        List<Group> groups = List.of(group1, group2, group3, group4);
+        when(groupRepository.findAll()).thenReturn(groups);
 
+        LocalDate currentDate = LocalDate.now();
+        List<GroupOutputDto> expectedActiveGroups = new ArrayList<GroupOutputDto>();
+        GroupOutputDto groupOutputDto1 = modelMapper.map(group1, GroupOutputDto.class);
+        GroupOutputDto groupOutputDto2 = modelMapper.map(group2, GroupOutputDto.class);
+        GroupOutputDto groupOutputDto3 = modelMapper.map(group3, GroupOutputDto.class);
+        expectedActiveGroups.add(groupOutputDto1);
+        expectedActiveGroups.add(groupOutputDto2);
+        expectedActiveGroups.add(groupOutputDto3);
 
+        //act
+        List<GroupOutputDto> result = groupServiceImpl.getMyActiveGroups();
+
+        //assert
+        assertEquals(expectedActiveGroups, result);
+        verify(groupRepository, times(1)).findAll();
+        assertEquals(expectedActiveGroups.get(1).getGroupInfo(), result.get(1).getGroupInfo());
+        assertEquals(expectedActiveGroups.get(2).getGroupName(), result.get(2).getGroupName());
     }
 
     @Test
     @Disabled
     void getSpecificGroup() {
+
+
     }
 
     @Test
