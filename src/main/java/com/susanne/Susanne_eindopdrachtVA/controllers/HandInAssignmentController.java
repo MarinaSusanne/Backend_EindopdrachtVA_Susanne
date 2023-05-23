@@ -19,11 +19,12 @@ public class HandInAssignmentController {
     private final HandInAssignmentService handInAssignmentService;
 
 
-
     public HandInAssignmentController(HandInAssignmentService handInAssignmentService) {
         this.handInAssignmentService = handInAssignmentService;
-
     }
+
+
+
 
     @GetMapping("/{userId}")
     public ResponseEntity<List<HandInAssignmentOutputDto>> getAssignmentsByUserId(@PathVariable Long userId) {
@@ -38,4 +39,11 @@ public class HandInAssignmentController {
         return ResponseEntity.created(uri).body(handInAssignmentOutputDto);
     }
 
+
+
+
+
 }
+
+
+
