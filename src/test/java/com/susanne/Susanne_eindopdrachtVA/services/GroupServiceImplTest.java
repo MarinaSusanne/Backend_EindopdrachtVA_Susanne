@@ -58,8 +58,9 @@ class GroupServiceImplTest {
     Group group1;
      Group group2;
     Group group3;
-
     Group group4;
+
+    Group group5;
 
     @BeforeEach
     void setUp() {
@@ -151,6 +152,13 @@ class GroupServiceImplTest {
         group4.setGroupInfo("Groep die niet meer actief is");
         group4.setUsers((new ArrayList<>()));
 
+        group5 = new Group();
+        group5.setId(3L);
+        group5.setGroupName("Naam van Groep 5");
+        group5.setStartDate(LocalDate.of(2022, 8, 29));
+        group5.setEndDate(LocalDate.of(2023, 5, 21));
+        group5.setGroupInfo("Nog een groep die niet meer actief is");
+        group5.setUsers((new ArrayList<>()));
 
 
         //Hier leg ik in de relaties die ik niet hierboven al kan maken
@@ -164,7 +172,7 @@ class GroupServiceImplTest {
     }
 
     @Test
-//    @Disabled
+    @Disabled
     void getUsersByGroupId() {
         when(groupRepository.findById(1L)).thenReturn(Optional.of(group1));
         List<User> testUsers = group1.getUsers();
@@ -182,7 +190,7 @@ class GroupServiceImplTest {
         }
 
     @Test
-//    @Disabled
+    @Disabled
     void testGetUsersByGroupId_NoGroupFound() {
         // Arrange
         when(groupRepository.findById(101L)).thenReturn(Optional.empty());
@@ -207,7 +215,7 @@ class GroupServiceImplTest {
 
 
     @Test
-//    @Disabled
+    @Disabled
     void getMyGroup() {
         //arrange
         when(userRepository.findById(1L)).thenReturn(Optional.of(user1));
@@ -232,7 +240,7 @@ class GroupServiceImplTest {
     }
 
     @Test
-//    @Disabled
+    @Disabled
     void testGetMyGroup_UserNotInGroup() {
         // Arrange
         when(userRepository.findById(user4.getId())).thenReturn(Optional.of(user4));
@@ -296,15 +304,72 @@ class GroupServiceImplTest {
         }
 
 
-        @Test
-         @Disabled
-            void getSpecificGroup() {
+    @Test
+    @Disabled
+    void getMyActiveGroups_NoActiveGroups() {
+        //arrange
+        List<Group> groups = List.of(group4, group5);
+        when(groupRepository.findAll()).thenReturn(groups);
+        LocalDate currentDate = LocalDate.now();
+        List<GroupOutputDto> expectedActiveGroups = new ArrayList<>();
+
+        //act and assert
+        RecordNotFoundException exception =  assertThrows(RecordNotFoundException.class, () -> {
+            groupServiceImpl.getMyActiveGroups();
+        });
+
+        verify(groupRepository, times(1)).findAll();
+        assertEquals("No active groups found", exception.getMessage());
+        verifyNoMoreInteractions(groupRepository);
+    }
 
 
+    @Test
+    @Disabled
+        void getSpecificGroup() {
+            //arrange
+            when(groupRepository.findById(group1.getId())).thenReturn(Optional.of(group1));
+            GroupOutputDto groupOutputDto = new GroupOutputDto();
+            groupOutputDto.setGroupInfo(group1.getGroupInfo());
+            groupOutputDto.setGroupName(group1.getGroupName());
+            groupOutputDto.setId(group1.getId());
+            groupOutputDto.setStartDate(group1.getStartDate());
+
+            List<UserLeanOutputDto> userLeanOutputDtos = new ArrayList<>();
+            userLeanOutputDtos.add(UserMapper.userToUserLeanDto(user1));
+            userLeanOutputDtos.add(UserMapper.userToUserLeanDto(user3));
+           userLeanOutputDtos.add(UserMapper.userToUserLeanDto(user4));
+            groupOutputDto.setUserLeanOutputDto(userLeanOutputDtos);
+
+            when(modelMapper.map(group1, GroupOutputDto.class)).thenReturn(groupOutputDto);
+
+            // Act
+            GroupOutputDto result = groupServiceImpl.getSpecificGroup(group1.getId());
+
+            // Assert
+            assertEquals(groupOutputDto.getId(), result.getId());
+            assertEquals(groupOutputDto.getGroupName(), result.getGroupName());
+            assertEquals(groupOutputDto.getGroupInfo(), result.getGroupInfo());
+            assertEquals(groupOutputDto.getUserLeanOutputDto().get(0).getLastName(), result.getUserLeanOutputDto().get(0).getLastName());
+            verify(modelMapper).map(group1, GroupOutputDto.class);
+            assertFalse(groupOutputDto.getUserLeanOutputDto().contains(UserMapper.userToUserLeanDto(user4)));
     }
 
     @Test
-     @Disabled
+    @Disabled
+    void getSpecificGroup_NoGroupFound() {
+        //arrange
+        when(groupRepository.findById(any())).thenReturn(Optional.empty());
+
+        //act and assert
+        RecordNotFoundException exception =  assertThrows(RecordNotFoundException.class, ()
+                -> groupServiceImpl.getSpecificGroup(101L));
+        verify(groupRepository, times(1)).findById(101L);
+        assertEquals("No Group found with this ID", exception.getMessage());
+    }
+
+    @Test
+    @Disabled
          void createGroup() {
     }
 }

@@ -71,6 +71,9 @@ public class GroupServiceImpl implements GroupService {
         return createGroupOutputDto(group);
     }
 
+
+
+
     @Override
     @Transactional
     public List<GroupOutputDto> getMyActiveGroups() {
@@ -94,6 +97,14 @@ public class GroupServiceImpl implements GroupService {
         return activeGroups;
     }
 
+    @Override
+    @Transactional
+    public GroupOutputDto getSpecificGroup(Long id) {
+        Group group = groupRepository.findById(id)
+                .orElseThrow(() -> new RecordNotFoundException("No Group found with this ID"));
+        return createGroupOutputDto(group);
+    }
+
     private GroupOutputDto createGroupOutputDto(Group group) {
         GroupOutputDto groupOutputDto = modelMapper.map(group, GroupOutputDto.class);
         List<User> userList = group.getUsers();
@@ -106,13 +117,7 @@ public class GroupServiceImpl implements GroupService {
     }
 
 
-    @Override
-    public GroupOutputDto getSpecificGroup(Long id) {
-        Group group = groupRepository.findById(id)
-                .orElseThrow(() -> new RecordNotFoundException("No Group found with this ID"));
-        GroupOutputDto groupOutputDto = modelMapper.map(group, GroupOutputDto.class);
-        return groupOutputDto;
-    }
+
 
 
     @Override
