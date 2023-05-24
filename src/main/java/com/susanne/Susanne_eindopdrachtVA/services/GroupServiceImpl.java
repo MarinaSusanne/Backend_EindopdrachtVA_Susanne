@@ -10,6 +10,7 @@ import com.susanne.Susanne_eindopdrachtVA.model.*;
 import com.susanne.Susanne_eindopdrachtVA.repository.GroupRepository;
 import com.susanne.Susanne_eindopdrachtVA.repository.MessageBoardRepository;
 import com.susanne.Susanne_eindopdrachtVA.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Import;
 import org.springframework.stereotype.Service;
@@ -41,6 +42,7 @@ public class GroupServiceImpl implements GroupService {
 
 
     @Override
+    @Transactional
     public List<UserLeanOutputDto> getUsersByGroupId(Long id) {
         Group group = groupRepository.findById(id)
                 .orElseThrow(() -> new RecordNotFoundException("No group found"));
@@ -58,6 +60,7 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
+    @Transactional
     public GroupOutputDto getMyGroup(Long id) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new RecordNotFoundException("No user found"));
@@ -65,17 +68,11 @@ public class GroupServiceImpl implements GroupService {
         if (group == null) {
             throw new RecordNotFoundException("User is not part of a group");
         }
-        GroupOutputDto groupOutputDto = modelMapper.map(group, GroupOutputDto.class);
-//        List<User> userList = group.getUsers();
-//        List<UserLeanOutputDto> userLeanOutputDtos = new ArrayList<>();
-//        for (User u : userList) {
-//            userLeanOutputDtos.add(UserMapper.userToUserLeanDto(u));
-//        }
-//        groupOutputDto.setUserLeanOutputDto(userLeanOutputDtos);
-        return groupOutputDto;
+        return createGroupOutputDto(group);
     }
 
     @Override
+    @Transactional
     public List<GroupOutputDto> getMyActiveGroups() {
         List<Group> groups = groupRepository.findAll();
         List<GroupOutputDto> activeGroups = new ArrayList<>();
@@ -86,22 +83,28 @@ public class GroupServiceImpl implements GroupService {
             LocalDate endDate = g.getEndDate();
             if (startDate != null && endDate != null &&
                     currentDate.isAfter(startDate) && currentDate.isBefore(endDate)) {
-                GroupOutputDto groupOutputDto = modelMapper.map(g, GroupOutputDto.class);
-//                System.out.println(groupOutputDto);
-//                List<User> userList = g.getUsers();
-//                List<UserLeanOutputDto> userLeanOutputDtos = new ArrayList<>();
-//                for (User u : userList) {
-//                     userLeanOutputDtos.add(UserMapper.userToUserLeanDto(u));
-//                    }
-//                groupOutputDto.setUserLeanOutputDto(userLeanOutputDtos);
+                GroupOutputDto groupOutputDto = createGroupOutputDto(g);
                 activeGroups.add(groupOutputDto);
-                }
             }
-            if (activeGroups.isEmpty()) {
-                throw new RecordNotFoundException("No active groups found");
-            }
-            return activeGroups;
         }
+        if (activeGroups.isEmpty()) {
+            throw new RecordNotFoundException("No active groups found");
+        }
+
+        return activeGroups;
+    }
+
+    private GroupOutputDto createGroupOutputDto(Group group) {
+        GroupOutputDto groupOutputDto = modelMapper.map(group, GroupOutputDto.class);
+        List<User> userList = group.getUsers();
+        List<UserLeanOutputDto> userLeanOutputDtos = new ArrayList<>();
+        for (User u : userList) {
+            userLeanOutputDtos.add(UserMapper.userToUserLeanDto(u));
+        }
+        groupOutputDto.setUserLeanOutputDto(userLeanOutputDtos);
+        return groupOutputDto;
+    }
+
 
     @Override
     public GroupOutputDto getSpecificGroup(Long id) {

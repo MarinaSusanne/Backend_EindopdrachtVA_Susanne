@@ -2,8 +2,11 @@ package com.susanne.Susanne_eindopdrachtVA.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import org.hibernate.annotations.Type;
 import org.hibernate.validator.internal.util.logging.Messages;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.hibernate.annotations.Type;
+import org.hibernate.annotations.Type;
 
 import java.time.LocalDate;
 import java.util.HashSet;
@@ -40,6 +43,7 @@ public class User {
     private LocalDate dateOfBirth;
 
     @Lob
+//    @Type(type = "org.hibernate.type.BinaryType")
     private byte[] photo;
 
     @OneToMany(mappedBy = "user")

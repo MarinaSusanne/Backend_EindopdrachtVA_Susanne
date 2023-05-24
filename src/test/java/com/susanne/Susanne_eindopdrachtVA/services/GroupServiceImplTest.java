@@ -212,14 +212,21 @@ class GroupServiceImplTest {
         //arrange
         when(userRepository.findById(1L)).thenReturn(Optional.of(user1));
         Group testGroup = user1.getGroup();
+        GroupOutputDto groupOutputDto = new GroupOutputDto();
+        groupOutputDto.setGroupInfo(group1.getGroupInfo());
+        groupOutputDto.setGroupName(group1.getGroupName());
+        groupOutputDto.setId(group1.getId());
+        groupOutputDto.setStartDate(group1.getStartDate());
+        groupOutputDto.setUserLeanOutputDto(new ArrayList<>());
+        when(modelMapper.map((Object) any(), (Class<GroupOutputDto>) any())).thenReturn(groupOutputDto);
 
         // Act
         GroupOutputDto result = groupServiceImpl.getMyGroup(1L);
-        when(modelMapper.map(testGroup, GroupOutputDto.class)).thenReturn(new GroupOutputDto());
 
         // Assert
         assertEquals(testGroup.getId(), result.getId());
         assertEquals(testGroup.getGroupName(), result.getGroupName());
+        assertEquals(testGroup.getGroupInfo(), result.getGroupInfo());
         verify(userRepository).findById(1L);
         verify(modelMapper).map(testGroup, GroupOutputDto.class);
     }
@@ -242,38 +249,62 @@ class GroupServiceImplTest {
     @Test
     @Disabled
     void getMyActiveGroups() {
-        //arrange
-        List<Group> groups = List.of(group1, group2, group3, group4);
-        when(groupRepository.findAll()).thenReturn(groups);
+            //arrange
+            List<Group> groups = List.of(group1, group2, group3, group4);
+            when(groupRepository.findAll()).thenReturn(groups);
+            LocalDate currentDate = LocalDate.now();
+            List<GroupOutputDto> expectedActiveGroups = new ArrayList<>();
 
-        LocalDate currentDate = LocalDate.now();
-        List<GroupOutputDto> expectedActiveGroups = new ArrayList<GroupOutputDto>();
-        GroupOutputDto groupOutputDto1 = modelMapper.map(group1, GroupOutputDto.class);
-        GroupOutputDto groupOutputDto2 = modelMapper.map(group2, GroupOutputDto.class);
-        GroupOutputDto groupOutputDto3 = modelMapper.map(group3, GroupOutputDto.class);
-        expectedActiveGroups.add(groupOutputDto1);
-        expectedActiveGroups.add(groupOutputDto2);
-        expectedActiveGroups.add(groupOutputDto3);
+            GroupOutputDto groupOutputDto1 = new GroupOutputDto();
+            groupOutputDto1.setGroupInfo(group1.getGroupInfo());
+            groupOutputDto1.setGroupName(group1.getGroupName());
+            groupOutputDto1.setId(group1.getId());
+            groupOutputDto1.setStartDate(group1.getStartDate());
+            groupOutputDto1.setUserLeanOutputDto(new ArrayList<>());
+            when(modelMapper.map(group1, GroupOutputDto.class)).thenReturn(groupOutputDto1);
 
-        //act
-        List<GroupOutputDto> result = groupServiceImpl.getMyActiveGroups();
+            GroupOutputDto groupOutputDto2 = new GroupOutputDto();
+            groupOutputDto2.setGroupInfo(group2.getGroupInfo());
+            groupOutputDto2.setGroupName(group2.getGroupName());
+            groupOutputDto2.setId(group2.getId());
+            groupOutputDto2.setStartDate(group2.getStartDate());
+            groupOutputDto2.setUserLeanOutputDto(new ArrayList<>());
+            when(modelMapper.map(group2, GroupOutputDto.class)).thenReturn(groupOutputDto2);
 
-        //assert
-        assertEquals(expectedActiveGroups, result);
-        verify(groupRepository, times(1)).findAll();
-        assertEquals(expectedActiveGroups.get(1).getGroupInfo(), result.get(1).getGroupInfo());
-        assertEquals(expectedActiveGroups.get(2).getGroupName(), result.get(2).getGroupName());
+            GroupOutputDto groupOutputDto3 = new GroupOutputDto();
+            groupOutputDto3.setGroupInfo(group3.getGroupInfo());
+            groupOutputDto3.setGroupName(group3.getGroupName());
+            groupOutputDto3.setId(group3.getId());
+            groupOutputDto3.setStartDate(group3.getStartDate());
+            groupOutputDto3.setUserLeanOutputDto(new ArrayList<>());
+            when(modelMapper.map(group3, GroupOutputDto.class)).thenReturn(groupOutputDto3);
+
+            expectedActiveGroups.add(groupOutputDto1);
+            expectedActiveGroups.add(groupOutputDto2);
+            expectedActiveGroups.add(groupOutputDto3);
+
+            //act
+            List<GroupOutputDto> result = groupServiceImpl.getMyActiveGroups();
+
+            //assert
+            assertEquals(expectedActiveGroups, result);
+            verify(groupRepository, times(1)).findAll();
+            assertEquals(expectedActiveGroups.get(1).getGroupInfo(), result.get(1).getGroupInfo());
+            assertEquals(expectedActiveGroups.get(2).getGroupName(), result.get(2).getGroupName());
+            assertEquals(expectedActiveGroups.get(0).getGroupName(), result.get(0).getGroupName());
+            assertEquals(expectedActiveGroups.size(), result.size());
+        }
+
+
+        @Test
+         @Disabled
+            void getSpecificGroup() {
+
+
     }
 
     @Test
-    @Disabled
-    void getSpecificGroup() {
-
-
-    }
-
-    @Test
-    @Disabled
-    void createGroup() {
+     @Disabled
+         void createGroup() {
     }
 }
