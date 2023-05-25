@@ -40,7 +40,7 @@ public class UserService {
         Iterable<User> users = userRepository.findAll();
         List<UserOutputDto> userOutputDtos = new ArrayList<>();
         for (User u : users) {
-            UserOutputDto udto = userMapper.userToUserDto(u);
+            UserOutputDto udto = UserMapper.userToUserDto(u);
             userOutputDtos.add(udto);
         }
         return userOutputDtos;
@@ -59,7 +59,7 @@ public class UserService {
         } else {
             List<MessageOutputDto> messageOutputDtos = new ArrayList<>();
             for (Message m : messages) {
-                MessageOutputDto mdto = messageMapper.messageToMessageDto(m);
+                MessageOutputDto mdto = MessageMapper.messageToMessageDto(m);
                 messageOutputDtos.add(mdto);
             }
             return messageOutputDtos;
@@ -71,7 +71,7 @@ public class UserService {
         List<UserOutputDto> userOutputDtos = new ArrayList<>();
         for (User u : users) {
             if (u.getGroup() == null) {
-                UserOutputDto udto = userMapper.userToUserDto(u);
+                UserOutputDto udto = UserMapper.userToUserDto(u);
                 userOutputDtos.add(udto);
             }
         }
@@ -82,9 +82,9 @@ public class UserService {
     }
 
     public UserOutputDto createUser(UserInputDto inputDto) {
-        User user = userMapper.userDtoToUser(inputDto);
+        User user = UserMapper.userDtoToUser(inputDto);
         userRepository.save(user);
-        return userMapper.userToUserDto(user);
+        return UserMapper.userToUserDto(user);
     }
 
     public void deleteUser(@RequestBody Long id) {
@@ -94,17 +94,16 @@ public class UserService {
     public UserOutputDto updateUser(Long id, UserPutInputDto upUser) {
         Optional<User> userOptional = userRepository.findById(id);
         if (userOptional.isPresent()) {
-            User user = userMapper.updateUser(userOptional.get(), upUser);
+            User user = UserMapper.updateUser(userOptional.get(), upUser);
             User updatedUser = userRepository.save(user);
-            return userMapper.userToUserDto(updatedUser);
+            return UserMapper.userToUserDto(updatedUser);
 
         } else {
             throw new RecordNotFoundException("No User found!");
         }
     }
-    }
-    //TODO: nog andere methoden toevoegen
-    //TODO:exception handling
+}
+
 
 
  
