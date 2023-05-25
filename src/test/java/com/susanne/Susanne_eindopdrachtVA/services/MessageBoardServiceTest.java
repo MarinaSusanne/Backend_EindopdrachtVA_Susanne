@@ -44,17 +44,12 @@ class MessageBoardServiceTest {
     @Mock
     MessageBoardRepository messageBoardRepository;
 
-    @Mock
-    MessageRepository messageRepository;
-
-    @Mock
-    MessageMapper messageMapper;
-
     @InjectMocks
     MessageBoardService messageBoardService;
 
     @Captor
     ArgumentCaptor<Message> captor;
+
     Message message1;
     Message message2;
     Message message3;
@@ -241,24 +236,30 @@ class MessageBoardServiceTest {
         String newBoardInfo = "Nieuwe informatie over het prikbord van groep 1";
         MessageBoardInputDto updatedMessageBoardDto = new MessageBoardInputDto();
         updatedMessageBoardDto.setBoardInfo(newBoardInfo);
+        messageBoardRepository = mock(MessageBoardRepository.class);
         when(messageBoardRepository.findById(1L)).thenReturn(Optional.of(messageBoard1));
         when(messageBoardRepository.save(any(MessageBoard.class))).thenReturn(messageBoard1);
+
+        ArgumentCaptor<MessageBoard> messageBoardCaptor = ArgumentCaptor.forClass(MessageBoard.class);
 
         // act
         MessageBoardService messageBoardService = new MessageBoardService(messageBoardRepository);
         MessageBoardOutputDto result = messageBoardService.updateMessageBoardInfo(1L, updatedMessageBoardDto);
 
+
         //verify and assert
         verify(messageBoardRepository, times(1)).findById(1L);
-        verify(messageBoardRepository, times(1)).save(any(MessageBoard.class));
+        verify(messageBoardRepository, times(1)).save(messageBoardCaptor.capture());
+
+        MessageBoard capturedMessageBoard = messageBoardCaptor.getValue();
         assertEquals(messageBoard1.getId(), result.getId());
         assertEquals(updatedMessageBoardDto.getBoardInfo(), result.getBoardInfo());
 
         assertNotNull(result);
         assertEquals(messageBoard1.getId(), result.getId());
         assertEquals(updatedMessageBoardDto.getBoardInfo(), result.getBoardInfo());
+        assertEquals(newBoardInfo, capturedMessageBoard.getBoardInfo());
     }
-
 
     @Test
 //    @Disabled

@@ -1,7 +1,9 @@
 package com.susanne.Susanne_eindopdrachtVA.services;
 
 import com.susanne.Susanne_eindopdrachtVA.dtos.input.GroupInputDto;
+import com.susanne.Susanne_eindopdrachtVA.dtos.input.MessageBoardInputDto;
 import com.susanne.Susanne_eindopdrachtVA.dtos.output.GroupOutputDto;
+import com.susanne.Susanne_eindopdrachtVA.dtos.output.MessageBoardOutputDto;
 import com.susanne.Susanne_eindopdrachtVA.dtos.output.UserLeanOutputDto;
 import com.susanne.Susanne_eindopdrachtVA.exceptions.BadRequestException;
 import com.susanne.Susanne_eindopdrachtVA.exceptions.RecordNotFoundException;
@@ -48,8 +50,8 @@ public class GroupServiceImpl implements GroupService {
                 .orElseThrow(() -> new RecordNotFoundException("No group found"));
         List<User> users = group.getUsers();
         if (users.isEmpty()) {
-            throw new RecordNotFoundException("No users found");
-        } else {
+            throw new RecordNotFoundException("No users found");}
+        {
             List<UserLeanOutputDto> userLeanOutputDtos = new ArrayList<>();
             for (User u : users) {
                 UserLeanOutputDto udto = UserMapper.userToUserLeanDto(u);
@@ -66,13 +68,9 @@ public class GroupServiceImpl implements GroupService {
                 .orElseThrow(() -> new RecordNotFoundException("No user found"));
         Group group = user.getGroup();
         if (group == null) {
-            throw new RecordNotFoundException("User is not part of a group");
-        }
+            throw new RecordNotFoundException("User is not part of a group");}
         return createGroupOutputDto(group);
     }
-
-
-
 
     @Override
     @Transactional
@@ -80,20 +78,16 @@ public class GroupServiceImpl implements GroupService {
         List<Group> groups = groupRepository.findAll();
         List<GroupOutputDto> activeGroups = new ArrayList<>();
         LocalDate currentDate = LocalDate.now();
-
         for (Group g : groups) {
             LocalDate startDate = g.getStartDate();
             LocalDate endDate = g.getEndDate();
             if (startDate != null && endDate != null &&
                     currentDate.isAfter(startDate) && currentDate.isBefore(endDate)) {
                 GroupOutputDto groupOutputDto = createGroupOutputDto(g);
-                activeGroups.add(groupOutputDto);
-            }
+                activeGroups.add(groupOutputDto);}
         }
         if (activeGroups.isEmpty()) {
-            throw new RecordNotFoundException("No active groups found");
-        }
-
+            throw new RecordNotFoundException("No active groups found"); }
         return activeGroups;
     }
 
@@ -116,11 +110,8 @@ public class GroupServiceImpl implements GroupService {
         return groupOutputDto;
     }
 
-
-
-
-
     @Override
+    @Transactional
     public GroupOutputDto createGroup(GroupInputDto groupInputDto) {
         validateGroupDates(groupInputDto.getStartDate(), groupInputDto.getEndDate());
 
@@ -137,7 +128,7 @@ public class GroupServiceImpl implements GroupService {
                 userLeanOutputDtos.add(UserMapper.userToUserLeanDto(user));
             }
         }
-        group.setUsers(userList);
+                group.setUsers(userList);
         groupRepository.save(group);
         //Er wordt gelijk een messageboard aangemaakt zodra een groep wordt aangemaakt
         MessageBoard messageBoard = new MessageBoard();
@@ -157,6 +148,11 @@ public class GroupServiceImpl implements GroupService {
 
     }
 }
+
+
+
+
+
 
 
 

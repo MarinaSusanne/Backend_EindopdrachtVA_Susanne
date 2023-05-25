@@ -1,7 +1,9 @@
 package com.susanne.Susanne_eindopdrachtVA.services;
 
+import com.susanne.Susanne_eindopdrachtVA.dtos.input.GroupInputDto;
 import com.susanne.Susanne_eindopdrachtVA.dtos.output.GroupOutputDto;
 import com.susanne.Susanne_eindopdrachtVA.dtos.output.UserLeanOutputDto;
+import com.susanne.Susanne_eindopdrachtVA.exceptions.BadRequestException;
 import com.susanne.Susanne_eindopdrachtVA.exceptions.RecordNotFoundException;
 import com.susanne.Susanne_eindopdrachtVA.mappers.UserMapper;
 import com.susanne.Susanne_eindopdrachtVA.model.Group;
@@ -26,7 +28,6 @@ import org.mockito.quality.Strictness;
 import org.modelmapper.ModelMapper;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -39,6 +40,8 @@ class GroupServiceImplTest {
 
     @Mock
     GroupRepository groupRepository;
+    @Mock
+    MessageBoardRepository messageBoardRepository;
     @Mock
     ModelMapper modelMapper;
     @Mock
@@ -55,6 +58,8 @@ class GroupServiceImplTest {
     User user2;
     User user3;
     User user4;
+    User user5;
+    User user6;
     Group group1;
      Group group2;
     Group group3;
@@ -117,6 +122,32 @@ class GroupServiceImplTest {
         user4.setCity("Amsterdam");
         user4.setDateOfBirth(LocalDate.of(1985, 9, 20));
 
+        user5 = new User();
+        user5.setId(5L);
+        user5.setUsername("TestGebruiker5");
+        user5.setEmail("gebruiker5@example.com");
+        user5.setPassword("wachtwoord456");
+        user5.setFirstName("Sophie");
+        user5.setLastName("Bakker");
+        user5.setStreetName("Dorpsstraat");
+        user5.setHouseNumber("25");
+        user5.setZipcode("1234 AB");
+        user5.setCity("Utrecht");
+        user5.setDateOfBirth(LocalDate.of(1990, 5, 15));
+
+        user6 = new User();
+        user6.setId(6L);
+        user6.setUsername("EvaSmit");
+        user6.setEmail("evasmit@example.com");
+        user6.setPassword("wachtwoord789");
+        user6.setFirstName("Eva");
+        user6.setLastName("Smit");
+        user6.setStreetName("Hoge Laan");
+        user6.setHouseNumber("7");
+        user6.setZipcode("5678 CD");
+        user6.setCity("Rotterdam");
+        user6.setDateOfBirth(LocalDate.of(1988, 8, 10));
+
         usersList1 = Arrays.asList(user1, user3);
         usersList2 = Arrays.asList(user2);
 
@@ -145,7 +176,7 @@ class GroupServiceImplTest {
         group3.setUsers((new ArrayList<>()));
 
         group4 = new Group();
-        group4.setId(3L);
+        group4.setId(4L);
         group4.setGroupName("Naam van Groep 4");
         group4.setStartDate(LocalDate.of(2022, 7, 29));
         group4.setEndDate(LocalDate.of(2023, 4, 21));
@@ -153,7 +184,7 @@ class GroupServiceImplTest {
         group4.setUsers((new ArrayList<>()));
 
         group5 = new Group();
-        group5.setId(3L);
+        group5.setId(5L);
         group5.setGroupName("Naam van Groep 5");
         group5.setStartDate(LocalDate.of(2022, 8, 29));
         group5.setEndDate(LocalDate.of(2023, 5, 21));
@@ -172,7 +203,7 @@ class GroupServiceImplTest {
     }
 
     @Test
-    @Disabled
+//    @Disabled
     void getUsersByGroupId() {
         when(groupRepository.findById(1L)).thenReturn(Optional.of(group1));
         List<User> testUsers = group1.getUsers();
@@ -190,7 +221,7 @@ class GroupServiceImplTest {
         }
 
     @Test
-    @Disabled
+//    @Disabled
     void testGetUsersByGroupId_NoGroupFound() {
         // Arrange
         when(groupRepository.findById(101L)).thenReturn(Optional.empty());
@@ -201,7 +232,7 @@ class GroupServiceImplTest {
     }
 
     @Test
-    @Disabled
+//    @Disabled
     void testGetUsersByGroupId_NoUsersFound() {
         // Arrange
         when(groupRepository.findById(3L)).thenReturn(Optional.of(group3));
@@ -215,7 +246,7 @@ class GroupServiceImplTest {
 
 
     @Test
-    @Disabled
+//    @Disabled
     void getMyGroup() {
         //arrange
         when(userRepository.findById(1L)).thenReturn(Optional.of(user1));
@@ -240,7 +271,7 @@ class GroupServiceImplTest {
     }
 
     @Test
-    @Disabled
+//    @Disabled
     void testGetMyGroup_UserNotInGroup() {
         // Arrange
         when(userRepository.findById(user4.getId())).thenReturn(Optional.of(user4));
@@ -255,7 +286,7 @@ class GroupServiceImplTest {
 
 
     @Test
-    @Disabled
+//    @Disabled
     void getMyActiveGroups() {
             //arrange
             List<Group> groups = List.of(group1, group2, group3, group4);
@@ -305,7 +336,7 @@ class GroupServiceImplTest {
 
 
     @Test
-    @Disabled
+//    @Disabled
     void getMyActiveGroups_NoActiveGroups() {
         //arrange
         List<Group> groups = List.of(group4, group5);
@@ -325,7 +356,7 @@ class GroupServiceImplTest {
 
 
     @Test
-    @Disabled
+//    @Disabled
         void getSpecificGroup() {
             //arrange
             when(groupRepository.findById(group1.getId())).thenReturn(Optional.of(group1));
@@ -338,7 +369,8 @@ class GroupServiceImplTest {
             List<UserLeanOutputDto> userLeanOutputDtos = new ArrayList<>();
             userLeanOutputDtos.add(UserMapper.userToUserLeanDto(user1));
             userLeanOutputDtos.add(UserMapper.userToUserLeanDto(user3));
-           userLeanOutputDtos.add(UserMapper.userToUserLeanDto(user4));
+            //user4 is niet onderdeel van groep1, gebruik dit om assertFalse te testen
+            userLeanOutputDtos.add(UserMapper.userToUserLeanDto(user4));
             groupOutputDto.setUserLeanOutputDto(userLeanOutputDtos);
 
             when(modelMapper.map(group1, GroupOutputDto.class)).thenReturn(groupOutputDto);
@@ -356,7 +388,7 @@ class GroupServiceImplTest {
     }
 
     @Test
-    @Disabled
+//    @Disabled
     void getSpecificGroup_NoGroupFound() {
         //arrange
         when(groupRepository.findById(any())).thenReturn(Optional.empty());
@@ -369,7 +401,58 @@ class GroupServiceImplTest {
     }
 
     @Test
-    @Disabled
-         void createGroup() {
+//    @Disabled
+      void createGroup() {
+        //arrange
+        GroupInputDto groupInputDto = new GroupInputDto();
+        groupInputDto.setStartDate(LocalDate.of(2023, 5, 23));
+        groupInputDto.setEndDate(LocalDate.of(2024, 6, 27));
+        groupInputDto.setGroupName("Super coole naam");
+        groupInputDto.setUsers(Arrays.asList(5L, 6L));
+
+        Group group = new Group();
+        when(modelMapper.map(groupInputDto, Group.class)).thenReturn(group);
+        when(modelMapper.map(group, GroupOutputDto.class)).thenReturn(new GroupOutputDto());
+        when(userRepository.findById(5L)).thenReturn(Optional.of(user5));
+        when(userRepository.findById(6L)).thenReturn(Optional.of(user6));
+
+        ArgumentCaptor<Group> groupCaptor = ArgumentCaptor.forClass(Group.class);
+        ArgumentCaptor<MessageBoard> messageBoardCaptor = ArgumentCaptor.forClass(MessageBoard.class);
+
+        // Act
+        GroupOutputDto result = groupServiceImpl.createGroup(groupInputDto);
+
+        // Assert
+        verify(groupRepository, times(2)).save(groupCaptor.capture());
+        verify(messageBoardRepository).save(messageBoardCaptor.capture());
+        assertEquals(group, groupCaptor.getValue());
+        assertEquals(group, messageBoardCaptor.getValue().getGroup());
+        assertNotNull(result);
+        assertEquals(group.getStartDate(), result.getStartDate());
+        assertEquals(group.getGroupName(), result.getGroupName());
+        assertEquals(group.getUsers().size(), result.getUserLeanOutputDto().size());
+        assertNotNull(result.getUserLeanOutputDto());
+        assertTrue(result.getUserLeanOutputDto().size() > 0);
+        assertEquals(group.getUsers().get(0).getId(), result.getUserLeanOutputDto().get(0).getId());
+    }
+
+    @Test
+//    @Disabled
+        void createGroup_invalidDate(){
+        //arrange
+        GroupInputDto groupInputDto = new GroupInputDto();
+        groupInputDto.setStartDate(LocalDate.of(2025, 5, 23));
+        groupInputDto.setEndDate(LocalDate.of(2024, 6, 27));
+        groupInputDto.setGroupName("Nog een geweldige coole naam");
+        groupInputDto.setUsers(Arrays.asList(5L, 6L));
+        Group group = new Group();
+
+        BadRequestException exception =  assertThrows(BadRequestException.class, () -> {
+            groupServiceImpl.createGroup(groupInputDto);
+        });
+            assertEquals("Start date cannot be after end date", exception.getMessage());
     }
 }
+
+
+
