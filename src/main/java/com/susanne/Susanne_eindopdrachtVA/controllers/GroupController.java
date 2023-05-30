@@ -28,8 +28,8 @@ public class GroupController {
         return ResponseEntity.ok(userLeanOutput);
     }
 
-    @GetMapping("/users/{userId}")
-    public ResponseEntity <GroupOutputDto> getMyGroup (@PathVariable Long userId) {
+    @GetMapping("/users/{userId}/group")
+    public ResponseEntity <GroupOutputDto> getMyGroup(@PathVariable Long userId) {
         GroupOutputDto groupOutputDto = groupService.getMyGroup(userId);
         return ResponseEntity.ok(groupOutputDto);
     }

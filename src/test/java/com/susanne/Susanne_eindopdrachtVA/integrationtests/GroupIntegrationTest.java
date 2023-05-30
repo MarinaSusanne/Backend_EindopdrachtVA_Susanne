@@ -10,29 +10,27 @@ import com.susanne.Susanne_eindopdrachtVA.services.GroupServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
+
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.result.StatusResultMatchers;
+
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.springframework.http.ResponseEntity.status;
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+
 
 
 @SpringBootTest
@@ -44,24 +42,15 @@ class GroupIntegrationTest {
     private MockMvc mockMvc;
 
     @Autowired
-    private GroupServiceImpl groupService;
-
-    @Autowired
     private GroupRepository groupRepository;
 
     @Autowired
-   private  MessageBoardRepository messageBoardRepository;
-
-    @Autowired
-    private ModelMapper modelMapper;
-
-    @Autowired
-   private UserRepository userRepository;
+    private UserRepository userRepository;
 
      User user1;
      User user2;
-    User user3;
-    User user4;
+     User user3;
+     User user4;
      User user5;
      User user6;
      Group group1;
@@ -197,17 +186,17 @@ class GroupIntegrationTest {
         user4.setGroup(group2);
         user5.setGroup(group4);
 
-        user1 = userRepository.save(user1);
-        user2 = userRepository.save(user2);
-        user3 = userRepository.save(user3);
-        user4 = userRepository.save(user4);
-        user5 = userRepository.save(user5);
-        user6 = userRepository.save(user6);
+        userRepository.save(user1);
+        userRepository.save(user2);
+        userRepository.save(user3);
+        userRepository.save(user4);
+        userRepository.save(user5);
+        userRepository.save(user6);
 
-        group1 = groupRepository.save(group1);
-        group2 = groupRepository.save(group2);
-        group3 = groupRepository.save(group3);
-        group4 = groupRepository.save(group4);
+        groupRepository.save(group1);
+        groupRepository.save(group2);
+        groupRepository.save(group3);
+        groupRepository.save(group4);
     }
 
     @Test
@@ -222,22 +211,21 @@ class GroupIntegrationTest {
         expectedGroupOutputDto.setId(group1.getId());
         expectedGroupOutputDto.setGroupName(group1.getGroupName());
 
-        mockMvc.perform(get("/users/" + user1.getId().toString()))
+        mockMvc.perform(get("/users/{userId}/group", user1.getId()))
                 .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("id").value(group1.getId()))
-                .andExpect(jsonPath("id").value(expectedGroupOutputDto.getId()))
-                .andExpect(jsonPath("groupName").value("Naam van Groep")
-                .andExpect(jsonPath("startDate").value("2023-5-12")
-                .andExpect(jsonPath("endDate").value(group1.getEndDate().toString()))
-                .andExpect(jsonPath("groupInfo").value(group1.getGroupInfo()))
-
-        //TODO: waarom doet hij het niet en hoe ga ik om met een DTO in een DTO? dto
-
-    }
+                .andExpect(jsonPath("groupName").value("Naam van Groep"))
+                .andExpect(jsonPath("startDate").value("2023-5-12"))
+                .andExpect(jsonPath("endDate").value("2023-12-22"))
+                .andExpect(jsonPath("groupInfo").value("groepinfo die vet leuk is"));
+         }
 
     @Test
     @Disabled
     void getMyActiveGroups() {
+
+
     }
 
     @Test
