@@ -146,27 +146,14 @@ class GroupIntegrationTest {
         user5.setCity("Utrecht");
         user5.setDateOfBirth(LocalDate.of(1990, 5, 15));
 
-        user6 = new User();
-        user6.setId(6L);
-        user6.setUsername("EvaSmit");
-        user6.setEmail("evasmit@example.com");
-        user6.setPassword("wachtwoord789");
-        user6.setFirstName("Eva");
-        user6.setLastName("Smit");
-        user6.setStreetName("Hoge Laan");
-        user6.setHouseNumber("7");
-        user6.setZipcode("5678 CD");
-        user6.setCity("Rotterdam");
-        user6.setDateOfBirth(LocalDate.of(1988, 8, 10));
-
         userRepository.save(user1);
         userRepository.save(user2);
         userRepository.save(user3);
         userRepository.save(user4);
         userRepository.save(user5);
-        userRepository.save(user6);
 
-        usersList1 = Arrays.asList(user1, user3);git push orig
+
+        usersList1 = Arrays.asList(user1, user3);
         usersList2 = Arrays.asList(user2, user4);
         usersList3 = Arrays.asList(user5);
 
@@ -207,7 +194,7 @@ class GroupIntegrationTest {
         user2.setGroup(group2);
         user3.setGroup(group1);
         user4.setGroup(group2);
-//        user5.setGroup(group4);
+/
 
         groupRepository.save(group1);
         groupRepository.save(group2);
