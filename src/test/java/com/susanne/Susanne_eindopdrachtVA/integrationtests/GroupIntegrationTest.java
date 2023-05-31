@@ -1,5 +1,10 @@
 package com.susanne.Susanne_eindopdrachtVA.integrationtests;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.susanne.Susanne_eindopdrachtVA.dtos.input.GroupInputDto;
 import com.susanne.Susanne_eindopdrachtVA.dtos.output.GroupOutputDto;
 import com.susanne.Susanne_eindopdrachtVA.model.Group;
 import com.susanne.Susanne_eindopdrachtVA.model.User;
@@ -26,11 +31,17 @@ import java.util.Arrays;
 import java.util.List;
 
 
+import static org.springframework.http.RequestEntity.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 
 @SpringBootTest
@@ -47,19 +58,21 @@ class GroupIntegrationTest {
     @Autowired
     UserRepository userRepository;
 
-     User user1;
-     User user2;
-     User user3;
-     User user4;
-     User user5;
-     User user6;
-     Group group1;
-     Group group2;
-     Group group3;
-     Group group4;
-     List<User> usersList1;
-     List<User> usersList2;
-     List<User> usersList3;
+    User user1;
+    User user2;
+    User user3;
+    User user4;
+    User user5;
+    User user6;
+    Group group1;
+    Group group2;
+    Group group3;
+
+    List<User> usersList1;
+    List<User> usersList2;
+    List<User> usersList3;
+
+    GroupInputDto groupInputDto4;
 
     @BeforeEach
     void setUp() {
@@ -181,25 +194,24 @@ class GroupIntegrationTest {
         group3.setGroupInfo("userloze groep");
         group3.setUsers((new ArrayList<>()));
 
-        group4 = new Group();
-        group4.setId(4L);
-        group4.setGroupName("Naam van Groep 4");
-        group4.setStartDate(LocalDate.of(2022, 7, 29));
-        group4.setEndDate(LocalDate.of(2023, 4, 21));
-        group4.setGroupInfo("Groep die niet meer actief is");
-        group4.setUsers(usersList3);
+        groupInputDto4 = new GroupInputDto();
+        groupInputDto4.setGroupName("Naam van Groep 4");
+        groupInputDto4.setStartDate(LocalDate.of(2022, 7, 29));
+        groupInputDto4.setEndDate(LocalDate.of(2023, 8, 21));
+        groupInputDto4.setGroupInfo("Groep die niet meer actief is");
+        groupInputDto4.setUsers(usersList3.stream().map(User::getId).toList());
 
-    //Hier leg ik in de relaties die ik niet hierboven al kan maken
+
+        //Hier leg ik in de relaties die ik niet hierboven al kan maken
         user1.setGroup(group1);
         user2.setGroup(group2);
         user3.setGroup(group1);
         user4.setGroup(group2);
-        user5.setGroup(group4);
+//        user5.setGroup(group4);
 
         groupRepository.save(group1);
         groupRepository.save(group2);
         groupRepository.save(group3);
-        groupRepository.save(group4);
 
         userRepository.save(user1);
         userRepository.save(user2);
@@ -214,7 +226,7 @@ class GroupIntegrationTest {
     @Test
 //    @Disabled
     void getMyGroup() throws Exception {
-         mockMvc.perform(get("/groups/users/{userId}/group", user1.getId()))
+        mockMvc.perform(get("/groups/users/{userId}/group", user1.getId()))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("id").value(group1.getId()))
@@ -222,24 +234,43 @@ class GroupIntegrationTest {
                 .andExpect(jsonPath("startDate").value("2023-05-12"))
                 .andExpect(jsonPath("endDate").value("2023-12-22"))
                 .andExpect(jsonPath("groupInfo").value("groepinfo die vet leuk is"));
-         }
+    }
 
     @Test
 //    @Disabled
     void getSpecificGroup() throws Exception {
-            mockMvc.perform(get("/groups/admin/{groupId}", group2.getId()))
-                    .andExpect(status().isOk())
-                    .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                    .andExpect(jsonPath("id").value(group2.getId()))
-                    .andExpect(jsonPath("groupName").value("Naam van Groep 2"))
-                    .andExpect(jsonPath("startDate").value("2023-05-13"))
-                    .andExpect(jsonPath("endDate").value("2023-12-29"))
-                    .andExpect(jsonPath("groupInfo").value("groepinfo die nog veel leuker is"));
-        }
-
+        mockMvc.perform(get("/groups/admin/{groupId}", group2.getId()))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("id").value(group2.getId()))
+                .andExpect(jsonPath("groupName").value("Naam van Groep 2"))
+                .andExpect(jsonPath("startDate").value("2023-05-13"))
+                .andExpect(jsonPath("endDate").value("2023-12-29"))
+                .andExpect(jsonPath("groupInfo").value("groepinfo die nog veel leuker is"));
+    }
 
     @Test
-    @Disabled
-    void createGroup() {
+    void createGroup() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.post("/groups/admin", groupInputDto4)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(asJsonString(groupInputDto4)))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("groupName").value("Naam van Groep 4"))
+                .andExpect(jsonPath("startDate").value("2022-07-29"))
+                .andExpect(jsonPath("endDate").value("2023-08-21"))
+                .andExpect(jsonPath("groupInfo").value("Groep die niet meer actief is"));
+    }
+
+
+
+    public static String asJsonString(final Object obj) {
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            mapper.registerModule(new JavaTimeModule());
+            mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+            return mapper.writeValueAsString(obj);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
