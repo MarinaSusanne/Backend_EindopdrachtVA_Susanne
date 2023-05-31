@@ -42,10 +42,10 @@ class GroupIntegrationTest {
     private MockMvc mockMvc;
 
     @Autowired
-    private GroupRepository groupRepository;
+    GroupRepository groupRepository;
 
     @Autowired
-    private UserRepository userRepository;
+    UserRepository userRepository;
 
      User user1;
      User user2;
@@ -63,6 +63,9 @@ class GroupIntegrationTest {
 
     @BeforeEach
     void setUp() {
+
+        userRepository.deleteAll();
+        groupRepository.deleteAll();
 
         user1 = new User();
         user1.setId(1L);
@@ -143,6 +146,13 @@ class GroupIntegrationTest {
         user6.setCity("Rotterdam");
         user6.setDateOfBirth(LocalDate.of(1988, 8, 10));
 
+        userRepository.save(user1);
+        userRepository.save(user2);
+        userRepository.save(user3);
+        userRepository.save(user4);
+        userRepository.save(user5);
+        userRepository.save(user6);
+
         usersList1 = Arrays.asList(user1, user3);
         usersList2 = Arrays.asList(user2, user4);
         usersList3 = Arrays.asList(user5);
@@ -186,6 +196,11 @@ class GroupIntegrationTest {
         user4.setGroup(group2);
         user5.setGroup(group4);
 
+        groupRepository.save(group1);
+        groupRepository.save(group2);
+        groupRepository.save(group3);
+        groupRepository.save(group4);
+
         userRepository.save(user1);
         userRepository.save(user2);
         userRepository.save(user3);
@@ -193,45 +208,35 @@ class GroupIntegrationTest {
         userRepository.save(user5);
         userRepository.save(user6);
 
-        groupRepository.save(group1);
-        groupRepository.save(group2);
-        groupRepository.save(group3);
-        groupRepository.save(group4);
+
     }
 
     @Test
-    @Disabled
-    void getUsersByGroupId() {
-    }
-
-    @Test
-    @Disabled
+//    @Disabled
     void getMyGroup() throws Exception {
-        GroupOutputDto expectedGroupOutputDto = new GroupOutputDto();
-        expectedGroupOutputDto.setId(group1.getId());
-        expectedGroupOutputDto.setGroupName(group1.getGroupName());
-
-        mockMvc.perform(get("/users/{userId}/group", user1.getId()))
+         mockMvc.perform(get("/groups/users/{userId}/group", user1.getId()))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("id").value(group1.getId()))
                 .andExpect(jsonPath("groupName").value("Naam van Groep"))
-                .andExpect(jsonPath("startDate").value("2023-5-12"))
+                .andExpect(jsonPath("startDate").value("2023-05-12"))
                 .andExpect(jsonPath("endDate").value("2023-12-22"))
                 .andExpect(jsonPath("groupInfo").value("groepinfo die vet leuk is"));
          }
 
     @Test
-    @Disabled
-    void getMyActiveGroups() {
+//    @Disabled
+    void getSpecificGroup() throws Exception {
+            mockMvc.perform(get("/groups/admin/{groupId}", group2.getId()))
+                    .andExpect(status().isOk())
+                    .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(jsonPath("id").value(group2.getId()))
+                    .andExpect(jsonPath("groupName").value("Naam van Groep 2"))
+                    .andExpect(jsonPath("startDate").value("2023-05-13"))
+                    .andExpect(jsonPath("endDate").value("2023-12-29"))
+                    .andExpect(jsonPath("groupInfo").value("groepinfo die nog veel leuker is"));
+        }
 
-
-    }
-
-    @Test
-    @Disabled
-    void getSpecificGroup() {
-    }
 
     @Test
     @Disabled
