@@ -166,7 +166,7 @@ class GroupIntegrationTest {
         userRepository.save(user5);
         userRepository.save(user6);
 
-        usersList1 = Arrays.asList(user1, user3);
+        usersList1 = Arrays.asList(user1, user3);git push orig
         usersList2 = Arrays.asList(user2, user4);
         usersList3 = Arrays.asList(user5);
 
