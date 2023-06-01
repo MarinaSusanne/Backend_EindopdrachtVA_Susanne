@@ -27,12 +27,13 @@ public class FileController {
 
 
     @PostMapping("/upload")
-    public FileUploadResponse uploadFile(@RequestParam("file") MultipartFile file, @RequestParam Long assignmentId){
+    public FileUploadResponse singleFileUpload(@RequestParam("file") MultipartFile file, @RequestParam Long assignmentId){
         String uri = ServletUriComponentsBuilder.fromCurrentContextPath().path("/download/").path(Objects.requireNonNull(file.getOriginalFilename())).toUriString();
         String contentType = file.getContentType();
-        String fileName = fileService.storeFile(file, assignmentId);
-        return new FileUploadResponse (fileName, contentType, uri );
+        String fileName = fileService.storeFile(file, uri, assignmentId);
+        return new FileUploadResponse(fileName, contentType, uri );
     }
+
 
     @GetMapping("/download/{fileId}")
     public ResponseEntity<Resource> downLoadFile(@PathVariable Long fileId, HttpServletRequest request) {
@@ -46,3 +47,6 @@ public class FileController {
         return ResponseEntity.ok().contentType(MediaType.parseMediaType(mimeType)).header(HttpHeaders.CONTENT_DISPOSITION, "inline;fileName=" + resource.getFilename()).body(resource);
     }
 }
+
+
+
