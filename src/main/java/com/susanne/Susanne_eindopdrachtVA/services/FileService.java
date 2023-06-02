@@ -39,7 +39,7 @@ public class FileService {
     public FileService(){
     }
 
-            public String storeFile(MultipartFile file, String uri) {
+            public String storeFile(MultipartFile file, String uri, Long assignmentId) {
 
                 String fileName = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
                 Path filePath = Paths.get(fileStoragePath + "/" + fileName);

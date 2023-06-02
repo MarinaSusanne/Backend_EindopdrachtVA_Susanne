@@ -24,8 +24,6 @@ public class HandInAssignmentController {
     }
 
 
-
-
     @GetMapping("/{userId}")
     public ResponseEntity<List<HandInAssignmentOutputDto>> getAssignmentsByUserId(@PathVariable Long userId) {
         List<HandInAssignmentOutputDto> handInAssignmentOutputDtos = handInAssignmentService.getAssignmentsByUserId(userId);
@@ -38,11 +36,6 @@ public class HandInAssignmentController {
         URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentRequest().path("/" + handInAssignmentOutputDto.getId()).toUriString());
         return ResponseEntity.created(uri).body(handInAssignmentOutputDto);
     }
-
-
-
-
-
 }
 
 

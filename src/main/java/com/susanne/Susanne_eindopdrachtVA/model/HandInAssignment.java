@@ -24,6 +24,7 @@ public class HandInAssignment {
     @JoinColumn(name = "user_id")
     private User user;
 
+
     public HandInAssignment() {
     }
 

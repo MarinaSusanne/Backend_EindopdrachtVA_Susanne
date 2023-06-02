@@ -34,19 +34,20 @@ public class HomeworkAssignmentController {
 
 
     @PostMapping("/admin/groups/{groupId}")
-    public ResponseEntity<Object> createAndAssignAssignmentToGroup (@Valid @PathVariable Long groupId, @RequestBody HomeworkAssignmentInputDto homeworkAssignmentInputDto) {
+    public ResponseEntity<Object> createAndAssignAssignmentToGroup(@Valid @PathVariable Long groupId, @RequestBody HomeworkAssignmentInputDto homeworkAssignmentInputDto) {
         HomeworkAssignmentOutputDto homeworkAssignmentOutputDto = homeworkAssignmentService.createAndAssignAssignmentToGroup(groupId, homeworkAssignmentInputDto);
         URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentRequest().path("/" + homeworkAssignmentOutputDto.getId()).toUriString());
         return ResponseEntity.created(uri).body(homeworkAssignmentOutputDto);
     }
+}
 
-    @PutMapping("/admin/{id}")
-    public ResponseEntity<HomeworkAssignmentOutputDto> updateHomeworkAssignment(@PathVariable Long id, @Valid @RequestBody HomeworkAssignmentInputDto upHomeworkAssignment, BindingResult br) {
-        if (br.hasErrors()) {
-            String errorHomeworkAssignment = "Fout bij het verwerken van de request";
-            throw new BadRequestException(errorHomeworkAssignment);
-        }
-        HomeworkAssignmentOutputDto homeworkAssignmentOutputDto = HomeworkAssignmentService.updateHomeworkAssignment(id, upHomeworkAssignment);
-        return ResponseEntity.ok().body(homeworkAssignmentOutputDto);
-    }
- }
+//    @PutMapping("/admin/{id}")
+//    public ResponseEntity<HomeworkAssignmentOutputDto> updateHomeworkAssignment(@PathVariable Long id, @Valid @RequestBody HomeworkAssignmentInputDto upHomeworkAssignment, BindingResult br) {
+//        if (br.hasErrors()) {
+//            String errorHomeworkAssignment = "Fout bij het verwerken van de request";
+//            throw new BadRequestException(errorHomeworkAssignment);
+//        }
+//        HomeworkAssignmentOutputDto homeworkAssignmentOutputDto = HomeworkAssignmentService.updateHomeworkAssignment(id, upHomeworkAssignment);
+//        return ResponseEntity.ok().body(homeworkAssignmentOutputDto);
+//    }
+// }
