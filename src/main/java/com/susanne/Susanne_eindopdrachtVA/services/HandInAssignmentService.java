@@ -6,10 +6,8 @@ import com.susanne.Susanne_eindopdrachtVA.dtos.output.HandInAssignmentOutputDto;
 import com.susanne.Susanne_eindopdrachtVA.dtos.output.MessageOutputDto;
 import com.susanne.Susanne_eindopdrachtVA.exceptions.RecordNotFoundException;
 import com.susanne.Susanne_eindopdrachtVA.mappers.MessageMapper;
-import com.susanne.Susanne_eindopdrachtVA.model.HandInAssignment;
-import com.susanne.Susanne_eindopdrachtVA.model.Message;
-import com.susanne.Susanne_eindopdrachtVA.model.MessageBoard;
-import com.susanne.Susanne_eindopdrachtVA.model.User;
+import com.susanne.Susanne_eindopdrachtVA.model.*;
+import com.susanne.Susanne_eindopdrachtVA.repository.FileRepository;
 import com.susanne.Susanne_eindopdrachtVA.repository.HandInAssignmentRepository;
 import com.susanne.Susanne_eindopdrachtVA.repository.UserRepository;
 import jakarta.persistence.*;
@@ -37,18 +35,20 @@ public class HandInAssignmentService {
     private final HandInAssignmentRepository handInAssignmentRepository;
     private final UserRepository userRepository;
     private final ModelMapper modelMapper;
+    private final FileRepository fileRepository;
 
 
-    public HandInAssignmentService (HandInAssignmentRepository handInAssignmentRepository, ModelMapper modelMapper, UserRepository userRepository){
+    public HandInAssignmentService(HandInAssignmentRepository handInAssignmentRepository, ModelMapper modelMapper, UserRepository userRepository, FileRepository fileRepository) {
         this.handInAssignmentRepository = handInAssignmentRepository;
         this.userRepository = userRepository;
         this.modelMapper = modelMapper;
+        this.fileRepository = fileRepository;
     }
 
     public List<HandInAssignmentOutputDto> getAssignmentsByUserId(Long userId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new RecordNotFoundException("User not found"));
         Iterable<HandInAssignment> handInAssignments = user.getHandInAssignments();
-        List <HandInAssignmentOutputDto> handInAssignmentOutputDtos = new ArrayList<>();
+        List<HandInAssignmentOutputDto> handInAssignmentOutputDtos = new ArrayList<>();
         for (HandInAssignment h : handInAssignments) {
             HandInAssignmentOutputDto hODto = modelMapper.map(h, HandInAssignmentOutputDto.class);
             handInAssignmentOutputDtos.add(hODto);
@@ -61,8 +61,22 @@ public class HandInAssignmentService {
         User user = userRepository.findById(userId).orElseThrow(() -> new RecordNotFoundException("User not found"));
         HandInAssignment handInAssignment = modelMapper.map(handInAssignmentInputDto, HandInAssignment.class);
         //oplaan van file
+        handInAssignment.setUser(user);
         handInAssignmentRepository.save(handInAssignment);
         return modelMapper.map(handInAssignment, HandInAssignmentOutputDto.class);
+    }
+
+
+    public void assignFileToHandInAssignment(String name, Long handInAssignmentId) {
+
+        Optional<HandInAssignment> optionalHandInAssignment = handInAssignmentRepository.findById(handInAssignmentId);
+        Optional<FileUploadResponse> fileUploadResponse = fileRepository.findByFileName(name);
+        if (optionalHandInAssignment.isPresent() && fileUploadResponse.isPresent()) {
+            FileUploadResponse document = fileUploadResponse.get();
+            HandInAssignment handInAssignment = optionalHandInAssignment.get();
+            handInAssignment.setFile(document);
+            handInAssignmentRepository.save(handInAssignment);
+        }
     }
 }
 

@@ -1,9 +1,9 @@
 package com.susanne.Susanne_eindopdrachtVA.services;
-
 import com.susanne.Susanne_eindopdrachtVA.exceptions.RecordNotFoundException;
 import com.susanne.Susanne_eindopdrachtVA.model.FileUploadResponse;
 import com.susanne.Susanne_eindopdrachtVA.repository.FileRepository;
-import jakarta.annotation.Resource;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -24,7 +24,7 @@ public class FileService {
     private String fileStorageLocation;
     private FileRepository fileRepository;
 
-    public FileServiceService(String fileStorageLocation, FileRepository fileRepository) {
+    public FileService (@Value("${my.upload_location}") String fileStorageLocation, FileRepository fileRepository) {
         this.fileStoragePath = Paths.get(fileStorageLocation).toAbsolutePath().normalize();
         this.fileStorageLocation = fileStorageLocation;
         this.fileRepository = fileRepository;
@@ -39,7 +39,7 @@ public class FileService {
     public FileService(){
     }
 
-            public String storeFile(MultipartFile file, String uri, Long assignmentId) {
+            public String storeFile(MultipartFile file, String uri) {
 
                 String fileName = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
                 Path filePath = Paths.get(fileStoragePath + "/" + fileName);
@@ -49,22 +49,18 @@ public class FileService {
                     throw new RuntimeException("Issue in storing the file", e);
                 }
                 fileRepository.save(new FileUploadResponse(fileName, file.getContentType(), uri));
-
                 return fileName;
             }
 
 
-
-
             public Resource downLoadFile(Long fileId) {
-
                 Optional<FileUploadResponse> optionalFile = fileRepository.findById(fileId);
                 if (optionalFile.isEmpty()) {
-                    throw new RecordNotFoundException("No homework found with this id");
+                    throw new RecordNotFoundException("No assignment found with this id");
                 }
                 FileUploadResponse f = optionalFile.get();
                 String fileName = f.getFileName();
-
+                // of gewoonn diurect een String fileName mee geven
                 Path path = Paths.get(fileStorageLocation).toAbsolutePath().resolve(fileName);
                 Resource resource;
                 try {

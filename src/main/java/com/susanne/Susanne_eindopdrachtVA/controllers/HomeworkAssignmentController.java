@@ -3,11 +3,13 @@ package com.susanne.Susanne_eindopdrachtVA.controllers;
 import com.susanne.Susanne_eindopdrachtVA.dtos.input.HomeworkAssignmentInputDto;
 import com.susanne.Susanne_eindopdrachtVA.dtos.output.HomeworkAssignmentOutputDto;
 import com.susanne.Susanne_eindopdrachtVA.exceptions.BadRequestException;
+import com.susanne.Susanne_eindopdrachtVA.model.FileUploadResponse;
 import com.susanne.Susanne_eindopdrachtVA.services.HomeworkAssignmentService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
@@ -20,10 +22,12 @@ import java.util.List;
 public class HomeworkAssignmentController {
 
     private final HomeworkAssignmentService homeworkAssignmentService;
+    private final FileController fileController;
 
 
-    public HomeworkAssignmentController(HomeworkAssignmentService homeworkAssignmentService) {
+    public HomeworkAssignmentController(HomeworkAssignmentService homeworkAssignmentService, FileController fileController) {
         this.homeworkAssignmentService = homeworkAssignmentService;
+        this.fileController = fileController;
     }
 
     @GetMapping("/groups/{groupId}")
@@ -39,6 +43,15 @@ public class HomeworkAssignmentController {
         URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentRequest().path("/" + homeworkAssignmentOutputDto.getId()).toUriString());
         return ResponseEntity.created(uri).body(homeworkAssignmentOutputDto);
     }
+
+    @PostMapping("/{id}/file")
+    public void assignFileToHomeWorkAssignment (@PathVariable("id") Long homeworkAssignmentId,
+                                                 @RequestBody MultipartFile file) {
+
+        FileUploadResponse document = fileController.singleFileUpload(file);
+        homeworkAssignmentService.assignFileToHomeworkAssignment(document.getFileName(), homeworkAssignmentId);
+    }
+
 }
 
 //    @PutMapping("/admin/{id}")

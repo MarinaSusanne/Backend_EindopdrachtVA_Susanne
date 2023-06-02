@@ -1,5 +1,6 @@
 package com.susanne.Susanne_eindopdrachtVA.dtos.input;
 
+import com.susanne.Susanne_eindopdrachtVA.model.FileUploadResponse;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
@@ -15,5 +16,7 @@ public class HandInAssignmentInputDto {
     private String info;
 
     private Long userId;
+
+    private FileUploadResponse file;
 
 }

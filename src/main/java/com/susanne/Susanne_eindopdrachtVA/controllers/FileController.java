@@ -2,8 +2,8 @@ package com.susanne.Susanne_eindopdrachtVA.controllers;
 
 import com.susanne.Susanne_eindopdrachtVA.model.FileUploadResponse;
 import com.susanne.Susanne_eindopdrachtVA.services.FileService;
-import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -27,10 +27,10 @@ public class FileController {
 
 
     @PostMapping("/upload")
-    public FileUploadResponse singleFileUpload(@RequestParam("file") MultipartFile file, @RequestParam Long assignmentId){
+    public FileUploadResponse singleFileUpload(@RequestParam("file") MultipartFile file){
         String uri = ServletUriComponentsBuilder.fromCurrentContextPath().path("/download/").path(Objects.requireNonNull(file.getOriginalFilename())).toUriString();
         String contentType = file.getContentType();
-        String fileName = fileService.storeFile(file, uri, assignmentId);
+        String fileName = fileService.storeFile(file, uri);
         return new FileUploadResponse(fileName, contentType, uri );
     }
 

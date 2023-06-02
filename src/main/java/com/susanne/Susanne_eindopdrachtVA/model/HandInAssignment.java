@@ -24,6 +24,8 @@ public class HandInAssignment {
     @JoinColumn(name = "user_id")
     private User user;
 
+    @OneToOne
+    FileUploadResponse file;
 
     public HandInAssignment() {
     }
@@ -66,6 +68,14 @@ public class HandInAssignment {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public FileUploadResponse getFile() {
+        return file;
+    }
+
+    public void setFile(FileUploadResponse file) {
+        this.file = file;
     }
 }
 
