@@ -194,7 +194,6 @@ class GroupIntegrationTest {
         user2.setGroup(group2);
         user3.setGroup(group1);
         user4.setGroup(group2);
-/
 
         groupRepository.save(group1);
         groupRepository.save(group2);
@@ -211,7 +210,7 @@ class GroupIntegrationTest {
     }
 
     @Test
-//    @Disabled
+    @Disabled
     void getMyGroup() throws Exception {
         mockMvc.perform(get("/groups/users/{userId}/group", user1.getId()))
                 .andExpect(status().isOk())
@@ -224,7 +223,7 @@ class GroupIntegrationTest {
     }
 
     @Test
-//    @Disabled
+    @Disabled
     void getSpecificGroup() throws Exception {
         mockMvc.perform(get("/groups/admin/{groupId}", group2.getId()))
                 .andExpect(status().isOk())

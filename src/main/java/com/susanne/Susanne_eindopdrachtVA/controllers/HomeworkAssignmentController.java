@@ -45,13 +45,13 @@ public class HomeworkAssignmentController {
     }
 
     @PostMapping("/{id}/file")
-    public void assignFileToHomeWorkAssignment (@PathVariable("id") Long homeworkAssignmentId,
+    public ResponseEntity  <HomeworkAssignmentOutputDto> assignFileToHomeWorkAssignment (@PathVariable("id") Long homeworkAssignmentId,
                                                  @RequestBody MultipartFile file) {
 
         FileUploadResponse document = fileController.singleFileUpload(file);
-        homeworkAssignmentService.assignFileToHomeworkAssignment(document.getFileName(), homeworkAssignmentId);
+       HomeworkAssignmentOutputDto hwdto = homeworkAssignmentService.assignFileToHomeworkAssignment(document.getFileName(), homeworkAssignmentId);
+        return ResponseEntity.ok(hwdto);
     }
-
 }
 
 //    @PutMapping("/admin/{id}")

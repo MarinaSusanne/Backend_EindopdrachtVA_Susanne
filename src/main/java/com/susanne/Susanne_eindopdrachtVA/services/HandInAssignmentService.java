@@ -4,6 +4,8 @@ import com.susanne.Susanne_eindopdrachtVA.dtos.input.HandInAssignmentInputDto;
 import com.susanne.Susanne_eindopdrachtVA.dtos.output.GroupOutputDto;
 import com.susanne.Susanne_eindopdrachtVA.dtos.output.HandInAssignmentOutputDto;
 import com.susanne.Susanne_eindopdrachtVA.dtos.output.MessageOutputDto;
+import com.susanne.Susanne_eindopdrachtVA.exceptions.BadRequestException;
+import com.susanne.Susanne_eindopdrachtVA.exceptions.FileNotFoundException;
 import com.susanne.Susanne_eindopdrachtVA.exceptions.RecordNotFoundException;
 import com.susanne.Susanne_eindopdrachtVA.mappers.MessageMapper;
 import com.susanne.Susanne_eindopdrachtVA.model.*;
@@ -24,6 +26,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -60,23 +63,36 @@ public class HandInAssignmentService {
     public HandInAssignmentOutputDto handInAssignmentByUser(Long userId, HandInAssignmentInputDto handInAssignmentInputDto) {
         User user = userRepository.findById(userId).orElseThrow(() -> new RecordNotFoundException("User not found"));
         HandInAssignment handInAssignment = modelMapper.map(handInAssignmentInputDto, HandInAssignment.class);
-        //oplaan van file
         handInAssignment.setUser(user);
+        handInAssignment.setSendDate(LocalDate.now());
         handInAssignmentRepository.save(handInAssignment);
+        //nog even mappen naar een userlean outputDto
         return modelMapper.map(handInAssignment, HandInAssignmentOutputDto.class);
     }
 
 
-    public void assignFileToHandInAssignment(String name, Long handInAssignmentId) {
-
+    public HandInAssignmentOutputDto assignFileToHandInAssignment(String name, Long handInAssignmentId) throws FileNotFoundException {
         Optional<HandInAssignment> optionalHandInAssignment = handInAssignmentRepository.findById(handInAssignmentId);
+        if (optionalHandInAssignment.isEmpty()) {
+            throw new RecordNotFoundException("No Hand-In assignment found");
+        }
         Optional<FileUploadResponse> fileUploadResponse = fileRepository.findByFileName(name);
-        if (optionalHandInAssignment.isPresent() && fileUploadResponse.isPresent()) {
+        if (fileUploadResponse.isPresent()) {
             FileUploadResponse document = fileUploadResponse.get();
             HandInAssignment handInAssignment = optionalHandInAssignment.get();
             handInAssignment.setFile(document);
             handInAssignmentRepository.save(handInAssignment);
+            HandInAssignmentOutputDto hidto = modelMapper.map(handInAssignment, HandInAssignmentOutputDto.class);
+            hidto.setFileName(document.getFileName());
+            return hidto;
+        }
+        else{
+            throw new FileNotFoundException("file not found");
         }
     }
 }
+
+
+
+
 

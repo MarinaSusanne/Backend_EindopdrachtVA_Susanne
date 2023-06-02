@@ -35,9 +35,9 @@ public class FileController {
     }
 
 
-    @GetMapping("/download/{fileId}")
-    public ResponseEntity<Resource> downLoadFile(@PathVariable Long fileId, HttpServletRequest request) {
-        Resource resource = fileService.downLoadFile(fileId);
+    @GetMapping("/download/{fileName}")
+    public ResponseEntity<Resource> downLoadFile(@PathVariable String fileName, HttpServletRequest request) {
+        Resource resource = fileService.downLoadFile(fileName);
         String mimeType;
         try{
             mimeType = request.getServletContext().getMimeType(resource.getFile().getAbsolutePath());

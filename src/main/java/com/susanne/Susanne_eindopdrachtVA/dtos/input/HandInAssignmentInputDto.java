@@ -15,8 +15,4 @@ public class HandInAssignmentInputDto {
     @NotNull
     private String info;
 
-    private Long userId;
-
-    private FileUploadResponse file;
-
 }

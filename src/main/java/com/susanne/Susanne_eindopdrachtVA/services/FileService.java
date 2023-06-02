@@ -36,8 +36,6 @@ public class FileService {
         }
     }
 
-    public FileService(){
-    }
 
             public String storeFile(MultipartFile file, String uri) {
 
@@ -53,14 +51,14 @@ public class FileService {
             }
 
 
-            public Resource downLoadFile(Long fileId) {
-                Optional<FileUploadResponse> optionalFile = fileRepository.findById(fileId);
-                if (optionalFile.isEmpty()) {
-                    throw new RecordNotFoundException("No assignment found with this id");
-                }
-                FileUploadResponse f = optionalFile.get();
-                String fileName = f.getFileName();
-                // of gewoonn diurect een String fileName mee geven
+            public Resource downLoadFile(String fileName) {
+//                Optional<FileUploadResponse> optionalFile = fileRepository.findById(fileId);
+//                if (optionalFile.isEmpty()) {
+//                    throw new RecordNotFoundException("No assignment found with this id");
+//                }
+//                FileUploadResponse f = optionalFile.get();
+//                String fileName = f.getFileName();
+                // of gewoon direct een String fileName mee geven
                 Path path = Paths.get(fileStorageLocation).toAbsolutePath().resolve(fileName);
                 Resource resource;
                 try {

@@ -20,7 +20,7 @@ public class HomeworkAssignment {
     @DateTimeFormat(pattern = "yyyy-mm-dd")
     private LocalDate sendDate;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "group_id")
     private Group group;
 
