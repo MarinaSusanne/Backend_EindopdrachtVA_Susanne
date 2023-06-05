@@ -49,8 +49,11 @@ public class UserMapper {
         outputDto.setId(user.getId());
         outputDto.setFirstName(user.getFirstName());
         outputDto.setLastName(user.getLastName());
+        outputDto.setPhoto(user.getPhoto());
         return outputDto;
     }
+
+
 
 
     public static User updateUser (User user, UserPutInputDto upUser) {

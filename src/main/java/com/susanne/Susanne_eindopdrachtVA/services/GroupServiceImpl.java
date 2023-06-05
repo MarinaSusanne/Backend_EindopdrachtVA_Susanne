@@ -106,7 +106,7 @@ public class GroupServiceImpl implements GroupService {
         for (User u : userList) {
             userLeanOutputDtos.add(UserMapper.userToUserLeanDto(u));
         }
-        groupOutputDto.setUserLeanOutputDto(userLeanOutputDtos);
+        groupOutputDto.setUserLeanOutputDtos(userLeanOutputDtos);
         return groupOutputDto;
     }
 
@@ -137,7 +137,7 @@ public class GroupServiceImpl implements GroupService {
         group.setMessageBoard(messageBoard);
         groupRepository.save(group);
         GroupOutputDto groupOutputDto = modelMapper.map(group, GroupOutputDto.class);
-        groupOutputDto.setUserLeanOutputDto(userLeanOutputDtos);
+        groupOutputDto.setUserLeanOutputDtos(userLeanOutputDtos);
         return groupOutputDto;
     }
 

@@ -17,5 +17,5 @@ public class GroupOutputDto {
     private LocalDate endDate;
     private String groupInfo;
     private User admin;
-    private List<UserLeanOutputDto> userLeanOutputDto;
+    private List<UserLeanOutputDto> userLeanOutputDtos;
 }
