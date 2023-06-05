@@ -20,10 +20,12 @@ public class HomeworkAssignment {
     @DateTimeFormat(pattern = "yyyy-mm-dd")
     private LocalDate sendDate;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "group_id")
     private Group group;
 
+    @OneToOne
+    FileUploadResponse file;
 
     public HomeworkAssignment() {
     }
@@ -67,6 +69,14 @@ public class HomeworkAssignment {
 
     public void setGroup(Group group) {
         this.group = group;
+    }
+
+    public FileUploadResponse getFile() {
+        return file;
+    }
+
+    public void setFile(FileUploadResponse file) {
+        this.file = file;
     }
 }
 

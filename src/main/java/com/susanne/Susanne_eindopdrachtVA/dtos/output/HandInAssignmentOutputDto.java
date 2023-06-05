@@ -19,4 +19,6 @@ public class HandInAssignmentOutputDto {
 
     private UserLeanOutputDto author;
 
+    private String fileName;
+
 }

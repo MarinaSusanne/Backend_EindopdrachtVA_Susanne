@@ -18,5 +18,5 @@ public class HomeworkAssignmentOutputDto {
 
     private LocalDate sendDate;
 
-    private UserLeanOutputDto author;
+    private String fileName;
 }

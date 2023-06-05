@@ -196,8 +196,7 @@ public class User {
     public void setHandInAssignments(List<HandInAssignment> handInAssignments) {
         this.handInAssignments = handInAssignments;
     }
-
-    }
+}
 
 
 
