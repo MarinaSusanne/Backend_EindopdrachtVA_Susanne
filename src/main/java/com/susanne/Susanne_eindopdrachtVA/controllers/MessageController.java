@@ -14,7 +14,7 @@ import java.net.URI;
 import java.util.List;
 
 
-//@CrossOrigin
+@CrossOrigin
 @RestController
 @RequestMapping("/messages")
 public class MessageController {

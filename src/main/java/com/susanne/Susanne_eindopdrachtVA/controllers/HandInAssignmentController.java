@@ -16,6 +16,7 @@ import java.util.List;
 
 //@CrossOrigin
 @RestController
+@CrossOrigin
 @RequestMapping("/handinassignments")
 public class HandInAssignmentController {
 
@@ -27,7 +28,6 @@ public class HandInAssignmentController {
         this.handInAssignmentService = handInAssignmentService;
         this.fileController = fileController;
     }
-
 
     @GetMapping("/{userId}")
     public ResponseEntity<List<HandInAssignmentOutputDto>> getAssignmentsByUserId(@PathVariable Long userId) {

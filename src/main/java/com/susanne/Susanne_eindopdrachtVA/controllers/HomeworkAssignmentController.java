@@ -16,7 +16,7 @@ import java.net.URI;
 import java.util.List;
 
 
-//@CrossOrigin
+@CrossOrigin
 @RestController
 @RequestMapping("/homeworkassignments")
 public class HomeworkAssignmentController {
