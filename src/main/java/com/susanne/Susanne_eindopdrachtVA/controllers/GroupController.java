@@ -1,6 +1,7 @@
 package com.susanne.Susanne_eindopdrachtVA.controllers;
 import com.susanne.Susanne_eindopdrachtVA.dtos.input.GroupInputDto;
 import com.susanne.Susanne_eindopdrachtVA.dtos.output.GroupOutputDto;
+import com.susanne.Susanne_eindopdrachtVA.dtos.output.GroupWithPicturesOutputDto;
 import com.susanne.Susanne_eindopdrachtVA.dtos.output.UserLeanOutputDto;
 import com.susanne.Susanne_eindopdrachtVA.services.GroupService;
 import jakarta.validation.Valid;
@@ -29,9 +30,9 @@ public class GroupController {
     }
 
     @GetMapping("/users/{userId}/group")
-    public ResponseEntity <GroupOutputDto> getMyGroup(@PathVariable Long userId) {
-        GroupOutputDto groupOutputDto = groupService.getMyGroup(userId);
-        return ResponseEntity.ok(groupOutputDto);
+    public ResponseEntity <GroupWithPicturesOutputDto> getMyGroup(@PathVariable Long userId) {
+        GroupWithPicturesOutputDto groupPicturesOutputDto = groupService.getMyGroup(userId);
+        return ResponseEntity.ok(groupPicturesOutputDto);
     }
 
     @GetMapping("/admin/all")
@@ -41,9 +42,9 @@ public class GroupController {
     }
 
     @GetMapping("/admin/{groupId}")
-    public ResponseEntity<GroupOutputDto> getSpecificGroup (@PathVariable Long groupId) {
-        GroupOutputDto groupOutputDto = groupService.getSpecificGroup(groupId);
-        return ResponseEntity.ok(groupOutputDto);
+    public ResponseEntity<GroupWithPicturesOutputDto> getSpecificGroup (@PathVariable Long groupId) {
+        GroupWithPicturesOutputDto groupPicturesOutputDto = groupService.getSpecificGroup(groupId);
+        return ResponseEntity.ok(groupPicturesOutputDto);
     }
     @PostMapping("/admin")
     public ResponseEntity<GroupOutputDto> createGroup (@Valid @RequestBody GroupInputDto groupInputDto) {

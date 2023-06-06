@@ -59,7 +59,7 @@ public class UserService {
         } else {
             List<MessageOutputDto> messageOutputDtos = new ArrayList<>();
             for (Message m : messages) {
-                MessageOutputDto mdto = MessageMapper.messageToMessageDto(m);
+                MessageOutputDto mdto = messageMapper.messageToMessageDto(m);
                 messageOutputDtos.add(mdto);
             }
             return messageOutputDtos;
@@ -71,7 +71,7 @@ public class UserService {
         List<UserOutputDto> userOutputDtos = new ArrayList<>();
         for (User u : users) {
             if (u.getGroup() == null) {
-                UserOutputDto udto = UserMapper.userToUserDto(u);
+                UserOutputDto udto = userMapper.userToUserDto(u);
                 userOutputDtos.add(udto);
             }
         }

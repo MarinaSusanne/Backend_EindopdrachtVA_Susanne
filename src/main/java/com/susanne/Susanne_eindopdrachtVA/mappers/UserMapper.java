@@ -4,6 +4,7 @@ import com.susanne.Susanne_eindopdrachtVA.dtos.input.UserInputDto;
 import com.susanne.Susanne_eindopdrachtVA.dtos.input.UserPutInputDto;
 import com.susanne.Susanne_eindopdrachtVA.dtos.output.UserLeanOutputDto;
 import com.susanne.Susanne_eindopdrachtVA.dtos.output.UserOutputDto;
+import com.susanne.Susanne_eindopdrachtVA.dtos.output.UserPictureOutputDto;
 import com.susanne.Susanne_eindopdrachtVA.model.User;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
@@ -49,10 +50,17 @@ public class UserMapper {
         outputDto.setId(user.getId());
         outputDto.setFirstName(user.getFirstName());
         outputDto.setLastName(user.getLastName());
-        outputDto.setPhoto(user.getPhoto());
         return outputDto;
     }
 
+    public static UserPictureOutputDto userToUserPictureDto(User user) {
+        UserPictureOutputDto outputDto = new UserPictureOutputDto();
+        outputDto.setId(user.getId());
+        outputDto.setFirstName(user.getFirstName());
+        outputDto.setLastName(user.getLastName());
+        outputDto.setPhoto(user.getPhoto());
+        return outputDto;
+    }
 
     public static User updateUser (User user, UserPutInputDto upUser) {
 

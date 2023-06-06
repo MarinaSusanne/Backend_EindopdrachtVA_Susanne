@@ -2,9 +2,7 @@ package com.susanne.Susanne_eindopdrachtVA.services;
 
 import com.susanne.Susanne_eindopdrachtVA.dtos.input.GroupInputDto;
 import com.susanne.Susanne_eindopdrachtVA.dtos.input.MessageBoardInputDto;
-import com.susanne.Susanne_eindopdrachtVA.dtos.output.GroupOutputDto;
-import com.susanne.Susanne_eindopdrachtVA.dtos.output.MessageBoardOutputDto;
-import com.susanne.Susanne_eindopdrachtVA.dtos.output.UserLeanOutputDto;
+import com.susanne.Susanne_eindopdrachtVA.dtos.output.*;
 import com.susanne.Susanne_eindopdrachtVA.exceptions.BadRequestException;
 import com.susanne.Susanne_eindopdrachtVA.exceptions.RecordNotFoundException;
 import com.susanne.Susanne_eindopdrachtVA.mappers.UserMapper;
@@ -63,13 +61,13 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     @Transactional
-    public GroupOutputDto getMyGroup(Long id) {
+    public GroupWithPicturesOutputDto getMyGroup(Long id) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new RecordNotFoundException("No user found"));
         Group group = user.getGroup();
         if (group == null) {
             throw new RecordNotFoundException("User is not part of a group");}
-        return createGroupOutputDto(group);
+        return createGroupPictureOutputDto(group);
     }
 
     @Override
@@ -93,21 +91,34 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     @Transactional
-    public GroupOutputDto getSpecificGroup(Long id) {
+    public GroupWithPicturesOutputDto getSpecificGroup(Long id) {
         Group group = groupRepository.findById(id)
                 .orElseThrow(() -> new RecordNotFoundException("No Group found with this ID"));
-        return createGroupOutputDto(group);
+        return createGroupPictureOutputDto(group);
     }
 
     private GroupOutputDto createGroupOutputDto(Group group) {
         GroupOutputDto groupOutputDto = modelMapper.map(group, GroupOutputDto.class);
+        groupOutputDto.setMessageBoardId(group.getMessageBoard().getId());
         List<User> userList = group.getUsers();
-        List<UserLeanOutputDto> userLeanOutputDtos = new ArrayList<>();
+        List<UserLeanOutputDto> userleanOutputDtos = new ArrayList<>();
         for (User u : userList) {
-            userLeanOutputDtos.add(UserMapper.userToUserLeanDto(u));
+            userleanOutputDtos.add(UserMapper.userToUserLeanDto(u));
         }
-        groupOutputDto.setUserLeanOutputDto(userLeanOutputDtos);
+        groupOutputDto.setUserLeanOutputDto(userleanOutputDtos);
         return groupOutputDto;
+    }
+
+    private GroupWithPicturesOutputDto createGroupPictureOutputDto(Group group) {
+        GroupWithPicturesOutputDto groupPictureOutputDto = modelMapper.map(group, GroupWithPicturesOutputDto.class);
+        groupPictureOutputDto.setMessageBoardId(group.getMessageBoard().getId());
+        List<User> userList = group.getUsers();
+        List<UserPictureOutputDto> userPictureOutputDtos = new ArrayList<>();
+        for (User u : userList) {
+            userPictureOutputDtos.add(UserMapper.userToUserPictureDto(u));
+        }
+        groupPictureOutputDto.setUserPictureOutputDto(userPictureOutputDtos);
+        return groupPictureOutputDto;
     }
 
     @Override
@@ -137,6 +148,7 @@ public class GroupServiceImpl implements GroupService {
         group.setMessageBoard(messageBoard);
         groupRepository.save(group);
         GroupOutputDto groupOutputDto = modelMapper.map(group, GroupOutputDto.class);
+        groupOutputDto.setMessageBoardId(group.getMessageBoard().getId());
         groupOutputDto.setUserLeanOutputDto(userLeanOutputDtos);
         return groupOutputDto;
     }

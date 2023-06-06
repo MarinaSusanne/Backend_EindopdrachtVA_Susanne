@@ -31,7 +31,8 @@ public class MessageBoardService {
             MessageOutputDto mdto = MessageMapper.messageToMessageDto(m);
             messageOutputDtos.add(mdto);
         }
-        return messageOutputDtos;}
+        return messageOutputDtos;
+    }
 
     public MessageBoardOutputDto updateMessageBoardInfo(Long id, MessageBoardInputDto upMessageBoard){
         Optional<MessageBoard> messageBoardOptional = messageBoardRepository.findById(id);

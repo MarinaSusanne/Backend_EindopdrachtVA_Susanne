@@ -1,5 +1,4 @@
 package com.susanne.Susanne_eindopdrachtVA.dtos.output;
-
 import com.susanne.Susanne_eindopdrachtVA.model.User;
 import lombok.Getter;
 import lombok.Setter;
@@ -9,7 +8,7 @@ import java.util.List;
 
 @Getter
 @Setter
-public class GroupOutputDto {
+public class GroupWithPicturesOutputDto {
 
     private Long id;
     private String groupName;
@@ -17,6 +16,6 @@ public class GroupOutputDto {
     private LocalDate endDate;
     private String groupInfo;
     private User admin;
-    private List<UserLeanOutputDto> userLeanOutputDto;
+    private List<UserPictureOutputDto> userPictureOutputDto;
     private Long messageBoardId;
 }
