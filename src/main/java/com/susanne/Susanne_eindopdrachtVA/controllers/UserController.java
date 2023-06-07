@@ -36,6 +36,7 @@ public class UserController {
         return ResponseEntity.ok(userOutputDto);
     }
 
+//TODO: naar messages verplaatsen
     @GetMapping("/{id}/messages")
     public ResponseEntity<List<MessageOutputDto>> getUserMessagesByUserId(@PathVariable Long id) {
          List<MessageOutputDto> messageOutputDtos = userService.getUserMessagesByUserId(id);

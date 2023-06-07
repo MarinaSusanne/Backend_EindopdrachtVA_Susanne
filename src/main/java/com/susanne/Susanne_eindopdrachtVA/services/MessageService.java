@@ -23,16 +23,24 @@ public class MessageService {
     private final MessageRepository messageRepository;
     private final UserRepository userRepository;
 
-    public MessageService(MessageRepository messageRepository, UserRepository userRepository) {
+    private final UserMapper userMapper;
+
+    private final MessageMapper messageMapper;
+
+    public MessageService(MessageRepository messageRepository, UserRepository userRepository, MessageMapper messageMapper, UserMapper userMapper) {
         this.messageRepository = messageRepository;
         this.userRepository = userRepository;
+        this.messageMapper = messageMapper;
+        this.userMapper = userMapper;
     }
 
     public List<MessageOutputDto> getAllMessages() {
         Iterable<Message> messages = messageRepository.findAll();
         List<MessageOutputDto> messageOutputDtos = new ArrayList<>();
         for (Message m : messages) {
-            MessageOutputDto mdto = MessageMapper.messageToMessageDto(m);
+            User user = m.getUser();
+            UserLeanOutputDto udto = UserMapper.userToUserLeanDto(user);
+            MessageOutputDto mdto = MessageMapper.messageToMessageDtoWithLeanUser(m, udto);
             messageOutputDtos.add(mdto);
         }
         return messageOutputDtos;

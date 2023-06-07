@@ -19,5 +19,5 @@ public class UserOutputDto {
     private String zipcode;
     private String city;
     private LocalDate dateOfBirth;
-    private byte[] photo;
+    private String photo;
 }

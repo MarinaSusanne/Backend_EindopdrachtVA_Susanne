@@ -24,7 +24,7 @@ public class UserMapper {
         outputDto.setZipcode(user.getZipcode());
         outputDto.setCity(user.getCity());
         outputDto.setDateOfBirth(user.getDateOfBirth());
-        outputDto.setPhoto(user.getPhoto());
+        outputDto.setPhoto(new String (user.getPhoto()));
         return outputDto;
     }
 
@@ -58,7 +58,7 @@ public class UserMapper {
         outputDto.setId(user.getId());
         outputDto.setFirstName(user.getFirstName());
         outputDto.setLastName(user.getLastName());
-        outputDto.setPhoto(user.getPhoto());
+        outputDto.setPhoto(new String (user.getPhoto()));
         return outputDto;
     }
 
