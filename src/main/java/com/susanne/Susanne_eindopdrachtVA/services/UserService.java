@@ -1,28 +1,27 @@
 package com.susanne.Susanne_eindopdrachtVA.services;
-
 import com.susanne.Susanne_eindopdrachtVA.dtos.input.UserInputDto;
 import com.susanne.Susanne_eindopdrachtVA.dtos.input.UserPutInputDto;
 import com.susanne.Susanne_eindopdrachtVA.dtos.output.MessageOutputDto;
 import com.susanne.Susanne_eindopdrachtVA.dtos.output.UserLeanOutputDto;
 import com.susanne.Susanne_eindopdrachtVA.dtos.output.UserOutputDto;
+import com.susanne.Susanne_eindopdrachtVA.exceptions.BadRequestException;
 import com.susanne.Susanne_eindopdrachtVA.exceptions.NoUsersWithoutGroupException;
 import com.susanne.Susanne_eindopdrachtVA.exceptions.RecordNotFoundException;
 import com.susanne.Susanne_eindopdrachtVA.mappers.MessageMapper;
 import com.susanne.Susanne_eindopdrachtVA.mappers.UserMapper;
+import com.susanne.Susanne_eindopdrachtVA.model.Authority;
 import com.susanne.Susanne_eindopdrachtVA.model.Message;
 import com.susanne.Susanne_eindopdrachtVA.model.User;
 import com.susanne.Susanne_eindopdrachtVA.repository.UserRepository;
-import org.hibernate.validator.internal.util.logging.Messages;
-import org.springframework.data.crossstore.ChangeSetPersister;
-import org.springframework.http.ResponseEntity;
+import com.susanne.Susanne_eindopdrachtVA.utils.RandomStringGenerator;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.RequestBody;
-
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class UserService {
@@ -31,10 +30,13 @@ public class UserService {
     private final UserMapper userMapper;
     private final MessageMapper messageMapper;
 
-    public UserService(UserRepository userRepository, UserMapper userMapper, MessageMapper messageMapper) {
+    private final PasswordEncoder passwordEncoder;
+
+    public UserService(UserRepository userRepository, UserMapper userMapper, MessageMapper messageMapper PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.userMapper = userMapper;
         this.messageMapper = messageMapper;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public List<UserOutputDto> getAllUsers() {
@@ -50,6 +52,11 @@ public class UserService {
     public UserOutputDto getOneUserById(Long id) {
         User user = userRepository.findById(id).orElseThrow(() -> new RecordNotFoundException("User not found"));
         return UserMapper.userToUserDto(user);
+    }
+
+    public String getUsername(Long id) {
+        User user = userRepository.findById(id).orElseThrow(() -> new RecordNotFoundException("User not found"));
+        return user.getUsername();
     }
 
     public List<MessageOutputDto> getUserMessagesByUserId(Long Id) {
@@ -83,10 +90,15 @@ public class UserService {
     }
 
     public UserOutputDto createUser(UserInputDto inputDto) {
+        String randomString = RandomStringGenerator.generateAlphaNumeric(20);
+        inputDto.setApikey(randomString);
+        inputDto.setPassword(passwordEncoder.encode(inputDto.getPassword()));
         User user = UserMapper.userDtoToUser(inputDto);
         userRepository.save(user);
         return UserMapper.userToUserDto(user);
     }
+    //beetje aangepast tov security tech it easy!
+
 
     public void deleteUser(@RequestBody Long id) {
         userRepository.deleteById(id);
@@ -103,6 +115,29 @@ public class UserService {
             throw new RecordNotFoundException("No User found!");
         }
     }
+
+
+    public Set<Authority> getAuthorities(Long id) {
+        User user = userRepository.findById(id).orElseThrow(() -> new BadRequestException("User bestaat niet"));
+        UserOutputDto userDto = userMapper.userToUserDto(user);
+        return userDto.getAuthorities();
+    }
+
+
+    public void addAuthority(String username, String authority) {
+        User user = userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException(username));
+        user.addAuthority(new Authority(username, authority));
+        userRepository.save(user);
+    }
+
+    public void removeAuthority(Long id, String authority) {
+        User user = userRepository.findById(id).orElseThrow(() -> new BadRequestException("User bestaat niet"));
+//        User user = userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException(username));
+        Authority authorityToRemove = user.getAuthorities().stream().filter((a) -> a.getAuthority().equalsIgnoreCase(authority)).findAny().get();
+        user.removeAuthority(authorityToRemove);
+        userRepository.save(user);
+    }
+
 }
 
 

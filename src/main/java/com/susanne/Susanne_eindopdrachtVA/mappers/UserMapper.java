@@ -32,6 +32,7 @@ public class UserMapper {
     public static User userDtoToUser(UserInputDto inputDto) {
         User user = new User();
         user.setUsername(inputDto.getUsername());
+        user.setApikey(inputDto.getApikey());
         user.setPassword(inputDto.getPassword());
         user.setEmail(inputDto.getEmail());
         user.setFirstName(inputDto.getFirstName());

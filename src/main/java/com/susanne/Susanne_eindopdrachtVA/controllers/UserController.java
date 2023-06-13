@@ -5,6 +5,8 @@ import com.susanne.Susanne_eindopdrachtVA.dtos.input.UserPutInputDto;
 import com.susanne.Susanne_eindopdrachtVA.dtos.output.MessageOutputDto;
 import com.susanne.Susanne_eindopdrachtVA.dtos.output.UserLeanOutputDto;
 import com.susanne.Susanne_eindopdrachtVA.dtos.output.UserOutputDto;
+import com.susanne.Susanne_eindopdrachtVA.exceptions.BadRequestException;
+import com.susanne.Susanne_eindopdrachtVA.model.Authority;
 import com.susanne.Susanne_eindopdrachtVA.services.UserService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +15,8 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 @CrossOrigin
 @RestController
@@ -37,6 +41,7 @@ public class UserController {
         return ResponseEntity.ok(userOutputDto);
     }
 
+
 //TODO: naar messages verplaatsen
     @GetMapping("/{id}/messages")
     public ResponseEntity<List<MessageOutputDto>> getUserMessagesByUserId(@PathVariable Long id) {
@@ -52,10 +57,14 @@ public class UserController {
 
     @PostMapping()
     public ResponseEntity<UserOutputDto> createUser(@Valid @RequestBody UserInputDto UserInputDto) {
+        String username = UserInputDto.getUsername();
+        //TODO: check of username unique is!!! Hoe kan ik dat inbouwen?
         UserOutputDto userOutputDto = userService.createUser(UserInputDto);
+        userService.addAuthority(username, "ROLE_USER");
         URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentRequest().path("/" + userOutputDto.getId()).toUriString());
         return ResponseEntity.created(uri).body(userOutputDto);
     }
+
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Object> deleteUser(@PathVariable Long id) {
@@ -68,6 +77,34 @@ public class UserController {
         UserOutputDto userOutputDto = userService.updateUser(id, upUser);
         return ResponseEntity.ok().body(userOutputDto);
     }
+
+
+    @GetMapping(value = "/{id}/authorities")
+    public ResponseEntity<Object> getUserAuthorities(@PathVariable Long id) {
+                Set<Authority> authorities = userService.getAuthorities(id);
+        return ResponseEntity.ok().body(authorities);
+    }
+
+
+    @PostMapping(value = "/{id}/authorities")
+    public ResponseEntity<Object> addUserAuthority(@PathVariable Long id, @RequestBody Map<String, Object> fields) {
+        try {
+            String authorityName = (String) fields.get("authority");
+            String username = userService.getUsername(id);
+            userService.addAuthority(username, authorityName);
+            return ResponseEntity.noContent().build();
+        }
+        catch (Exception ex) {
+            throw new BadRequestException();
+        }
+    }
+
+    @DeleteMapping(value = "/{id}/authorities/{authority}")
+    public ResponseEntity<Object> deleteUserAuthority(@PathVariable Long id, @PathVariable("authority") String authority) {
+        userService.removeAuthority(id, authority);
+        return ResponseEntity.noContent().build();
+    }
+
 
 }
 
