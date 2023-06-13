@@ -12,8 +12,6 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.net.URI;
 import java.util.List;
 
-@CrossOrigin
-//TODO: check of cross origin straks weg kan!
 @RestController
 @RequestMapping("/groups")
 public class GroupController {

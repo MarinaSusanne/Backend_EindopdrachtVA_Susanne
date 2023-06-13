@@ -16,7 +16,6 @@ import java.io.IOException;
 import java.util.Objects;
 
 @RestController
-@CrossOrigin
 public class FileController {
     private final FileService fileService;
 

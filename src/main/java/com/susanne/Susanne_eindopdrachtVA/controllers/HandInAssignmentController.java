@@ -14,9 +14,8 @@ import java.net.URI;
 import java.util.List;
 
 
-//@CrossOrigin
+
 @RestController
-@CrossOrigin
 @RequestMapping("/handinassignments")
 public class HandInAssignmentController {
 

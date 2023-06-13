@@ -32,7 +32,7 @@ public class UserService {
 
     private final PasswordEncoder passwordEncoder;
 
-    public UserService(UserRepository userRepository, UserMapper userMapper, MessageMapper messageMapper PasswordEncoder passwordEncoder) {
+    public UserService(UserRepository userRepository, UserMapper userMapper, MessageMapper messageMapper, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.userMapper = userMapper;
         this.messageMapper = messageMapper;
@@ -138,6 +138,10 @@ public class UserService {
         userRepository.save(user);
     }
 
+    public UserOutputDto getUserByUsername(String username) {
+        User user = userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException(username));
+        return userMapper.userToUserDto(user);
+    }
 }
 
 
