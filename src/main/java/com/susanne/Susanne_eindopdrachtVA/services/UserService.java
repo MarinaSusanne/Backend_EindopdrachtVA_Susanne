@@ -3,6 +3,7 @@ package com.susanne.Susanne_eindopdrachtVA.services;
 import com.susanne.Susanne_eindopdrachtVA.dtos.input.UserInputDto;
 import com.susanne.Susanne_eindopdrachtVA.dtos.input.UserPutInputDto;
 import com.susanne.Susanne_eindopdrachtVA.dtos.output.MessageOutputDto;
+import com.susanne.Susanne_eindopdrachtVA.dtos.output.UserLeanOutputDto;
 import com.susanne.Susanne_eindopdrachtVA.dtos.output.UserOutputDto;
 import com.susanne.Susanne_eindopdrachtVA.exceptions.NoUsersWithoutGroupException;
 import com.susanne.Susanne_eindopdrachtVA.exceptions.RecordNotFoundException;
@@ -66,12 +67,12 @@ public class UserService {
         }
     }
 
-    public List<UserOutputDto> getUsersWithoutGroup() {
+    public List<UserLeanOutputDto> getUsersWithoutGroup() {
         Iterable<User> users = userRepository.findAll();
-        List<UserOutputDto> userOutputDtos = new ArrayList<>();
+        List<UserLeanOutputDto> userOutputDtos = new ArrayList<>();
         for (User u : users) {
             if (u.getGroup() == null) {
-                UserOutputDto udto = userMapper.userToUserDto(u);
+                UserLeanOutputDto udto = userMapper.userToUserLeanDto(u);
                 userOutputDtos.add(udto);
             }
         }

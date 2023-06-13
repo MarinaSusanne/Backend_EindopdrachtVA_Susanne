@@ -3,6 +3,7 @@ package com.susanne.Susanne_eindopdrachtVA.controllers;
 import com.susanne.Susanne_eindopdrachtVA.dtos.input.UserInputDto;
 import com.susanne.Susanne_eindopdrachtVA.dtos.input.UserPutInputDto;
 import com.susanne.Susanne_eindopdrachtVA.dtos.output.MessageOutputDto;
+import com.susanne.Susanne_eindopdrachtVA.dtos.output.UserLeanOutputDto;
 import com.susanne.Susanne_eindopdrachtVA.dtos.output.UserOutputDto;
 import com.susanne.Susanne_eindopdrachtVA.services.UserService;
 import jakarta.validation.Valid;
@@ -44,8 +45,8 @@ public class UserController {
     }
 
     @GetMapping("/nogroup")
-    public ResponseEntity<List<UserOutputDto>> getUsersWithoutGroup() {
-        List<UserOutputDto> userOutput = userService.getUsersWithoutGroup();
+    public ResponseEntity<List<UserLeanOutputDto>> getUsersWithoutGroup() {
+        List<UserLeanOutputDto> userOutput = userService.getUsersWithoutGroup();
         return ResponseEntity.ok(userOutput);
     }
 
