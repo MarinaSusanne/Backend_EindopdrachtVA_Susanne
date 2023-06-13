@@ -36,7 +36,7 @@ public class HandInAssignmentController {
     }
 
     @PostMapping("/users/{userId}")
-    public ResponseEntity<Object> handInAssignmentByUser (@Valid @PathVariable Long userId, @RequestBody HandInAssignmentInputDto handinAssignmentInputDto) {
+    public ResponseEntity<Object> handInAssignmentByUser ( @PathVariable Long userId, @Valid @RequestBody HandInAssignmentInputDto handinAssignmentInputDto) {
         HandInAssignmentOutputDto handInAssignmentOutputDto = handInAssignmentService.handInAssignmentByUser(userId, handinAssignmentInputDto);
         URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentRequest().path("/" + handInAssignmentOutputDto.getId()).toUriString());
         return ResponseEntity.created(uri).body(handInAssignmentOutputDto);

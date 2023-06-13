@@ -38,7 +38,7 @@ public class HomeworkAssignmentController {
 
 
     @PostMapping("/admin/groups/{groupId}")
-    public ResponseEntity<Object> createAndAssignAssignmentToGroup(@Valid @PathVariable Long groupId, @RequestBody HomeworkAssignmentInputDto homeworkAssignmentInputDto) {
+    public ResponseEntity<Object> createAndAssignAssignmentToGroup(@PathVariable Long groupId, @Valid @RequestBody HomeworkAssignmentInputDto homeworkAssignmentInputDto) {
         HomeworkAssignmentOutputDto homeworkAssignmentOutputDto = homeworkAssignmentService.createAndAssignAssignmentToGroup(groupId, homeworkAssignmentInputDto);
         URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentRequest().path("/" + homeworkAssignmentOutputDto.getId()).toUriString());
         return ResponseEntity.created(uri).body(homeworkAssignmentOutputDto);

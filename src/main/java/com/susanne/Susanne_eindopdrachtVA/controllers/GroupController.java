@@ -13,6 +13,7 @@ import java.net.URI;
 import java.util.List;
 
 @CrossOrigin
+//TODO: check of cross origin straks weg kan!
 @RestController
 @RequestMapping("/groups")
 public class GroupController {
@@ -24,7 +25,7 @@ public class GroupController {
 
 
     @GetMapping ("/{id}/users")
-    public ResponseEntity<List<UserLeanOutputDto>> getUsersByGroupId(@PathVariable Long id) {
+    public ResponseEntity<List<UserLeanOutputDto>> getUsersByGroupId(@PathVariable Long id ) {
        List<UserLeanOutputDto> userLeanOutput = groupService.getUsersByGroupId (id);
         return ResponseEntity.ok(userLeanOutput);
     }
@@ -52,13 +53,6 @@ public class GroupController {
         URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentRequest().path("/" + groupOutputDto.getId()).toUriString());
         return ResponseEntity.created(uri).body(groupOutputDto);
     }
-
-//    @PutMapping("/admin/{id}")
-//    public ResponseEntity<GroupOutputDto> updateGroup(@PathVariable Long id, @Valid @RequestBody GroupInputDto upGroup) {
-//         GroupOutputDto groupOutputDto = groupService.updateGroup(id, upGroup);
-//         return ResponseEntity.ok().body(groupOutputDto);
-//    }
-
 }
 
 
