@@ -53,18 +53,23 @@ public class SpringSecurityConfig {
                 .requestMatchers(HttpMethod.GET, "/users/nogroup").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.POST, "/users/**").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.DELETE, "/users/**").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.POST, "/users/{id}/authorities").hasRole("ADMIN")
+                //-----------------------------entiteit messages-------------------------------
                 .requestMatchers(HttpMethod.GET, "/messages").hasAnyRole("ADMIN", "USER")
                 .requestMatchers(HttpMethod.POST, "/messages/**").permitAll()
                 .requestMatchers(HttpMethod.PUT, "/messages/**").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.DELETE, "/messages/**").hasRole("ADMIN")
+                //-----------------------------entiteit messagesboards-------------------------------
                 .requestMatchers(HttpMethod.PUT, "/messageboards/**").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.GET, "/messageboards/{id}").hasAnyRole("ADMIN", "USER")
+                //-----------------------------entiteit assignments2x-------------------------------
                 .requestMatchers(HttpMethod.GET, "/homeworkassignments/group/**").hasAnyRole("ADMIN", "USER")
                 .requestMatchers(HttpMethod.POST, "/homeworkassignments/admin/**").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.POST, "/homeworkassignments/{id}/file").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.GET, "/handinassignments/**").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.POST, "/handinassignments/users/{id}").hasAnyRole("ADMIN", "USER")
                 .requestMatchers(HttpMethod.POST, "/handinassignments/{id}/file").hasAnyRole("ADMIN", "USER")
+                //-----------------------------entiteit groups-------------------------------
                 .requestMatchers(HttpMethod.GET, "/groups/users/**").hasAnyRole("ADMIN", "USER")
                 .requestMatchers(HttpMethod.GET, "/groups/{id}/users}").hasAnyRole("ADMIN", "USER")
                 .requestMatchers(HttpMethod.GET, "/groups/admin/**").hasRole("ADMIN")
@@ -72,7 +77,7 @@ public class SpringSecurityConfig {
                 .requestMatchers("/users", "/groups", "/messages", "/messageboards").hasAnyRole("ADMIN", "USER")
                 .requestMatchers("/authenticated").authenticated()
                 .requestMatchers(HttpMethod.POST, "/authenticate").permitAll()
-                .requestMatchers("/authenticate").permitAll()/*allen dit punt mag toegankelijk zijn voor niet ingelogde gebruikers*/
+                .requestMatchers("/authenticate").permitAll()
                 .anyRequest().denyAll()
                 .and()
                 .sessionManagement()

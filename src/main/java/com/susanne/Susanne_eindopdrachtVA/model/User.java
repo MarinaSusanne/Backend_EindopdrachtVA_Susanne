@@ -52,7 +52,7 @@ public class User {
 
     @OneToMany(
             targetEntity = Authority.class,
-            mappedBy = "username",
+            mappedBy = "userId",
             cascade = CascadeType.ALL,
             orphanRemoval = true,
             fetch = FetchType.EAGER)
@@ -80,7 +80,8 @@ public class User {
     public User() {
     }
 
-
+//
+//get.user> getauthotities. if authorities contains admin then else
 
     public Long getId() {
         return id;

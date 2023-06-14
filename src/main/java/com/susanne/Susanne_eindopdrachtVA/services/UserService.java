@@ -7,6 +7,7 @@ import com.susanne.Susanne_eindopdrachtVA.dtos.output.UserOutputDto;
 import com.susanne.Susanne_eindopdrachtVA.exceptions.BadRequestException;
 import com.susanne.Susanne_eindopdrachtVA.exceptions.NoUsersWithoutGroupException;
 import com.susanne.Susanne_eindopdrachtVA.exceptions.RecordNotFoundException;
+import com.susanne.Susanne_eindopdrachtVA.exceptions.UsernameNotFoundException;
 import com.susanne.Susanne_eindopdrachtVA.mappers.MessageMapper;
 import com.susanne.Susanne_eindopdrachtVA.mappers.UserMapper;
 import com.susanne.Susanne_eindopdrachtVA.model.Authority;
@@ -14,7 +15,6 @@ import com.susanne.Susanne_eindopdrachtVA.model.Message;
 import com.susanne.Susanne_eindopdrachtVA.model.User;
 import com.susanne.Susanne_eindopdrachtVA.repository.UserRepository;
 import com.susanne.Susanne_eindopdrachtVA.utils.RandomStringGenerator;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -126,7 +126,7 @@ public class UserService {
 
     public void addAuthority(String username, String authority) {
         User user = userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException(username));
-        user.addAuthority(new Authority(username, authority));
+        user.addAuthority(new Authority(user.getId(), authority));
         userRepository.save(user);
     }
 
@@ -138,9 +138,13 @@ public class UserService {
         userRepository.save(user);
     }
 
-    public UserOutputDto getUserByUsername(String username) {
-        User user = userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException(username));
-        return userMapper.userToUserDto(user);
+    public User getUserByUsername(String username) {
+        Optional<User> optionalUser = userRepository.findByUsername(username);
+        if(optionalUser.isEmpty()){
+            throw new UsernameNotFoundException("username not ffound");
+        } else {
+            return optionalUser.get();
+        }
     }
 }
 
