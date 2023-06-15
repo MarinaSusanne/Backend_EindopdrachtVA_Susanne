@@ -93,8 +93,10 @@ public class UserService {
         String randomString = RandomStringGenerator.generateAlphaNumeric(20);
         inputDto.setApikey(randomString);
         inputDto.setPassword(passwordEncoder.encode(inputDto.getPassword()));
-        addAuthority();
         User user = UserMapper.userDtoToUser(inputDto);
+        userRepository.save(user); // SAve user to receive ID;
+        String authority = "ROLE_USER";
+        user.addAuthority(new Authority(user.getId(), authority));
         userRepository.save(user);
         return UserMapper.userToUserDto(user);
     }
