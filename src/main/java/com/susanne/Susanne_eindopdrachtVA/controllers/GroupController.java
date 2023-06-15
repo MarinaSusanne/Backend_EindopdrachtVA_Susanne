@@ -22,14 +22,14 @@ public class GroupController {
     }
 
 
-    @GetMapping ("/{id}/users")
-    public ResponseEntity<List<UserLeanOutputDto>> getUsersByGroupId(@PathVariable Long id ) {
-       List<UserLeanOutputDto> userLeanOutput = groupService.getUsersByGroupId (id);
+    @GetMapping("/{id}/users")
+    public ResponseEntity<List<UserLeanOutputDto>> getUsersByGroupId(@PathVariable Long id) {
+        List<UserLeanOutputDto> userLeanOutput = groupService.getUsersByGroupId(id);
         return ResponseEntity.ok(userLeanOutput);
     }
 
     @GetMapping("/users/{userId}/group")
-    public ResponseEntity <GroupWithPicturesOutputDto> getMyGroup(@PathVariable Long userId) {
+    public ResponseEntity<GroupWithPicturesOutputDto> getMyGroup(@PathVariable Long userId) {
         GroupWithPicturesOutputDto groupPicturesOutputDto = groupService.getMyGroup(userId);
         return ResponseEntity.ok(groupPicturesOutputDto);
     }
@@ -41,12 +41,13 @@ public class GroupController {
     }
 
     @GetMapping("/admin/{groupId}")
-    public ResponseEntity<GroupWithPicturesOutputDto> getSpecificGroup (@PathVariable Long groupId) {
+    public ResponseEntity<GroupWithPicturesOutputDto> getSpecificGroup(@PathVariable Long groupId) {
         GroupWithPicturesOutputDto groupPicturesOutputDto = groupService.getSpecificGroup(groupId);
         return ResponseEntity.ok(groupPicturesOutputDto);
     }
+
     @PostMapping("/admin")
-    public ResponseEntity<GroupOutputDto> createGroup (@Valid @RequestBody GroupInputDto groupInputDto) {
+    public ResponseEntity<GroupOutputDto> createGroup(@Valid @RequestBody GroupInputDto groupInputDto) {
         GroupOutputDto groupOutputDto = groupService.createGroup(groupInputDto);
         URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentRequest().path("/" + groupOutputDto.getId()).toUriString());
         return ResponseEntity.created(uri).body(groupOutputDto);

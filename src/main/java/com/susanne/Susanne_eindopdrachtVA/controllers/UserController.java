@@ -57,7 +57,6 @@ public class UserController {
     @PostMapping()
     public ResponseEntity<UserOutputDto> createUser(@Valid @RequestBody UserInputDto UserInputDto) {
         String username = UserInputDto.getUsername();
-        //TODO: check of username unique is!!! Hoe kan ik dat inbouwen?
         UserOutputDto userOutputDto = userService.createUser(UserInputDto);
         userService.addAuthority(username, "ROLE_USER");
         URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentRequest().path("/" + userOutputDto.getId()).toUriString());

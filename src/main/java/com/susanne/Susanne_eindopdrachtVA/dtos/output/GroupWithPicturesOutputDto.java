@@ -15,7 +15,6 @@ public class GroupWithPicturesOutputDto {
     private LocalDate startDate;
     private LocalDate endDate;
     private String groupInfo;
-    private User admin;
-    private List<UserPictureOutputDto> userPictureOutputDto;
+    private List<UserPictureOutputDto> userPictureOutputDtos;
     private Long messageBoardId;
 }

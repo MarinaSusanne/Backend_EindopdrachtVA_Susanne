@@ -1,7 +1,6 @@
 package com.susanne.Susanne_eindopdrachtVA.services;
 
 import com.susanne.Susanne_eindopdrachtVA.dtos.input.GroupInputDto;
-import com.susanne.Susanne_eindopdrachtVA.dtos.input.MessageBoardInputDto;
 import com.susanne.Susanne_eindopdrachtVA.dtos.output.*;
 import com.susanne.Susanne_eindopdrachtVA.exceptions.BadRequestException;
 import com.susanne.Susanne_eindopdrachtVA.exceptions.RecordNotFoundException;
@@ -15,12 +14,10 @@ import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Import;
 import org.springframework.stereotype.Service;
 
-import java.sql.SQLOutput;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @Import(AppConfig.class)
@@ -55,6 +52,12 @@ public class GroupServiceImpl implements GroupService {
                 UserLeanOutputDto udto = UserMapper.userToUserLeanDto(u);
                 userLeanOutputDtos.add(udto);
             }
+            //To add in servide layer: addning the admins so they are also visible in the groups
+           List <User> admins = userRepository.findUsersByAdminAuthority();
+           for (User admin : admins) {
+                UserLeanOutputDto admindto = UserMapper.userToUserLeanDto(admin);
+                userLeanOutputDtos.add(admindto);
+            }
             return userLeanOutputDtos;
         }
     }
@@ -65,7 +68,7 @@ public class GroupServiceImpl implements GroupService {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new RecordNotFoundException("No user found"));
         Group group = user.getGroup();
-        if (group == null) {
+                if (group == null) {
             throw new RecordNotFoundException("User is not part of a group");}
         return createGroupPictureOutputDto(group);
     }
@@ -105,7 +108,7 @@ public class GroupServiceImpl implements GroupService {
         for (User u : userList) {
             userleanOutputDtos.add(UserMapper.userToUserLeanDto(u));
         }
-        groupOutputDto.setUserLeanOutputDto(userleanOutputDtos);
+        groupOutputDto.setUserLeanOutputDtos(userleanOutputDtos);
         return groupOutputDto;
     }
 
@@ -117,7 +120,13 @@ public class GroupServiceImpl implements GroupService {
         for (User u : userList) {
             userPictureOutputDtos.add(UserMapper.userToUserPictureDto(u));
         }
-        groupPictureOutputDto.setUserPictureOutputDto(userPictureOutputDtos);
+        //To add in service layer: adding the admins so they are also visible in the groups
+        List <User> admins = userRepository.findUsersByAdminAuthority();
+        for (User admin : admins) {
+            UserPictureOutputDto admindto = UserMapper.userToUserPictureDto(admin);
+            userPictureOutputDtos.add(admindto);
+        }
+        groupPictureOutputDto.setUserPictureOutputDtos(userPictureOutputDtos);
         return groupPictureOutputDto;
     }
 
@@ -139,9 +148,9 @@ public class GroupServiceImpl implements GroupService {
                 userLeanOutputDtos.add(UserMapper.userToUserLeanDto(user));
             }
         }
-                group.setUsers(userList);
+        group.setUsers(userList);
         groupRepository.save(group);
-        //Er wordt gelijk een messageboard aangemaakt zodra een groep wordt aangemaakt
+        //A messageboard is automatically created when a group is created
         MessageBoard messageBoard = new MessageBoard();
         messageBoard.setGroup(group);
         messageBoardRepository.save(messageBoard);
@@ -149,12 +158,9 @@ public class GroupServiceImpl implements GroupService {
         groupRepository.save(group);
         GroupOutputDto groupOutputDto = modelMapper.map(group, GroupOutputDto.class);
         groupOutputDto.setMessageBoardId(group.getMessageBoard().getId());
-        groupOutputDto.setUserLeanOutputDto(userLeanOutputDtos);
+        groupOutputDto.setUserLeanOutputDtos(userLeanOutputDtos);
         return groupOutputDto;
     }
-
-
-    //addgroupToAdmin
 
 
 

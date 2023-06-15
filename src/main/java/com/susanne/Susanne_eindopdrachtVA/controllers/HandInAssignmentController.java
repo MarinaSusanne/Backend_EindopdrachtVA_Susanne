@@ -44,7 +44,6 @@ public class HandInAssignmentController {
     @PostMapping("/{id}/file")
     public ResponseEntity<HandInAssignmentOutputDto> assignFileToHandInAssignment (@PathVariable("id") Long handInAssignmentId,
                                               @RequestParam MultipartFile file) {
-
         FileUploadResponse document = fileController.singleFileUpload(file);
         HandInAssignmentOutputDto hidto =   handInAssignmentService.assignFileToHandInAssignment(document.getFileName(), handInAssignmentId);
      return ResponseEntity.ok(hidto);

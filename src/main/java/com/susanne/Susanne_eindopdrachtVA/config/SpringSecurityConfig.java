@@ -47,6 +47,8 @@ public class SpringSecurityConfig {
                 .httpBasic().disable()
                 .cors().and()
                 .authorizeHttpRequests()
+                //TODO:Deze hieronder wel uitzetten!!!!
+                .requestMatchers("/**").permitAll()
                 .requestMatchers(HttpMethod.POST, "/users").permitAll()
                 .requestMatchers(HttpMethod.GET, "/users").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.GET, "/users/{id}").hasAnyRole("ADMIN", "USER")

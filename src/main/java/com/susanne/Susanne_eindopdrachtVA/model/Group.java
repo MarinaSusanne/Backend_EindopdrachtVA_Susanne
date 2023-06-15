@@ -29,10 +29,6 @@ public class Group {
     @JsonIgnore
     private List<User> users;
 
-    @ManyToOne
-    @JoinColumn(name = "admin_id")
-    private User admin;
-
     @OneToOne
     private MessageBoard messageBoard;
 
@@ -92,12 +88,8 @@ public class Group {
         this.users = users;
     }
 
-    public User getAdmin() {
-        return admin;
-    }
-
-    public void setAdmin(User admin) {
-        this.admin = admin;
+    public void addUser(User admin) {
+        this.users.add(admin);
     }
 
     public MessageBoard getMessageBoard() {

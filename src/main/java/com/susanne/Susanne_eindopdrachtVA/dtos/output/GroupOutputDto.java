@@ -16,7 +16,6 @@ public class GroupOutputDto {
     private LocalDate startDate;
     private LocalDate endDate;
     private String groupInfo;
-    private User admin;
-    private List<UserLeanOutputDto> userLeanOutputDto;
+    private List<UserLeanOutputDto> userLeanOutputDtos;
     private Long messageBoardId;
 }

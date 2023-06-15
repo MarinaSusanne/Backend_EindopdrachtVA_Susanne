@@ -63,14 +63,9 @@ public class User {
     @JsonIgnore
     private List<Message> messages;
 
-
     @ManyToOne
     @JoinColumn(name = "group_id")
     private Group group;
-
-    @OneToMany(mappedBy = "admin")
-    @JsonIgnore
-    private List<Group> groups;
 
     @OneToMany(mappedBy = "user")
     @JsonIgnore
@@ -80,7 +75,6 @@ public class User {
     public User() {
     }
 
-//
 //get.user> getauthotities. if authorities contains admin then else
 
     public Long getId() {
@@ -195,17 +189,10 @@ public class User {
     }
 
     public Group getGroup() {
-        return group;
-    }
-    public void setGroup(Group group) {
-        this.group = group;
-    }
-
-    public List<Group> getGroups() {
-            return groups;
+            return group;
         }
-    public void setGroups(List<Group> groups) {
-        this.groups = groups;
+    public void setGroup( Group groups) {
+        this.group = groups;
     }
 
     public List<HandInAssignment> getHandInAssignments() {
@@ -226,10 +213,5 @@ public class User {
 
 }
 
-
-
-
-    //TODO: check gaat dit goed dat er twee keer een group getter en setter is
-    // TODO: Check, wat doe ik qua constructors? Of een Builder Pattern?
 
 

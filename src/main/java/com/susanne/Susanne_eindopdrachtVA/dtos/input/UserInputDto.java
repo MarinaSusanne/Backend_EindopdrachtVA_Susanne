@@ -47,10 +47,5 @@ public class UserInputDto {
 
     private String photo;
 
-
-
-
 }
 
-
-//TODO: toevoegen extra annotaties

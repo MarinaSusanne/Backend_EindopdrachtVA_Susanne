@@ -93,11 +93,11 @@ public class UserService {
         String randomString = RandomStringGenerator.generateAlphaNumeric(20);
         inputDto.setApikey(randomString);
         inputDto.setPassword(passwordEncoder.encode(inputDto.getPassword()));
+        addAuthority();
         User user = UserMapper.userDtoToUser(inputDto);
         userRepository.save(user);
         return UserMapper.userToUserDto(user);
     }
-    //beetje aangepast tov security tech it easy!
 
 
     public void deleteUser(@RequestBody Long id) {
@@ -132,7 +132,6 @@ public class UserService {
 
     public void removeAuthority(Long id, String authority) {
         User user = userRepository.findById(id).orElseThrow(() -> new BadRequestException("User bestaat niet"));
-//        User user = userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException(username));
         Authority authorityToRemove = user.getAuthorities().stream().filter((a) -> a.getAuthority().equalsIgnoreCase(authority)).findAny().get();
         user.removeAuthority(authorityToRemove);
         userRepository.save(user);

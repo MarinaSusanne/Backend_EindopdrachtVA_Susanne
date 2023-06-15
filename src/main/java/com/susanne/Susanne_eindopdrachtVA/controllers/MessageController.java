@@ -29,6 +29,7 @@ public class MessageController {
         List<MessageOutputDto> messageOutput = messageService.getAllMessages();
         return ResponseEntity.ok(messageOutput);
     }
+
     @PostMapping("/{userId}")
     @ResponseBody
     public ResponseEntity<Object> createAndAssignMessage(@Valid @PathVariable Long userId, @RequestBody MessageInputDto messageInputDto) {

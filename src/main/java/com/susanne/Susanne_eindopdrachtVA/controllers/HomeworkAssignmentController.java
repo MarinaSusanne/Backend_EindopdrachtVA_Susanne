@@ -35,7 +35,6 @@ public class HomeworkAssignmentController {
         return ResponseEntity.ok(homeworkAssignmentOutputDtos);
     }
 
-
     @PostMapping("/admin/groups/{groupId}")
     public ResponseEntity<Object> createAndAssignAssignmentToGroup(@PathVariable Long groupId, @Valid @RequestBody HomeworkAssignmentInputDto homeworkAssignmentInputDto) {
         HomeworkAssignmentOutputDto homeworkAssignmentOutputDto = homeworkAssignmentService.createAndAssignAssignmentToGroup(groupId, homeworkAssignmentInputDto);
@@ -46,7 +45,6 @@ public class HomeworkAssignmentController {
     @PostMapping("/{id}/file")
     public ResponseEntity  <HomeworkAssignmentOutputDto> assignFileToHomeWorkAssignment (@PathVariable("id") Long homeworkAssignmentId,
                                                  @RequestBody MultipartFile file) {
-
         FileUploadResponse document = fileController.singleFileUpload(file);
        HomeworkAssignmentOutputDto hwdto = homeworkAssignmentService.assignFileToHomeworkAssignment(document.getFileName(), homeworkAssignmentId);
         return ResponseEntity.ok(hwdto);
