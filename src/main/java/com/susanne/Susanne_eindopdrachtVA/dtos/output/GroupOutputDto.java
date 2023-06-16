@@ -18,4 +18,5 @@ public class GroupOutputDto {
     private String groupInfo;
     private List<UserLeanOutputDto> userLeanOutputDtos;
     private Long messageBoardId;
+
 }
