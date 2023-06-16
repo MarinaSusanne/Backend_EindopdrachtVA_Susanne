@@ -9,6 +9,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;;
+import java.util.Optional;
 import java.util.Set;
 
 
@@ -32,6 +33,11 @@ public class CustomUserDetailsService implements UserDetailsService {
             grantedAuthorities.add(new SimpleGrantedAuthority(authority.getAuthority()));
         }
         return new org.springframework.security.core.userdetails.User(username, user.getPassword(), grantedAuthorities);
+    }
+
+    public Long getUserId(String username){
+        User user = userService.getUserByUsername(username);
+        return user.getId();
     }
 }
 
