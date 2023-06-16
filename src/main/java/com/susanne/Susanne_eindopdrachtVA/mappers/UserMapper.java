@@ -4,6 +4,7 @@ import com.susanne.Susanne_eindopdrachtVA.dtos.input.UserInputDto;
 import com.susanne.Susanne_eindopdrachtVA.dtos.input.UserPutInputDto;
 import com.susanne.Susanne_eindopdrachtVA.dtos.output.UserLeanOutputDto;
 import com.susanne.Susanne_eindopdrachtVA.dtos.output.UserOutputDto;
+import com.susanne.Susanne_eindopdrachtVA.dtos.output.UserPictureOutputDto;
 import com.susanne.Susanne_eindopdrachtVA.model.User;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
@@ -23,7 +24,7 @@ public class UserMapper {
         outputDto.setZipcode(user.getZipcode());
         outputDto.setCity(user.getCity());
         outputDto.setDateOfBirth(user.getDateOfBirth());
-        outputDto.setPhoto(user.getPhoto());
+        outputDto.setPhoto(new String (user.getPhoto()));
         return outputDto;
     }
 
@@ -31,6 +32,7 @@ public class UserMapper {
     public static User userDtoToUser(UserInputDto inputDto) {
         User user = new User();
         user.setUsername(inputDto.getUsername());
+        user.setApikey(inputDto.getApikey());
         user.setPassword(inputDto.getPassword());
         user.setEmail(inputDto.getEmail());
         user.setFirstName(inputDto.getFirstName());
@@ -53,6 +55,14 @@ public class UserMapper {
         return outputDto;
     }
 
+    public static UserPictureOutputDto userToUserPictureDto(User user) {
+        UserPictureOutputDto outputDto = new UserPictureOutputDto();
+        outputDto.setId(user.getId());
+        outputDto.setFirstName(user.getFirstName());
+        outputDto.setLastName(user.getLastName());
+        outputDto.setPhoto(new String (user.getPhoto()));
+        return outputDto;
+    }
 
 
 

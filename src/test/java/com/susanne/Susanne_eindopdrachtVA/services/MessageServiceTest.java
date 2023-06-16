@@ -292,6 +292,7 @@ class MessageServiceTest {
         }
 
         @Test
+//        @Disabled
         void testUpdateMessage2() {
            //arrange
             MessageInputDto messageInputDto = new MessageInputDto();
@@ -305,5 +306,4 @@ class MessageServiceTest {
             verify(messageRepository).save((Message) any());
             verify(messageRepository).findById((Long) any());
         }
-
 }

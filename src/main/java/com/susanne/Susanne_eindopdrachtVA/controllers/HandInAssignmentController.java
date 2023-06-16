@@ -14,9 +14,8 @@ import java.net.URI;
 import java.util.List;
 
 
-//@CrossOrigin
+
 @RestController
-@CrossOrigin
 @RequestMapping("/handinassignments")
 public class HandInAssignmentController {
 
@@ -36,7 +35,7 @@ public class HandInAssignmentController {
     }
 
     @PostMapping("/users/{userId}")
-    public ResponseEntity<Object> handInAssignmentByUser (@Valid @PathVariable Long userId, @RequestBody HandInAssignmentInputDto handinAssignmentInputDto) {
+    public ResponseEntity<Object> handInAssignmentByUser ( @PathVariable Long userId, @Valid @RequestBody HandInAssignmentInputDto handinAssignmentInputDto) {
         HandInAssignmentOutputDto handInAssignmentOutputDto = handInAssignmentService.handInAssignmentByUser(userId, handinAssignmentInputDto);
         URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentRequest().path("/" + handInAssignmentOutputDto.getId()).toUriString());
         return ResponseEntity.created(uri).body(handInAssignmentOutputDto);
@@ -45,7 +44,6 @@ public class HandInAssignmentController {
     @PostMapping("/{id}/file")
     public ResponseEntity<HandInAssignmentOutputDto> assignFileToHandInAssignment (@PathVariable("id") Long handInAssignmentId,
                                               @RequestParam MultipartFile file) {
-
         FileUploadResponse document = fileController.singleFileUpload(file);
         HandInAssignmentOutputDto hidto =   handInAssignmentService.assignFileToHandInAssignment(document.getFileName(), handInAssignmentId);
      return ResponseEntity.ok(hidto);

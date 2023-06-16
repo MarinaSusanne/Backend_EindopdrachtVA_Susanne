@@ -1,10 +1,13 @@
 package com.susanne.Susanne_eindopdrachtVA.dtos.output;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.susanne.Susanne_eindopdrachtVA.model.Authority;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -19,5 +22,8 @@ public class UserOutputDto {
     private String zipcode;
     private String city;
     private LocalDate dateOfBirth;
-    private byte[] photo;
+    private String photo;
+    @JsonSerialize
+    public Set<Authority> authorities;
+
 }

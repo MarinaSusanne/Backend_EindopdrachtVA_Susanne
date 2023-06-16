@@ -23,8 +23,6 @@ public class GroupInputDto {
 
     private String groupInfo;
 
-    private User admin;
-
     @NotNull
     private List<Long> users;
 

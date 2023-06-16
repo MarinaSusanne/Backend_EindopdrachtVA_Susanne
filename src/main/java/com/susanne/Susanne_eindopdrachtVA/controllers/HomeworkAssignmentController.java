@@ -16,7 +16,6 @@ import java.net.URI;
 import java.util.List;
 
 
-@CrossOrigin
 @RestController
 @RequestMapping("/homeworkassignments")
 public class HomeworkAssignmentController {
@@ -36,9 +35,8 @@ public class HomeworkAssignmentController {
         return ResponseEntity.ok(homeworkAssignmentOutputDtos);
     }
 
-
     @PostMapping("/admin/groups/{groupId}")
-    public ResponseEntity<Object> createAndAssignAssignmentToGroup(@Valid @PathVariable Long groupId, @RequestBody HomeworkAssignmentInputDto homeworkAssignmentInputDto) {
+    public ResponseEntity<Object> createAndAssignAssignmentToGroup(@PathVariable Long groupId, @Valid @RequestBody HomeworkAssignmentInputDto homeworkAssignmentInputDto) {
         HomeworkAssignmentOutputDto homeworkAssignmentOutputDto = homeworkAssignmentService.createAndAssignAssignmentToGroup(groupId, homeworkAssignmentInputDto);
         URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentRequest().path("/" + homeworkAssignmentOutputDto.getId()).toUriString());
         return ResponseEntity.created(uri).body(homeworkAssignmentOutputDto);
@@ -47,7 +45,6 @@ public class HomeworkAssignmentController {
     @PostMapping("/{id}/file")
     public ResponseEntity  <HomeworkAssignmentOutputDto> assignFileToHomeWorkAssignment (@PathVariable("id") Long homeworkAssignmentId,
                                                  @RequestBody MultipartFile file) {
-
         FileUploadResponse document = fileController.singleFileUpload(file);
        HomeworkAssignmentOutputDto hwdto = homeworkAssignmentService.assignFileToHomeworkAssignment(document.getFileName(), homeworkAssignmentId);
         return ResponseEntity.ok(hwdto);

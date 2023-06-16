@@ -1,10 +1,7 @@
 package com.susanne.Susanne_eindopdrachtVA.services;
 
 import com.susanne.Susanne_eindopdrachtVA.dtos.input.GroupInputDto;
-import com.susanne.Susanne_eindopdrachtVA.dtos.input.MessageBoardInputDto;
-import com.susanne.Susanne_eindopdrachtVA.dtos.output.GroupOutputDto;
-import com.susanne.Susanne_eindopdrachtVA.dtos.output.MessageBoardOutputDto;
-import com.susanne.Susanne_eindopdrachtVA.dtos.output.UserLeanOutputDto;
+import com.susanne.Susanne_eindopdrachtVA.dtos.output.*;
 import com.susanne.Susanne_eindopdrachtVA.exceptions.BadRequestException;
 import com.susanne.Susanne_eindopdrachtVA.exceptions.RecordNotFoundException;
 import com.susanne.Susanne_eindopdrachtVA.mappers.UserMapper;
@@ -17,12 +14,10 @@ import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Import;
 import org.springframework.stereotype.Service;
 
-import java.sql.SQLOutput;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @Import(AppConfig.class)
@@ -57,19 +52,25 @@ public class GroupServiceImpl implements GroupService {
                 UserLeanOutputDto udto = UserMapper.userToUserLeanDto(u);
                 userLeanOutputDtos.add(udto);
             }
+            //To add in servide layer: addning the admins so they are also visible in the groups
+           List <User> admins = userRepository.findUsersByAdminAuthority();
+           for (User admin : admins) {
+                UserLeanOutputDto admindto = UserMapper.userToUserLeanDto(admin);
+                userLeanOutputDtos.add(admindto);
+            }
             return userLeanOutputDtos;
         }
     }
 
     @Override
     @Transactional
-    public GroupOutputDto getMyGroup(Long id) {
+    public GroupWithPicturesOutputDto getMyGroup(Long id) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new RecordNotFoundException("No user found"));
         Group group = user.getGroup();
-        if (group == null) {
+                if (group == null) {
             throw new RecordNotFoundException("User is not part of a group");}
-        return createGroupOutputDto(group);
+        return createGroupPictureOutputDto(group);
     }
 
     @Override
@@ -93,21 +94,41 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     @Transactional
-    public GroupOutputDto getSpecificGroup(Long id) {
+    public GroupWithPicturesOutputDto getSpecificGroup(Long id) {
         Group group = groupRepository.findById(id)
                 .orElseThrow(() -> new RecordNotFoundException("No Group found with this ID"));
-        return createGroupOutputDto(group);
+        return createGroupPictureOutputDto(group);
     }
 
     private GroupOutputDto createGroupOutputDto(Group group) {
         GroupOutputDto groupOutputDto = modelMapper.map(group, GroupOutputDto.class);
+        groupOutputDto.setMessageBoardId(group.getMessageBoard().getId());
         List<User> userList = group.getUsers();
-        List<UserLeanOutputDto> userLeanOutputDtos = new ArrayList<>();
+        List<UserLeanOutputDto> userleanOutputDtos = new ArrayList<>();
         for (User u : userList) {
-            userLeanOutputDtos.add(UserMapper.userToUserLeanDto(u));
+            userleanOutputDtos.add(UserMapper.userToUserLeanDto(u));
         }
-        groupOutputDto.setUserLeanOutputDtos(userLeanOutputDtos);
+        groupOutputDto.setUserLeanOutputDtos(userleanOutputDtos);
+
         return groupOutputDto;
+    }
+
+    private GroupWithPicturesOutputDto createGroupPictureOutputDto(Group group) {
+        GroupWithPicturesOutputDto groupPictureOutputDto = modelMapper.map(group, GroupWithPicturesOutputDto.class);
+        groupPictureOutputDto.setMessageBoardId(group.getMessageBoard().getId());
+        List<User> userList = group.getUsers();
+        List<UserPictureOutputDto> userPictureOutputDtos = new ArrayList<>();
+        for (User u : userList) {
+            userPictureOutputDtos.add(UserMapper.userToUserPictureDto(u));
+        }
+        //To add in service layer: adding the admins so they are also visible in the groups
+        List <User> admins = userRepository.findUsersByAdminAuthority();
+        for (User admin : admins) {
+            UserPictureOutputDto admindto = UserMapper.userToUserPictureDto(admin);
+            userPictureOutputDtos.add(admindto);
+        }
+        groupPictureOutputDto.setUserPictureOutputDtos(userPictureOutputDtos);
+        return groupPictureOutputDto;
     }
 
     @Override
@@ -128,15 +149,17 @@ public class GroupServiceImpl implements GroupService {
                 userLeanOutputDtos.add(UserMapper.userToUserLeanDto(user));
             }
         }
-                group.setUsers(userList);
+        group.setUsers(userList);
         groupRepository.save(group);
-        //Er wordt gelijk een messageboard aangemaakt zodra een groep wordt aangemaakt
+        //A messageboard is automatically created when a group is created
         MessageBoard messageBoard = new MessageBoard();
         messageBoard.setGroup(group);
         messageBoardRepository.save(messageBoard);
         group.setMessageBoard(messageBoard);
         groupRepository.save(group);
         GroupOutputDto groupOutputDto = modelMapper.map(group, GroupOutputDto.class);
+        groupOutputDto.setMessageBoardId(group.getMessageBoard().getId());
+
         groupOutputDto.setUserLeanOutputDtos(userLeanOutputDtos);
         return groupOutputDto;
     }
@@ -148,16 +171,3 @@ public class GroupServiceImpl implements GroupService {
 
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
