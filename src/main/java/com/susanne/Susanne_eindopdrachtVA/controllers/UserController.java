@@ -56,9 +56,7 @@ public class UserController {
 
     @PostMapping()
     public ResponseEntity<UserOutputDto> createUser(@Valid @RequestBody UserInputDto UserInputDto) {
-        String username = UserInputDto.getUsername();
         UserOutputDto userOutputDto = userService.createUser(UserInputDto);
-        userService.addAuthority(username, "ROLE_USER");
         URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentRequest().path("/" + userOutputDto.getId()).toUriString());
         return ResponseEntity.created(uri).body(userOutputDto);
     }

@@ -94,7 +94,7 @@ public class UserService {
         inputDto.setApikey(randomString);
         inputDto.setPassword(passwordEncoder.encode(inputDto.getPassword()));
         User user = UserMapper.userDtoToUser(inputDto);
-        userRepository.save(user); // SAve user to receive ID;
+        userRepository.save(user); // Save user to receive ID;
         String authority = "ROLE_USER";
         user.addAuthority(new Authority(user.getId(), authority));
         userRepository.save(user);
