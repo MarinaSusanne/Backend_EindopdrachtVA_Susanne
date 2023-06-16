@@ -21,13 +21,10 @@ public class MessageBoardService {
 
     private final MessageBoardRepository messageBoardRepository;
 
-    private final MessageMapper messageMapper;
-    private final UserMapper userMapper;
 
-    public MessageBoardService(MessageBoardRepository messageBoardRepository, MessageMapper messageMapper, UserMapper userMapper){
+
+    public MessageBoardService(MessageBoardRepository messageBoardRepository){
         this.messageBoardRepository = messageBoardRepository;
-        this.messageMapper = messageMapper;
-        this.userMapper = userMapper;
     }
 
     @Transactional
@@ -37,8 +34,8 @@ public class MessageBoardService {
         List <MessageOutputDto> messageOutputDtos = new ArrayList<>();
         for (Message m : messages) {
             User user = m.getUser();
-            UserLeanOutputDto udto = userMapper.userToUserLeanDto(user);
-            MessageOutputDto mdto = messageMapper.messageToMessageDtoWithLeanUser(m, udto);
+            UserLeanOutputDto udto = UserMapper.userToUserLeanDto(user);
+            MessageOutputDto mdto = MessageMapper.messageToMessageDtoWithLeanUser(m, udto);
             messageOutputDtos.add(mdto);
         }
         return messageOutputDtos;

@@ -1,4 +1,5 @@
 package com.susanne.Susanne_eindopdrachtVA.services;
+
 import com.susanne.Susanne_eindopdrachtVA.dtos.input.UserInputDto;
 import com.susanne.Susanne_eindopdrachtVA.dtos.input.UserPutInputDto;
 import com.susanne.Susanne_eindopdrachtVA.dtos.output.MessageOutputDto;
@@ -18,6 +19,7 @@ import com.susanne.Susanne_eindopdrachtVA.utils.RandomStringGenerator;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -27,15 +29,11 @@ import java.util.Set;
 public class UserService {
 
     private final UserRepository userRepository;
-    private final UserMapper userMapper;
-    private final MessageMapper messageMapper;
 
     private final PasswordEncoder passwordEncoder;
 
-    public UserService(UserRepository userRepository, UserMapper userMapper, MessageMapper messageMapper, PasswordEncoder passwordEncoder) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
-        this.userMapper = userMapper;
-        this.messageMapper = messageMapper;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -67,7 +65,7 @@ public class UserService {
         } else {
             List<MessageOutputDto> messageOutputDtos = new ArrayList<>();
             for (Message m : messages) {
-                MessageOutputDto mdto = messageMapper.messageToMessageDto(m);
+                MessageOutputDto mdto = MessageMapper.messageToMessageDto(m);
                 messageOutputDtos.add(mdto);
             }
             return messageOutputDtos;
@@ -79,7 +77,7 @@ public class UserService {
         List<UserLeanOutputDto> userOutputDtos = new ArrayList<>();
         for (User u : users) {
             if (u.getGroup() == null) {
-                UserLeanOutputDto udto = userMapper.userToUserLeanDto(u);
+                UserLeanOutputDto udto = UserMapper.userToUserLeanDto(u);
                 userOutputDtos.add(udto);
             }
         }
@@ -101,7 +99,6 @@ public class UserService {
         return UserMapper.userToUserDto(user);
     }
 
-
     public void deleteUser(@RequestBody Long id) {
         userRepository.deleteById(id);
     }
@@ -118,13 +115,11 @@ public class UserService {
         }
     }
 
-
     public Set<Authority> getAuthorities(Long id) {
         User user = userRepository.findById(id).orElseThrow(() -> new BadRequestException("User bestaat niet"));
-        UserOutputDto userDto = userMapper.userToUserDto(user);
+        UserOutputDto userDto = UserMapper.userToUserDto(user);
         return userDto.getAuthorities();
     }
-
 
     public void addAuthority(String username, String authority) {
         User user = userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException(username));
@@ -141,16 +136,10 @@ public class UserService {
 
     public User getUserByUsername(String username) {
         Optional<User> optionalUser = userRepository.findByUsername(username);
-        if(optionalUser.isEmpty()){
+        if (optionalUser.isEmpty()) {
             throw new UsernameNotFoundException("username not ffound");
         } else {
             return optionalUser.get();
         }
     }
 }
-
-
-
- 
-        
-

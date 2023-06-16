@@ -23,15 +23,10 @@ public class MessageService {
     private final MessageRepository messageRepository;
     private final UserRepository userRepository;
 
-    private final UserMapper userMapper;
 
-    private final MessageMapper messageMapper;
-
-    public MessageService(MessageRepository messageRepository, UserRepository userRepository, MessageMapper messageMapper, UserMapper userMapper) {
+    public MessageService(MessageRepository messageRepository, UserRepository userRepository) {
         this.messageRepository = messageRepository;
         this.userRepository = userRepository;
-        this.messageMapper = messageMapper;
-        this.userMapper = userMapper;
     }
 
     public List<MessageOutputDto> getAllMessages() {

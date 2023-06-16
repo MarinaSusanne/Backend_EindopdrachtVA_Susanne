@@ -162,8 +162,6 @@ public class GroupServiceImpl implements GroupService {
         return groupOutputDto;
     }
 
-
-
     private void validateGroupDates(LocalDate startDate, LocalDate endDate) {
         if (startDate.isAfter(endDate)) {
             throw new BadRequestException("Start date cannot be after end date");
@@ -171,16 +169,3 @@ public class GroupServiceImpl implements GroupService {
 
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-

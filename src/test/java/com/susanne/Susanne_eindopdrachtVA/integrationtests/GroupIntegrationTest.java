@@ -210,7 +210,7 @@ class GroupIntegrationTest {
     }
 
     @Test
-    @Disabled
+//    @Disabled
     void getMyGroup() throws Exception {
         mockMvc.perform(get("/groups/users/{userId}/group", user1.getId()))
                 .andExpect(status().isOk())
@@ -223,7 +223,7 @@ class GroupIntegrationTest {
     }
 
     @Test
-    @Disabled
+//    @Disabled
     void getSpecificGroup() throws Exception {
         mockMvc.perform(get("/groups/admin/{groupId}", group2.getId()))
                 .andExpect(status().isOk())
