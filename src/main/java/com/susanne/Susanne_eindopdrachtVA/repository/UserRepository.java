@@ -13,7 +13,7 @@ public interface UserRepository extends JpaRepository <User, Long> {
 
     Optional<User> findByUsername(String username);
 
-    @Query("SELECT u FROM User u JOIN u.authorities a WHERE a.authority = 'admin'")
+    @Query("SELECT u FROM User u JOIN u.authorities a WHERE a.authority = 'ROLE_ADMIN'")
     List<User> findUsersByAdminAuthority();
 
 }
