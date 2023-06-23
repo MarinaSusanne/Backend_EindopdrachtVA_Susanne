@@ -10,10 +10,6 @@ public class FileNotFoundException extends RuntimeException {
     @Serial
     private static final long serialVersionUID = 1L;
 
-    public FileNotFoundException() {
-        super();
-    }
-
     public FileNotFoundException(String message) {
         super(message);
     }

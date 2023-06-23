@@ -9,15 +9,14 @@ import org.springframework.stereotype.Component;
 @Component
 public class MessageMapper {
 
-    public static Message messageDtoToMessage (MessageInputDto inputDto){
+    public static Message messageDtoToMessage(MessageInputDto inputDto) {
         Message message = new Message();
         message.setContent(inputDto.getContent());
         message.setSubmitDate(inputDto.getSubmitDate());
-//      message.setUser(inputDto.getUserId());
         return message;
     }
 
-    public static MessageOutputDto messageToMessageDto (Message message){
+    public static MessageOutputDto messageToMessageDto(Message message) {
         MessageOutputDto outputDto = new MessageOutputDto();
         outputDto.setId(message.getId());
         outputDto.setContent(message.getContent());
@@ -25,7 +24,7 @@ public class MessageMapper {
         return outputDto;
     }
 
-    public static MessageOutputDto messageToMessageDtoWithLeanUser (Message message, UserLeanOutputDto userLeanOutputDto){
+    public static MessageOutputDto messageToMessageDtoWithLeanUser(Message message, UserLeanOutputDto userLeanOutputDto) {
         MessageOutputDto outputDto = new MessageOutputDto();
         outputDto.setId(message.getId());
         outputDto.setContent(message.getContent());

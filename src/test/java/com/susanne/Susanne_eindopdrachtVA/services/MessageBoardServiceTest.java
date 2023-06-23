@@ -3,7 +3,6 @@ package com.susanne.Susanne_eindopdrachtVA.services;
 import com.susanne.Susanne_eindopdrachtVA.dtos.input.MessageBoardInputDto;
 import com.susanne.Susanne_eindopdrachtVA.dtos.output.MessageBoardOutputDto;
 import com.susanne.Susanne_eindopdrachtVA.dtos.output.MessageOutputDto;
-import com.susanne.Susanne_eindopdrachtVA.dtos.output.UserLeanOutputDto;
 import com.susanne.Susanne_eindopdrachtVA.exceptions.RecordNotFoundException;
 import com.susanne.Susanne_eindopdrachtVA.mappers.MessageMapper;
 import com.susanne.Susanne_eindopdrachtVA.model.Group;
@@ -11,10 +10,8 @@ import com.susanne.Susanne_eindopdrachtVA.model.Message;
 import com.susanne.Susanne_eindopdrachtVA.model.MessageBoard;
 import com.susanne.Susanne_eindopdrachtVA.model.User;
 import com.susanne.Susanne_eindopdrachtVA.repository.MessageBoardRepository;
-import com.susanne.Susanne_eindopdrachtVA.repository.MessageRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -217,7 +214,6 @@ class MessageBoardServiceTest {
         verify(messageBoardRepository, times(1)).findById(messageBoard1.getId());
     }
 
-
     @Test
 //    @Disabled
     void testGetMessagesFromBoard_NonExistentId() {
@@ -227,7 +223,6 @@ class MessageBoardServiceTest {
         assertThrows(RecordNotFoundException.class, () -> messageBoardService.getMessagesFromBoard(101L));
         verify(messageBoardRepository, times(1)).findById(101L);
     }
-
 
     @Test
 //    @Disabled

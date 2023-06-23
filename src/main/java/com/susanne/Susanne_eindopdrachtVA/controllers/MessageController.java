@@ -30,6 +30,12 @@ public class MessageController {
         return ResponseEntity.ok(messageOutput);
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<List<MessageOutputDto>> getUserMessagesByUserId(@PathVariable Long id) {
+        List<MessageOutputDto> messageOutputDtos = messageService.getUserMessagesByUserId(id);
+        return ResponseEntity.ok(messageOutputDtos);
+    }
+
     @PostMapping("/{userId}")
     @ResponseBody
     public ResponseEntity<Object> createAndAssignMessage(@Valid @PathVariable Long userId, @RequestBody MessageInputDto messageInputDto) {
@@ -53,6 +59,4 @@ public class MessageController {
         messageService.deleteMessage(id);
         return ResponseEntity.noContent().build();
     }
-
-
 }

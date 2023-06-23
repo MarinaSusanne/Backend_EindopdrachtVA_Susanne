@@ -4,10 +4,9 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 
 @Entity
-@Table (name="messages")
+@Table(name = "messages")
 
 public class Message {
     @Id
@@ -63,7 +62,6 @@ public class Message {
         this.submitDate = submitDate;
     }
 
-
     public User getUser() {
         return user;
     }
@@ -79,8 +77,4 @@ public class Message {
     public void setMessageBoard(MessageBoard messageBoard) {
         this.messageBoard = messageBoard;
     }
-
-
-
-
 }

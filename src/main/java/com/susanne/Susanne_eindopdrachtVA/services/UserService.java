@@ -2,17 +2,14 @@ package com.susanne.Susanne_eindopdrachtVA.services;
 
 import com.susanne.Susanne_eindopdrachtVA.dtos.input.UserInputDto;
 import com.susanne.Susanne_eindopdrachtVA.dtos.input.UserPutInputDto;
-import com.susanne.Susanne_eindopdrachtVA.dtos.output.MessageOutputDto;
 import com.susanne.Susanne_eindopdrachtVA.dtos.output.UserLeanOutputDto;
 import com.susanne.Susanne_eindopdrachtVA.dtos.output.UserOutputDto;
 import com.susanne.Susanne_eindopdrachtVA.exceptions.BadRequestException;
 import com.susanne.Susanne_eindopdrachtVA.exceptions.NoUsersWithoutGroupException;
 import com.susanne.Susanne_eindopdrachtVA.exceptions.RecordNotFoundException;
 import com.susanne.Susanne_eindopdrachtVA.exceptions.UsernameNotFoundException;
-import com.susanne.Susanne_eindopdrachtVA.mappers.MessageMapper;
 import com.susanne.Susanne_eindopdrachtVA.mappers.UserMapper;
 import com.susanne.Susanne_eindopdrachtVA.model.Authority;
-import com.susanne.Susanne_eindopdrachtVA.model.Message;
 import com.susanne.Susanne_eindopdrachtVA.model.User;
 import com.susanne.Susanne_eindopdrachtVA.repository.UserRepository;
 import com.susanne.Susanne_eindopdrachtVA.utils.RandomStringGenerator;
@@ -27,7 +24,6 @@ import java.util.Set;
 
 @Service
 public class UserService {
-
     private final UserRepository userRepository;
 
     private final PasswordEncoder passwordEncoder;
@@ -55,21 +51,6 @@ public class UserService {
     public String getUsername(Long id) {
         User user = userRepository.findById(id).orElseThrow(() -> new RecordNotFoundException("User not found"));
         return user.getUsername();
-    }
-
-    public List<MessageOutputDto> getUserMessagesByUserId(Long Id) {
-        User user = userRepository.findById(Id).orElseThrow(() -> new RecordNotFoundException("User not found"));
-        List<Message> messages = user.getMessages();
-        if (messages == null) {
-            throw new RecordNotFoundException("No messages found");
-        } else {
-            List<MessageOutputDto> messageOutputDtos = new ArrayList<>();
-            for (Message m : messages) {
-                MessageOutputDto mdto = MessageMapper.messageToMessageDto(m);
-                messageOutputDtos.add(mdto);
-            }
-            return messageOutputDtos;
-        }
     }
 
     public List<UserLeanOutputDto> getUsersWithoutGroup() {

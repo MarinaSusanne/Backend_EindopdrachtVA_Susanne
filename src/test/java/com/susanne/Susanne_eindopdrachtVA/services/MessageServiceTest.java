@@ -4,12 +4,10 @@ import com.susanne.Susanne_eindopdrachtVA.dtos.input.MessageInputDto;
 import com.susanne.Susanne_eindopdrachtVA.dtos.output.MessageOutputDto;
 import com.susanne.Susanne_eindopdrachtVA.exceptions.BadRequestException;
 import com.susanne.Susanne_eindopdrachtVA.exceptions.RecordNotFoundException;
-import com.susanne.Susanne_eindopdrachtVA.mappers.MessageMapper;
 import com.susanne.Susanne_eindopdrachtVA.model.Group;
 import com.susanne.Susanne_eindopdrachtVA.model.Message;
 import com.susanne.Susanne_eindopdrachtVA.model.MessageBoard;
 import com.susanne.Susanne_eindopdrachtVA.model.User;
-import com.susanne.Susanne_eindopdrachtVA.repository.MessageBoardRepository;
 import com.susanne.Susanne_eindopdrachtVA.repository.MessageRepository;
 import com.susanne.Susanne_eindopdrachtVA.repository.UserRepository;
 import org.junit.jupiter.api.AfterEach;
@@ -34,7 +32,6 @@ import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.*;
 
-
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
 class MessageServiceTest {
@@ -43,10 +40,8 @@ class MessageServiceTest {
     MessageRepository messageRepository;
     @Mock
     UserRepository userRepository;
-
     @InjectMocks
     MessageService messageService;
-
     @Captor
     ArgumentCaptor<Message> captor;
     Message message1;
@@ -67,7 +62,6 @@ class MessageServiceTest {
     Group group1;
     Group group2;
 
-
     @BeforeEach
     void setUp() {
         user1 = new User();
@@ -82,7 +76,6 @@ class MessageServiceTest {
         user1.setZipcode("3579EK");
         user1.setCity("Utrecht");
         user1.setDateOfBirth(LocalDate.of(1999, 6, 8));
-
 
         user2 = new User();
         user2.setId(2L);
@@ -129,20 +122,17 @@ class MessageServiceTest {
         group2.setGroupInfo("groepinfo die nog veel leuker is");
         group2.setUsers(usersList2);
 
-
         message1 = new Message();
         message1.setId(1L);
         message1.setContent("Inhoud van een berichtje dat heel leuk is!");
         message1.setSubmitDate(LocalDateTime.now());
         message1.setUser(user1);
 
-
         message2 = new Message();
         message2.setId(2L);
         message2.setContent("Dit is een tweede testbericht!");
         message2.setSubmitDate(LocalDateTime.of(2023, 6, 13, 11, 13));
         message2.setUser(user2);
-
 
         message3 = new Message();
         message3.setId(3L);
@@ -156,7 +146,6 @@ class MessageServiceTest {
         message4.setContent("Dit is een vierde testbericht!");
         message4.setSubmitDate(LocalDateTime.of(2023, 6, 15, 7, 5));
         message4.setUser(user1);
-
 
         message5 = new Message();
         message5.setId(5L);
@@ -196,7 +185,6 @@ class MessageServiceTest {
         message3.setMessageBoard(messageBoard1);
         message4.setMessageBoard(messageBoard1);
         message5.setMessageBoard(messageBoard2);
-
     }
 
     @AfterEach
@@ -219,7 +207,6 @@ class MessageServiceTest {
         assertEquals(message3.getId(), result.get(2).getId());
         assertEquals(message5.getContent(), result.get(4).getContent());
     }
-
 
     @Test
 //    @Disabled
@@ -271,39 +258,39 @@ class MessageServiceTest {
 
     @Test
 //    @Disabled
-        void testUpdateMessage() {
-            //arrange
-            MessageInputDto messageInputDto = new MessageInputDto();
-            messageInputDto.setContent("Ik pas een berichtje aan ");
-            messageInputDto.setUserId(user1.getId());
+    void testUpdateMessage() {
+        //arrange
+        MessageInputDto messageInputDto = new MessageInputDto();
+        messageInputDto.setContent("Ik pas een berichtje aan ");
+        messageInputDto.setUserId(user1.getId());
 
-            when(messageRepository.findById(message4.getId())).thenReturn(Optional.of(message4));
-            when(messageRepository.save(any())).thenReturn(message4);
-            //act
-            messageService.updateMessage(4L, messageInputDto);
+        when(messageRepository.findById(message4.getId())).thenReturn(Optional.of(message4));
+        when(messageRepository.save(any())).thenReturn(message4);
+        //act
+        messageService.updateMessage(4L, messageInputDto);
 
-            //assert
-            ArgumentCaptor<Message> captor = ArgumentCaptor.forClass(Message.class);
-            verify(messageRepository).save(captor.capture());
-            Message captured = captor.getValue();
-            assertEquals(message4.getContent(), captured.getContent());
-            assertEquals(message4.getSubmitDate(), captured.getSubmitDate());
-            assertEquals(message4.getId(), captured.getId());
-        }
+        //assert
+        ArgumentCaptor<Message> captor = ArgumentCaptor.forClass(Message.class);
+        verify(messageRepository).save(captor.capture());
+        Message captured = captor.getValue();
+        assertEquals(message4.getContent(), captured.getContent());
+        assertEquals(message4.getSubmitDate(), captured.getSubmitDate());
+        assertEquals(message4.getId(), captured.getId());
+    }
 
-        @Test
+    @Test
 //        @Disabled
-        void testUpdateMessage2() {
-           //arrange
-            MessageInputDto messageInputDto = new MessageInputDto();
-            messageInputDto.setContent("Ik pas weer lekker een berichtje aan");
+    void testUpdateMessage2() {
+        //arrange
+        MessageInputDto messageInputDto = new MessageInputDto();
+        messageInputDto.setContent("Ik pas weer lekker een berichtje aan");
 
-            when(messageRepository.save((Message) any())).thenThrow(new BadRequestException("An error occurred"));
-            when(messageRepository.findById((Long) any())).thenReturn(Optional.of(new Message()));
-            //act
-            assertThrows(BadRequestException.class, () -> messageService.updateMessage(1L, messageInputDto));
-            //assert
-            verify(messageRepository).save((Message) any());
-            verify(messageRepository).findById((Long) any());
-        }
+        when(messageRepository.save((Message) any())).thenThrow(new BadRequestException("An error occurred"));
+        when(messageRepository.findById((Long) any())).thenReturn(Optional.of(new Message()));
+        //act
+        assertThrows(BadRequestException.class, () -> messageService.updateMessage(1L, messageInputDto));
+        //assert
+        verify(messageRepository).save((Message) any());
+        verify(messageRepository).findById((Long) any());
+    }
 }

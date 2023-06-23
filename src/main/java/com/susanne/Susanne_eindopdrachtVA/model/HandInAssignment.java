@@ -6,7 +6,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import java.time.LocalDate;
 
 @Entity
-@Table(name="handin_assignments")
+@Table(name = "handin_assignments")
 
 public class HandInAssignment {
     @Id
@@ -78,12 +78,3 @@ public class HandInAssignment {
         this.file = file;
     }
 }
-
-
-
-
-
-
-
-//TODO: unieke filename aanmaken op basis van user en tijd, zodat dit lokaal goed gaat (mezelf niet overschrijf)
-

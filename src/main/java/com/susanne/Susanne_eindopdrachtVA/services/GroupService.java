@@ -11,17 +11,15 @@ import org.springframework.web.bind.annotation.RequestBody;
 import java.util.List;
 
 public interface GroupService {
-        List<UserLeanOutputDto> getUsersByGroupId(@PathVariable Long id);
+    List<UserLeanOutputDto> getUsersByGroupId(@PathVariable Long id);
 
-        GroupWithPicturesOutputDto getMyGroup(@PathVariable Long id);
+    GroupWithPicturesOutputDto getMyGroup(@PathVariable Long id);
 
-        List<GroupOutputDto> getMyActiveGroups();
+    List<GroupOutputDto> getMyActiveGroups();
 
-        GroupWithPicturesOutputDto getSpecificGroup(@PathVariable Long id);
+    GroupWithPicturesOutputDto getSpecificGroup(@PathVariable Long id);
 
-        GroupOutputDto createGroup(@Valid @RequestBody GroupInputDto groupInputDto);
+    GroupOutputDto createGroup(@Valid @RequestBody GroupInputDto groupInputDto);
 
 }
 
-//        GroupOutputDto updateGroup(@PathVariable Long id, @Valid @RequestBody GroupInputDto upGroup);
-//}

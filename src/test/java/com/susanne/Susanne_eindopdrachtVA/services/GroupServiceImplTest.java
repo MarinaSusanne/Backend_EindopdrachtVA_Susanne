@@ -4,6 +4,7 @@ import com.susanne.Susanne_eindopdrachtVA.dtos.input.GroupInputDto;
 import com.susanne.Susanne_eindopdrachtVA.dtos.output.GroupOutputDto;
 import com.susanne.Susanne_eindopdrachtVA.dtos.output.GroupWithPicturesOutputDto;
 import com.susanne.Susanne_eindopdrachtVA.dtos.output.UserLeanOutputDto;
+import com.susanne.Susanne_eindopdrachtVA.dtos.output.UserPictureOutputDto;
 import com.susanne.Susanne_eindopdrachtVA.exceptions.BadRequestException;
 import com.susanne.Susanne_eindopdrachtVA.exceptions.RecordNotFoundException;
 import com.susanne.Susanne_eindopdrachtVA.mappers.UserMapper;
@@ -62,7 +63,7 @@ class GroupServiceImplTest {
     User user5;
     User user6;
     Group group1;
-     Group group2;
+    Group group2;
     Group group3;
     Group group4;
 
@@ -158,6 +159,7 @@ class GroupServiceImplTest {
         group1.setStartDate(LocalDate.of(2023, 5, 12));
         group1.setEndDate(LocalDate.of(2023, 12, 22));
         group1.setGroupInfo("groepinfo die vet leuk is");
+        group1.setMessageBoard(new MessageBoard());
         group1.setUsers(usersList1);
 
         group2 = new Group();
@@ -166,6 +168,7 @@ class GroupServiceImplTest {
         group2.setStartDate(LocalDate.of(2023, 5, 13));
         group2.setEndDate(LocalDate.of(2023, 12, 29));
         group2.setGroupInfo("groepinfo die nog veel leuker is");
+        group2.setMessageBoard(new MessageBoard());
         group2.setUsers(usersList2);
 
         group3 = new Group();
@@ -174,6 +177,7 @@ class GroupServiceImplTest {
         group3.setStartDate(LocalDate.of(2023, 5, 14));
         group3.setEndDate(LocalDate.of(2023, 11, 21));
         group3.setGroupInfo("userloze groep");
+        group3.setMessageBoard(new MessageBoard());
         group3.setUsers((new ArrayList<>()));
 
         group4 = new Group();
@@ -182,6 +186,7 @@ class GroupServiceImplTest {
         group4.setStartDate(LocalDate.of(2022, 7, 29));
         group4.setEndDate(LocalDate.of(2023, 4, 21));
         group4.setGroupInfo("Groep die niet meer actief is");
+        group4.setMessageBoard(new MessageBoard());
         group4.setUsers((new ArrayList<>()));
 
         group5 = new Group();
@@ -190,8 +195,8 @@ class GroupServiceImplTest {
         group5.setStartDate(LocalDate.of(2022, 8, 29));
         group5.setEndDate(LocalDate.of(2023, 5, 21));
         group5.setGroupInfo("Nog een groep die niet meer actief is");
+        group5.setMessageBoard(new MessageBoard());
         group5.setUsers((new ArrayList<>()));
-
 
         //Hier leg ik in de relaties die ik niet hierboven al kan maken
         user1.setGroup(group1);
@@ -214,12 +219,13 @@ class GroupServiceImplTest {
         // Assert
         List<UserLeanOutputDto> result = groupServiceImpl.getUsersByGroupId(group1.getId());
 
+        verify(userRepository).findUsersByAdminAuthority();
         assertEquals(testUsers.size(), result.size());
         assertEquals(testLean1.getId(), result.get(0).getId());
         assertEquals(testLean1.getFirstName(), result.get(0).getFirstName());
         assertEquals(testLean2.getId(), result.get(1).getId());
         assertEquals(testLean2.getLastName(), result.get(1).getLastName());
-        }
+    }
 
     @Test
 //    @Disabled
@@ -244,8 +250,6 @@ class GroupServiceImplTest {
         assertEquals("No users found", exception.getMessage());
     }
 
-
-
     @Test
 //    @Disabled
     void getMyGroup() {
@@ -268,7 +272,7 @@ class GroupServiceImplTest {
         assertEquals(testGroup.getGroupName(), result.getGroupName());
         assertEquals(testGroup.getGroupInfo(), result.getGroupInfo());
         verify(userRepository).findById(1L);
-        verify(modelMapper).map(testGroup, GroupOutputDto.class);
+        verify(modelMapper).map(testGroup, GroupWithPicturesOutputDto.class);
     }
 
     @Test
@@ -285,56 +289,54 @@ class GroupServiceImplTest {
         assertEquals("User is not part of a group", exception.getMessage());
     }
 
-
     @Test
 //    @Disabled
     void getMyActiveGroups() {
-            //arrange
-            List<Group> groups = List.of(group1, group2, group3, group4);
-            when(groupRepository.findAll()).thenReturn(groups);
-            LocalDate currentDate = LocalDate.now();
-            List<GroupOutputDto> expectedActiveGroups = new ArrayList<>();
+        //arrange
+        List<Group> groups = List.of(group1, group2, group3, group4);
+        when(groupRepository.findAll()).thenReturn(groups);
+        LocalDate currentDate = LocalDate.now();
+        List<GroupOutputDto> expectedActiveGroups = new ArrayList<>();
 
-            GroupOutputDto groupOutputDto1 = new GroupOutputDto();
-            groupOutputDto1.setGroupInfo(group1.getGroupInfo());
-            groupOutputDto1.setGroupName(group1.getGroupName());
-            groupOutputDto1.setId(group1.getId());
-            groupOutputDto1.setStartDate(group1.getStartDate());
-            groupOutputDto1.setUserLeanOutputDtos(new ArrayList<>());
-            when(modelMapper.map(group1, GroupOutputDto.class)).thenReturn(groupOutputDto1);
+        GroupOutputDto groupOutputDto1 = new GroupOutputDto();
+        groupOutputDto1.setGroupInfo(group1.getGroupInfo());
+        groupOutputDto1.setGroupName(group1.getGroupName());
+        groupOutputDto1.setId(group1.getId());
+        groupOutputDto1.setStartDate(group1.getStartDate());
+        groupOutputDto1.setUserLeanOutputDtos(new ArrayList<>());
+        when(modelMapper.map(group1, GroupOutputDto.class)).thenReturn(groupOutputDto1);
 
-            GroupOutputDto groupOutputDto2 = new GroupOutputDto();
-            groupOutputDto2.setGroupInfo(group2.getGroupInfo());
-            groupOutputDto2.setGroupName(group2.getGroupName());
-            groupOutputDto2.setId(group2.getId());
-            groupOutputDto2.setStartDate(group2.getStartDate());
-            groupOutputDto2.setUserLeanOutputDtos(new ArrayList<>());
-            when(modelMapper.map(group2, GroupOutputDto.class)).thenReturn(groupOutputDto2);
+        GroupOutputDto groupOutputDto2 = new GroupOutputDto();
+        groupOutputDto2.setGroupInfo(group2.getGroupInfo());
+        groupOutputDto2.setGroupName(group2.getGroupName());
+        groupOutputDto2.setId(group2.getId());
+        groupOutputDto2.setStartDate(group2.getStartDate());
+        groupOutputDto2.setUserLeanOutputDtos(new ArrayList<>());
+        when(modelMapper.map(group2, GroupOutputDto.class)).thenReturn(groupOutputDto2);
 
-            GroupOutputDto groupOutputDto3 = new GroupOutputDto();
-            groupOutputDto3.setGroupInfo(group3.getGroupInfo());
-            groupOutputDto3.setGroupName(group3.getGroupName());
-            groupOutputDto3.setId(group3.getId());
-            groupOutputDto3.setStartDate(group3.getStartDate());
-            groupOutputDto3.setUserLeanOutputDtos(new ArrayList<>());
-            when(modelMapper.map(group3, GroupOutputDto.class)).thenReturn(groupOutputDto3);
+        GroupOutputDto groupOutputDto3 = new GroupOutputDto();
+        groupOutputDto3.setGroupInfo(group3.getGroupInfo());
+        groupOutputDto3.setGroupName(group3.getGroupName());
+        groupOutputDto3.setId(group3.getId());
+        groupOutputDto3.setStartDate(group3.getStartDate());
+        groupOutputDto3.setUserLeanOutputDtos(new ArrayList<>());
+        when(modelMapper.map(group3, GroupOutputDto.class)).thenReturn(groupOutputDto3);
 
-            expectedActiveGroups.add(groupOutputDto1);
-            expectedActiveGroups.add(groupOutputDto2);
-            expectedActiveGroups.add(groupOutputDto3);
+        expectedActiveGroups.add(groupOutputDto1);
+        expectedActiveGroups.add(groupOutputDto2);
+        expectedActiveGroups.add(groupOutputDto3);
 
-            //act
-            List<GroupOutputDto> result = groupServiceImpl.getMyActiveGroups();
+        //act
+        List<GroupOutputDto> result = groupServiceImpl.getMyActiveGroups();
 
-            //assert
-            assertEquals(expectedActiveGroups, result);
-            verify(groupRepository, times(1)).findAll();
-            assertEquals(expectedActiveGroups.get(1).getGroupInfo(), result.get(1).getGroupInfo());
-            assertEquals(expectedActiveGroups.get(2).getGroupName(), result.get(2).getGroupName());
-            assertEquals(expectedActiveGroups.get(0).getGroupName(), result.get(0).getGroupName());
-            assertEquals(expectedActiveGroups.size(), result.size());
-        }
-
+        //assert
+        assertEquals(expectedActiveGroups, result);
+        verify(groupRepository, times(1)).findAll();
+        assertEquals(expectedActiveGroups.get(1).getGroupInfo(), result.get(1).getGroupInfo());
+        assertEquals(expectedActiveGroups.get(2).getGroupName(), result.get(2).getGroupName());
+        assertEquals(expectedActiveGroups.get(0).getGroupName(), result.get(0).getGroupName());
+        assertEquals(expectedActiveGroups.size(), result.size());
+    }
 
     @Test
 //    @Disabled
@@ -346,7 +348,7 @@ class GroupServiceImplTest {
         List<GroupOutputDto> expectedActiveGroups = new ArrayList<>();
 
         //act and assert
-        RecordNotFoundException exception =  assertThrows(RecordNotFoundException.class, () -> {
+        RecordNotFoundException exception = assertThrows(RecordNotFoundException.class, () -> {
             groupServiceImpl.getMyActiveGroups();
         });
 
@@ -355,37 +357,36 @@ class GroupServiceImplTest {
         verifyNoMoreInteractions(groupRepository);
     }
 
-
     @Test
 //    @Disabled
-        void getSpecificGroup() {
-            //arrange
-            when(groupRepository.findById(group1.getId())).thenReturn(Optional.of(group1));
-            GroupOutputDto groupOutputDto = new GroupOutputDto();
-            groupOutputDto.setGroupInfo(group1.getGroupInfo());
-            groupOutputDto.setGroupName(group1.getGroupName());
-            groupOutputDto.setId(group1.getId());
-            groupOutputDto.setStartDate(group1.getStartDate());
+    void getSpecificGroup() {
+        //arrange
+        when(groupRepository.findById(group1.getId())).thenReturn(Optional.of(group1));
+        GroupWithPicturesOutputDto groupOutputDto = new GroupWithPicturesOutputDto();
+        groupOutputDto.setGroupInfo(group1.getGroupInfo());
+        groupOutputDto.setGroupName(group1.getGroupName());
+        groupOutputDto.setId(group1.getId());
+        groupOutputDto.setStartDate(group1.getStartDate());
 
-            List<UserLeanOutputDto> userLeanOutputDtos = new ArrayList<>();
-            userLeanOutputDtos.add(UserMapper.userToUserLeanDto(user1));
-            userLeanOutputDtos.add(UserMapper.userToUserLeanDto(user3));
-            //user4 is niet onderdeel van groep1, gebruik dit om assertFalse te testen
-            userLeanOutputDtos.add(UserMapper.userToUserLeanDto(user4));
-            groupOutputDto.setUserLeanOutputDtos(userLeanOutputDtos);
+        List<UserPictureOutputDto> userLeanOutputDtos = new ArrayList<>();
+        userLeanOutputDtos.add(UserMapper.userToUserPictureDto(user1));
+        userLeanOutputDtos.add(UserMapper.userToUserPictureDto(user3));
+        //user4 is niet onderdeel van groep1, gebruik dit om assertFalse te testen
+        userLeanOutputDtos.add(UserMapper.userToUserPictureDto(user4));
+        groupOutputDto.setUserPictureOutputDtos(userLeanOutputDtos);
 
-            when(modelMapper.map(group1, GroupOutputDto.class)).thenReturn(groupOutputDto);
+        when(modelMapper.map(group1, GroupWithPicturesOutputDto.class)).thenReturn(groupOutputDto);
 
-            // Act
-            GroupWithPicturesOutputDto result = groupServiceImpl.getSpecificGroup(group1.getId());
+        // Act
+        GroupWithPicturesOutputDto result = groupServiceImpl.getSpecificGroup(group1.getId());
 
-            // Assert
-            assertEquals(groupOutputDto.getId(), result.getId());
-            assertEquals(groupOutputDto.getGroupName(), result.getGroupName());
-            assertEquals(groupOutputDto.getGroupInfo(), result.getGroupInfo());
-            assertEquals(groupOutputDto.getUserLeanOutputDtos().get(0).getLastName(), result.getUserPictureOutputDtos().get(0).getLastName());
-            verify(modelMapper).map(group1, GroupOutputDto.class);
-            assertFalse(groupOutputDto.getUserLeanOutputDtos().contains(UserMapper.userToUserLeanDto(user4)));
+        // Assert
+        assertEquals(groupOutputDto.getId(), result.getId());
+        assertEquals(groupOutputDto.getGroupName(), result.getGroupName());
+        assertEquals(groupOutputDto.getGroupInfo(), result.getGroupInfo());
+        assertEquals(groupOutputDto.getUserPictureOutputDtos().get(0).getLastName(), result.getUserPictureOutputDtos().get(0).getLastName());
+        verify(modelMapper).map(group1, GroupWithPicturesOutputDto.class);
+        assertFalse(groupOutputDto.getUserPictureOutputDtos().contains(UserMapper.userToUserPictureDto(user4)));
     }
 
     @Test
@@ -395,7 +396,7 @@ class GroupServiceImplTest {
         when(groupRepository.findById(any())).thenReturn(Optional.empty());
 
         //act and assert
-        RecordNotFoundException exception =  assertThrows(RecordNotFoundException.class, ()
+        RecordNotFoundException exception = assertThrows(RecordNotFoundException.class, ()
                 -> groupServiceImpl.getSpecificGroup(101L));
         verify(groupRepository, times(1)).findById(101L);
         assertEquals("No Group found with this ID", exception.getMessage());
@@ -403,7 +404,7 @@ class GroupServiceImplTest {
 
     @Test
 //    @Disabled
-      void createGroup() {
+    void createGroup() {
         //arrange
         GroupInputDto groupInputDto = new GroupInputDto();
         groupInputDto.setStartDate(LocalDate.of(2023, 5, 23));
@@ -439,7 +440,7 @@ class GroupServiceImplTest {
 
     @Test
 //    @Disabled
-        void createGroup_invalidDate(){
+    void createGroup_invalidDate() {
         //arrange
         GroupInputDto groupInputDto = new GroupInputDto();
         groupInputDto.setStartDate(LocalDate.of(2025, 5, 23));
@@ -448,10 +449,10 @@ class GroupServiceImplTest {
         groupInputDto.setUsers(Arrays.asList(5L, 6L));
         Group group = new Group();
 
-        BadRequestException exception =  assertThrows(BadRequestException.class, () -> {
+        BadRequestException exception = assertThrows(BadRequestException.class, () -> {
             groupServiceImpl.createGroup(groupInputDto);
         });
-            assertEquals("Start date cannot be after end date", exception.getMessage());
+        assertEquals("Start date cannot be after end date", exception.getMessage());
     }
 }
 

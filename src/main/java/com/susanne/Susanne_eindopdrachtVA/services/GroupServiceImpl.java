@@ -45,7 +45,8 @@ public class GroupServiceImpl implements GroupService {
                 .orElseThrow(() -> new RecordNotFoundException("No group found"));
         List<User> users = group.getUsers();
         if (users.isEmpty()) {
-            throw new RecordNotFoundException("No users found");}
+            throw new RecordNotFoundException("No users found");
+        }
         {
             List<UserLeanOutputDto> userLeanOutputDtos = new ArrayList<>();
             for (User u : users) {
@@ -53,8 +54,8 @@ public class GroupServiceImpl implements GroupService {
                 userLeanOutputDtos.add(udto);
             }
             //To add in servide layer: addning the admins so they are also visible in the groups
-           List <User> admins = userRepository.findUsersByAdminAuthority();
-           for (User admin : admins) {
+            List<User> admins = userRepository.findUsersByAdminAuthority();
+            for (User admin : admins) {
                 UserLeanOutputDto admindto = UserMapper.userToUserLeanDto(admin);
                 userLeanOutputDtos.add(admindto);
             }
@@ -68,8 +69,9 @@ public class GroupServiceImpl implements GroupService {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new RecordNotFoundException("No user found"));
         Group group = user.getGroup();
-                if (group == null) {
-            throw new RecordNotFoundException("User is not part of a group");}
+        if (group == null) {
+            throw new RecordNotFoundException("User is not part of a group");
+        }
         return createGroupPictureOutputDto(group);
     }
 
@@ -85,10 +87,12 @@ public class GroupServiceImpl implements GroupService {
             if (startDate != null && endDate != null &&
                     currentDate.isAfter(startDate) && currentDate.isBefore(endDate)) {
                 GroupOutputDto groupOutputDto = createGroupOutputDto(g);
-                activeGroups.add(groupOutputDto);}
+                activeGroups.add(groupOutputDto);
+            }
         }
         if (activeGroups.isEmpty()) {
-            throw new RecordNotFoundException("No active groups found"); }
+            throw new RecordNotFoundException("No active groups found");
+        }
         return activeGroups;
     }
 
@@ -109,7 +113,6 @@ public class GroupServiceImpl implements GroupService {
             userleanOutputDtos.add(UserMapper.userToUserLeanDto(u));
         }
         groupOutputDto.setUserLeanOutputDtos(userleanOutputDtos);
-
         return groupOutputDto;
     }
 
@@ -122,7 +125,7 @@ public class GroupServiceImpl implements GroupService {
             userPictureOutputDtos.add(UserMapper.userToUserPictureDto(u));
         }
         //To add in service layer: adding the admins so they are also visible in the groups
-        List <User> admins = userRepository.findUsersByAdminAuthority();
+        List<User> admins = userRepository.findUsersByAdminAuthority();
         for (User admin : admins) {
             UserPictureOutputDto admindto = UserMapper.userToUserPictureDto(admin);
             userPictureOutputDtos.add(admindto);

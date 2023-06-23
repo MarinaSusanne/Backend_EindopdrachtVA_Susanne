@@ -1,6 +1,5 @@
 package com.susanne.Susanne_eindopdrachtVA.services;
 
-import com.susanne.Susanne_eindopdrachtVA.exceptions.RecordNotFoundException;
 import com.susanne.Susanne_eindopdrachtVA.model.FileUploadResponse;
 import com.susanne.Susanne_eindopdrachtVA.repository.FileRepository;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,7 +16,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.Objects;
-import java.util.Optional;
 
 @Service
 public class FileService {
@@ -37,7 +35,6 @@ public class FileService {
         }
     }
 
-
     public String storeFile(MultipartFile file, String uri) {
 
         String fileName = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
@@ -51,15 +48,7 @@ public class FileService {
         return fileName;
     }
 
-
     public Resource downLoadFile(String fileName) {
-//                Optional<FileUploadResponse> optionalFile = fileRepository.findById(fileId);
-//                if (optionalFile.isEmpty()) {
-//                    throw new RecordNotFoundException("No assignment found with this id");
-//                }
-//                FileUploadResponse f = optionalFile.get();
-//                String fileName = f.getFileName();
-        // of gewoon direct een String fileName mee geven
         Path path = Paths.get(fileStorageLocation).toAbsolutePath().resolve(fileName);
         Resource resource;
         try {

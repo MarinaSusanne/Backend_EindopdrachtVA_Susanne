@@ -1,5 +1,4 @@
 package com.susanne.Susanne_eindopdrachtVA.mappers;
-
 import com.susanne.Susanne_eindopdrachtVA.dtos.input.UserInputDto;
 import com.susanne.Susanne_eindopdrachtVA.dtos.input.UserPutInputDto;
 import com.susanne.Susanne_eindopdrachtVA.dtos.output.UserLeanOutputDto;
@@ -29,7 +28,6 @@ public class UserMapper {
         if (photo != null && photo.length > 0) {
             outputDto.setPhoto(new String(photo));
         }
-
         return outputDto;
     }
 
@@ -63,13 +61,17 @@ public class UserMapper {
         outputDto.setId(user.getId());
         outputDto.setFirstName(user.getFirstName());
         outputDto.setLastName(user.getLastName());
-        outputDto.setPhoto(new String (user.getPhoto()));
+
+        byte[] photo = user.getPhoto();
+        if (photo != null && photo.length > 0) {
+            outputDto.setPhoto(new String(photo));
+        }
+
         return outputDto;
     }
 
 
-
-    public static User updateUser (User user, UserPutInputDto upUser) {
+    public static User updateUser(User user, UserPutInputDto upUser) {
 
         if (!ObjectUtils.isEmpty(upUser.getUsername())) {
             user.setUsername(upUser.getUsername());
@@ -107,7 +109,6 @@ public class UserMapper {
             user.setPhoto(upUser.getPhoto());
         }
         return user;
-
     }
 }
 

@@ -1,4 +1,5 @@
 package com.susanne.Susanne_eindopdrachtVA.services;
+
 import com.susanne.Susanne_eindopdrachtVA.dtos.input.MessageInputDto;
 import com.susanne.Susanne_eindopdrachtVA.dtos.output.MessageOutputDto;
 import com.susanne.Susanne_eindopdrachtVA.dtos.output.UserLeanOutputDto;
@@ -41,6 +42,21 @@ public class MessageService {
         return messageOutputDtos;
     }
 
+    public List<MessageOutputDto> getUserMessagesByUserId(Long Id) {
+        User user = userRepository.findById(Id).orElseThrow(() -> new RecordNotFoundException("User not found"));
+        List<Message> messages = user.getMessages();
+        if (messages == null) {
+            throw new RecordNotFoundException("No messages found");
+        } else {
+            List<MessageOutputDto> messageOutputDtos = new ArrayList<>();
+            for (Message m : messages) {
+                MessageOutputDto mdto = MessageMapper.messageToMessageDto(m);
+                messageOutputDtos.add(mdto);
+            }
+            return messageOutputDtos;
+        }
+    }
+
     public MessageOutputDto createAndAssignMessage(Long userId, MessageInputDto inputDto) {
         User user = userRepository.findById(userId).orElseThrow(() -> new RecordNotFoundException("User not found"));
         Message message = MessageMapper.messageDtoToMessage(inputDto);
@@ -52,7 +68,6 @@ public class MessageService {
         UserLeanOutputDto userLeanOutputDto = UserMapper.userToUserLeanDto(user);
         return MessageMapper.messageToMessageDtoWithLeanUser(message, userLeanOutputDto);
     }
-
 
     public void deleteMessage(Long id) {
         if (!messageRepository.existsById(id)) {

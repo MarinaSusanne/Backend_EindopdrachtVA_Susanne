@@ -37,7 +37,6 @@ public class MessageBoardController {
         MessageBoardOutputDto messageBoardOutputDto = messageBoardService.updateMessageBoardInfo(id, upMessageBoard);
         return ResponseEntity.ok().body(messageBoardOutputDto);
     }
-
 }
 
 

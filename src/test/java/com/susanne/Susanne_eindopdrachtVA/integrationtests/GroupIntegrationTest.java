@@ -5,18 +5,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.susanne.Susanne_eindopdrachtVA.dtos.input.GroupInputDto;
-import com.susanne.Susanne_eindopdrachtVA.dtos.output.GroupOutputDto;
 import com.susanne.Susanne_eindopdrachtVA.model.Group;
+import com.susanne.Susanne_eindopdrachtVA.model.MessageBoard;
 import com.susanne.Susanne_eindopdrachtVA.model.User;
 import com.susanne.Susanne_eindopdrachtVA.repository.GroupRepository;
-import com.susanne.Susanne_eindopdrachtVA.repository.MessageBoardRepository;
 import com.susanne.Susanne_eindopdrachtVA.repository.UserRepository;
-import com.susanne.Susanne_eindopdrachtVA.services.GroupServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -24,25 +20,17 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
-
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-
-import static org.springframework.http.RequestEntity.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 @SpringBootTest
 @AutoConfigureMockMvc(addFilters = false)
@@ -56,6 +44,9 @@ class GroupIntegrationTest {
     GroupRepository groupRepository;
 
     @Autowired
+    MessageBoard messageBoardRepository;
+
+    @Autowired
     UserRepository userRepository;
 
     User user1;
@@ -67,11 +58,12 @@ class GroupIntegrationTest {
     Group group1;
     Group group2;
     Group group3;
-
+    MessageBoard messageBoard1;
+    MessageBoard messageBoard2;
+    MessageBoard messageBoard3;
     List<User> usersList1;
     List<User> usersList2;
     List<User> usersList3;
-
     GroupInputDto groupInputDto4;
 
     @BeforeEach
@@ -92,7 +84,6 @@ class GroupIntegrationTest {
         user1.setZipcode("3579EK");
         user1.setCity("Utrecht");
         user1.setDateOfBirth(LocalDate.of(1999, 6, 8));
-
 
         user2 = new User();
         user2.setId(2L);
@@ -152,10 +143,22 @@ class GroupIntegrationTest {
         userRepository.save(user4);
         userRepository.save(user5);
 
-
         usersList1 = Arrays.asList(user1, user3);
         usersList2 = Arrays.asList(user2, user4);
         usersList3 = Arrays.asList(user5);
+
+        messageBoard1= new MessageBoard();
+        messageBoard1.setId(1L);
+
+        messageBoard2= new MessageBoard();
+        messageBoard2.setId(2L);
+
+        messageBoard3= new MessageBoard();
+        messageBoard3.setId(3L);
+
+        messageBoardRepository.setId(1L);
+        messageBoardRepository.setId(2L);
+        messageBoardRepository.setId(3L);
 
         group1 = new Group();
         group1.setId(1L);
@@ -164,6 +167,7 @@ class GroupIntegrationTest {
         group1.setEndDate(LocalDate.of(2023, 12, 22));
         group1.setGroupInfo("groepinfo die vet leuk is");
         group1.setUsers(usersList1);
+        group1.setMessageBoard(messageBoard1);
 
         group2 = new Group();
         group2.setId(2L);
@@ -171,6 +175,7 @@ class GroupIntegrationTest {
         group2.setStartDate(LocalDate.of(2023, 5, 13));
         group2.setEndDate(LocalDate.of(2023, 12, 29));
         group2.setGroupInfo("groepinfo die nog veel leuker is");
+        group2.setMessageBoard(messageBoard2);
         group2.setUsers(usersList2);
 
         group3 = new Group();
@@ -179,6 +184,7 @@ class GroupIntegrationTest {
         group3.setStartDate(LocalDate.of(2023, 5, 14));
         group3.setEndDate(LocalDate.of(2023, 11, 21));
         group3.setGroupInfo("userloze groep");
+        group3.setMessageBoard(messageBoard3);
         group3.setUsers((new ArrayList<>()));
 
         groupInputDto4 = new GroupInputDto();
@@ -188,8 +194,7 @@ class GroupIntegrationTest {
         groupInputDto4.setGroupInfo("Groep die niet meer actief is");
         groupInputDto4.setUsers(usersList3.stream().map(User::getId).toList());
 
-
-        //Hier leg ik in de relaties die ik niet hierboven al kan maken
+        //Here I add the relations
         user1.setGroup(group1);
         user2.setGroup(group2);
         user3.setGroup(group1);
@@ -204,9 +209,6 @@ class GroupIntegrationTest {
         userRepository.save(user3);
         userRepository.save(user4);
         userRepository.save(user5);
-        userRepository.save(user6);
-
-
     }
 
     @Test
@@ -219,6 +221,7 @@ class GroupIntegrationTest {
                 .andExpect(jsonPath("groupName").value("Naam van Groep"))
                 .andExpect(jsonPath("startDate").value("2023-05-12"))
                 .andExpect(jsonPath("endDate").value("2023-12-22"))
+                .andExpect(jsonPath("messageBoardId").value("1L"))
                 .andExpect(jsonPath("groupInfo").value("groepinfo die vet leuk is"));
     }
 
@@ -246,7 +249,6 @@ class GroupIntegrationTest {
                 .andExpect(jsonPath("endDate").value("2023-08-21"))
                 .andExpect(jsonPath("groupInfo").value("Groep die niet meer actief is"));
     }
-
 
 
     public static String asJsonString(final Object obj) {

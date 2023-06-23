@@ -1,7 +1,6 @@
 package com.susanne.Susanne_eindopdrachtVA.services;
 
 import com.susanne.Susanne_eindopdrachtVA.dtos.input.HomeworkAssignmentInputDto;
-import com.susanne.Susanne_eindopdrachtVA.dtos.output.HandInAssignmentOutputDto;
 import com.susanne.Susanne_eindopdrachtVA.dtos.output.HomeworkAssignmentOutputDto;
 import com.susanne.Susanne_eindopdrachtVA.exceptions.FileNotFoundException;
 import com.susanne.Susanne_eindopdrachtVA.exceptions.RecordNotFoundException;
@@ -42,7 +41,6 @@ public class HomeworkAssignmentService {
             homeworkAssignmentOutputDtos.add(hwDto);
         }
         return homeworkAssignmentOutputDtos;
-
     }
 
     public HomeworkAssignmentOutputDto createAndAssignAssignmentToGroup(Long groupId, HomeworkAssignmentInputDto homeworkAssignmentInputDto) {
@@ -54,9 +52,8 @@ public class HomeworkAssignmentService {
         return modelMapper.map(homeworkAssignment, HomeworkAssignmentOutputDto.class);
     }
 
-
     public HomeworkAssignmentOutputDto assignFileToHomeworkAssignment(String name, Long homeworkAssignmentId) {
-        Optional <HomeworkAssignment> optionalHomeworkAssignment = homeworkAssignmentRepository.findById(homeworkAssignmentId);
+        Optional<HomeworkAssignment> optionalHomeworkAssignment = homeworkAssignmentRepository.findById(homeworkAssignmentId);
         if (optionalHomeworkAssignment.isEmpty()) {
             throw new RecordNotFoundException("No homework assignment found");
         }

@@ -8,7 +8,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Entity
-@Table (name="groups")
+@Table(name = "groups")
 public class Group {
 
     @Id
@@ -18,7 +18,8 @@ public class Group {
     private String groupName;
 
     @DateTimeFormat(pattern = "yyyy-mm-dd")
-    private LocalDate startDate;;
+    private LocalDate startDate;
+    ;
 
     @DateTimeFormat(pattern = "yyyy-mm-dd")
     private LocalDate endDate;
