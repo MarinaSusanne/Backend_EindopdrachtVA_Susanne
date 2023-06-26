@@ -9,6 +9,7 @@ import com.susanne.Susanne_eindopdrachtVA.model.Group;
 import com.susanne.Susanne_eindopdrachtVA.model.MessageBoard;
 import com.susanne.Susanne_eindopdrachtVA.model.User;
 import com.susanne.Susanne_eindopdrachtVA.repository.GroupRepository;
+import com.susanne.Susanne_eindopdrachtVA.repository.MessageBoardRepository;
 import com.susanne.Susanne_eindopdrachtVA.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
@@ -44,7 +45,7 @@ class GroupIntegrationTest {
     GroupRepository groupRepository;
 
     @Autowired
-    MessageBoard messageBoardRepository;
+    MessageBoardRepository messageBoardRepository;
 
     @Autowired
     UserRepository userRepository;
@@ -138,15 +139,29 @@ class GroupIntegrationTest {
         user5.setCity("Utrecht");
         user5.setDateOfBirth(LocalDate.of(1990, 5, 15));
 
+        User user6 = new User();
+        user6.setId(6L);
+        user6.setUsername("TestGebruiker6");
+        user6.setEmail("gebruiker6@example.com");
+        user6.setPassword("wachtwoord789");
+        user6.setFirstName("Emma");
+        user6.setLastName("Jansen");
+        user6.setStreetName("Hoofdstraat");
+        user6.setHouseNumber("10");
+        user6.setZipcode("5678 CD");
+        user6.setCity("Amsterdam");
+        user6.setDateOfBirth(LocalDate.of(1995, 8, 20));
+
         userRepository.save(user1);
         userRepository.save(user2);
         userRepository.save(user3);
         userRepository.save(user4);
         userRepository.save(user5);
+        userRepository.save(user6);
 
         usersList1 = Arrays.asList(user1, user3);
         usersList2 = Arrays.asList(user2, user4);
-        usersList3 = Arrays.asList(user5);
+        usersList3 = Arrays.asList(user5, user6);
 
         messageBoard1= new MessageBoard();
         messageBoard1.setId(1L);
@@ -157,9 +172,9 @@ class GroupIntegrationTest {
         messageBoard3= new MessageBoard();
         messageBoard3.setId(3L);
 
-        messageBoardRepository.setId(1L);
-        messageBoardRepository.setId(2L);
-        messageBoardRepository.setId(3L);
+        messageBoardRepository.save(messageBoard1);
+        messageBoardRepository.save(messageBoard2);
+        messageBoardRepository.save(messageBoard3);
 
         group1 = new Group();
         group1.setId(1L);
@@ -179,14 +194,14 @@ class GroupIntegrationTest {
         group2.setMessageBoard(messageBoard2);
         group2.setUsers(usersList2);
 
-        group3 = new Group();
-        group3.setId(3L);
-        group3.setGroupName("Naam van Groep 3");
-        group3.setStartDate(LocalDate.of(2023, 5, 14));
-        group3.setEndDate(LocalDate.of(2023, 11, 21));
-        group3.setGroupInfo("userloze groep");
-        group3.setMessageBoard(messageBoard3);
-        group3.setUsers((new ArrayList<>()));
+//        group3 = new Group();
+//        group3.setId(3L);
+//        group3.setGroupName("Naam van Groep 3");
+//        group3.setStartDate(LocalDate.of(2023, 5, 14));
+//        group3.setEndDate(LocalDate.of(2023, 11, 21));
+//        group3.setGroupInfo("userloze groep");
+//        group3.setMessageBoard(messageBoard3);
+//        group3.setUsers((new ArrayList<>()));
 
         groupInputDto4 = new GroupInputDto();
         groupInputDto4.setGroupName("Naam van Groep 4");
@@ -203,7 +218,7 @@ class GroupIntegrationTest {
 
         groupRepository.save(group1);
         groupRepository.save(group2);
-        groupRepository.save(group3);
+//        groupRepository.save(group3);
 
         userRepository.save(user1);
         userRepository.save(user2);
@@ -222,7 +237,7 @@ class GroupIntegrationTest {
                 .andExpect(jsonPath("groupName").value("Naam van Groep"))
                 .andExpect(jsonPath("startDate").value("2023-05-12"))
                 .andExpect(jsonPath("endDate").value("2023-12-22"))
-                .andExpect(jsonPath("messageBoardId").value("1L"))
+                .andExpect(jsonPath("messageBoardId").value("1"))
                 .andExpect(jsonPath("groupInfo").value("groepinfo die vet leuk is"));
     }
 
@@ -236,6 +251,7 @@ class GroupIntegrationTest {
                 .andExpect(jsonPath("groupName").value("Naam van Groep 2"))
                 .andExpect(jsonPath("startDate").value("2023-05-13"))
                 .andExpect(jsonPath("endDate").value("2023-12-29"))
+                .andExpect(jsonPath("messageBoardId").value("2"))
                 .andExpect(jsonPath("groupInfo").value("groepinfo die nog veel leuker is"));
     }
 
