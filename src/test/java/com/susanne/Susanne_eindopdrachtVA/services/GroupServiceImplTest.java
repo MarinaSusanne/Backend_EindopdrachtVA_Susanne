@@ -291,6 +291,31 @@ class GroupServiceImplTest {
 
     @Test
 //    @Disabled
+    void getGroup() {
+        //arrange
+        when(groupRepository.findById(1L)).thenReturn(Optional.of(group1));
+        Group testGroup = group1;
+        GroupWithPicturesOutputDto groupOutputDto = new GroupWithPicturesOutputDto();
+        groupOutputDto.setGroupInfo(group1.getGroupInfo());
+        groupOutputDto.setGroupName(group1.getGroupName());
+        groupOutputDto.setId(group1.getId());
+        groupOutputDto.setStartDate(group1.getStartDate());
+        groupOutputDto.setUserPictureOutputDtos(new ArrayList<>());
+        when(modelMapper.map((Object) any(), (Class<GroupWithPicturesOutputDto>) any())).thenReturn(groupOutputDto);
+
+        // Act
+        GroupWithPicturesOutputDto result = groupServiceImpl.getGroup(1L);
+
+        // Assert
+        assertEquals(testGroup.getId(), result.getId());
+        assertEquals(testGroup.getGroupName(), result.getGroupName());
+        assertEquals(testGroup.getGroupInfo(), result.getGroupInfo());
+        verify(groupRepository).findById(1L);
+        verify(modelMapper).map(testGroup, GroupWithPicturesOutputDto.class);
+    }
+
+    @Test
+//    @Disabled
     void getMyActiveGroups() {
         //arrange
         List<Group> groups = List.of(group1, group2, group3, group4);

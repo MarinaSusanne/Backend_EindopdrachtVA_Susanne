@@ -4,6 +4,7 @@ import com.susanne.Susanne_eindopdrachtVA.dtos.input.GroupInputDto;
 import com.susanne.Susanne_eindopdrachtVA.dtos.output.GroupOutputDto;
 import com.susanne.Susanne_eindopdrachtVA.dtos.output.GroupWithPicturesOutputDto;
 import com.susanne.Susanne_eindopdrachtVA.dtos.output.UserLeanOutputDto;
+import com.susanne.Susanne_eindopdrachtVA.model.Group;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -15,11 +16,15 @@ public interface GroupService {
 
     GroupWithPicturesOutputDto getMyGroup(@PathVariable Long id);
 
+    GroupWithPicturesOutputDto getGroup(@PathVariable Long id);
+
     List<GroupOutputDto> getMyActiveGroups();
 
     GroupWithPicturesOutputDto getSpecificGroup(@PathVariable Long id);
 
     GroupOutputDto createGroup(@Valid @RequestBody GroupInputDto groupInputDto);
+
+    List<Group> checkAmountActiveGroups();
 
 }
 

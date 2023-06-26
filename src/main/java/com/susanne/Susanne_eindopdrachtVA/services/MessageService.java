@@ -6,9 +6,11 @@ import com.susanne.Susanne_eindopdrachtVA.dtos.output.UserLeanOutputDto;
 import com.susanne.Susanne_eindopdrachtVA.exceptions.RecordNotFoundException;
 import com.susanne.Susanne_eindopdrachtVA.mappers.MessageMapper;
 import com.susanne.Susanne_eindopdrachtVA.mappers.UserMapper;
+import com.susanne.Susanne_eindopdrachtVA.model.Group;
 import com.susanne.Susanne_eindopdrachtVA.model.Message;
 import com.susanne.Susanne_eindopdrachtVA.model.MessageBoard;
 import com.susanne.Susanne_eindopdrachtVA.model.User;
+import com.susanne.Susanne_eindopdrachtVA.repository.GroupRepository;
 import com.susanne.Susanne_eindopdrachtVA.repository.MessageRepository;
 import com.susanne.Susanne_eindopdrachtVA.repository.UserRepository;
 import org.springframework.stereotype.Service;
@@ -24,10 +26,13 @@ public class MessageService {
     private final MessageRepository messageRepository;
     private final UserRepository userRepository;
 
+    private final GroupRepository groupRepository;
 
-    public MessageService(MessageRepository messageRepository, UserRepository userRepository) {
+
+    public MessageService(MessageRepository messageRepository, UserRepository userRepository, GroupRepository groupRepository) {
         this.messageRepository = messageRepository;
         this.userRepository = userRepository;
+        this.groupRepository=groupRepository;
     }
 
     public List<MessageOutputDto> getAllMessages() {
@@ -62,8 +67,18 @@ public class MessageService {
         Message message = MessageMapper.messageDtoToMessage(inputDto);
         message.setSubmitDate(LocalDateTime.now());
         message.setUser(user);
-        MessageBoard messageBoard = user.getGroup().getMessageBoard();
+
+        if (user.getUsername().equals("admin")) {
+        //page where the admin message is posts is given in the messageinputDTO
+        Long groupId = inputDto.getGroupId();
+        Optional <Group> optionalGroup = groupRepository.findById(groupId);
+        MessageBoard messageBoard = optionalGroup.get().getMessageBoard();
         message.setMessageBoard(messageBoard);
+        }
+        else {
+            MessageBoard messageBoard = user.getGroup().getMessageBoard();
+            message.setMessageBoard(messageBoard);
+        }
         messageRepository.save(message);
         UserLeanOutputDto userLeanOutputDto = UserMapper.userToUserLeanDto(user);
         return MessageMapper.messageToMessageDtoWithLeanUser(message, userLeanOutputDto);

@@ -3,6 +3,7 @@ package com.susanne.Susanne_eindopdrachtVA.services;
 import com.susanne.Susanne_eindopdrachtVA.dtos.input.GroupInputDto;
 import com.susanne.Susanne_eindopdrachtVA.dtos.output.*;
 import com.susanne.Susanne_eindopdrachtVA.exceptions.BadRequestException;
+import com.susanne.Susanne_eindopdrachtVA.exceptions.MaxActiveGroupsException;
 import com.susanne.Susanne_eindopdrachtVA.exceptions.RecordNotFoundException;
 import com.susanne.Susanne_eindopdrachtVA.mappers.UserMapper;
 import com.susanne.Susanne_eindopdrachtVA.model.*;
@@ -75,6 +76,16 @@ public class GroupServiceImpl implements GroupService {
         return createGroupPictureOutputDto(group);
     }
 
+
+    @Override
+    @Transactional
+    public GroupWithPicturesOutputDto getGroup(Long id) {
+        Group group = groupRepository.findById(id)
+                .orElseThrow(() -> new RecordNotFoundException("No group found"));
+        return createGroupPictureOutputDto(group);
+    }
+
+
     @Override
     @Transactional
     public List<GroupOutputDto> getMyActiveGroups() {
@@ -95,6 +106,7 @@ public class GroupServiceImpl implements GroupService {
         }
         return activeGroups;
     }
+
 
     @Override
     @Transactional
@@ -138,7 +150,10 @@ public class GroupServiceImpl implements GroupService {
     @Transactional
     public GroupOutputDto createGroup(GroupInputDto groupInputDto) {
         validateGroupDates(groupInputDto.getStartDate(), groupInputDto.getEndDate());
-
+        List<Group> activeGroups = checkAmountActiveGroups();
+        if (activeGroups.size() >= 3) {
+            throw new MaxActiveGroupsException("There are already three active groups");
+        }
         List<Long> userIds = groupInputDto.getUsers();
         List<User> userList = new ArrayList<>();
         List<UserLeanOutputDto> userLeanOutputDtos = new ArrayList<>();
@@ -165,6 +180,23 @@ public class GroupServiceImpl implements GroupService {
 
         groupOutputDto.setUserLeanOutputDtos(userLeanOutputDtos);
         return groupOutputDto;
+    }
+
+    @Override
+    @Transactional
+    public List<Group> checkAmountActiveGroups() {
+        List<Group> groups = groupRepository.findAll();
+        List<Group> activeGroups = new ArrayList<>();
+        LocalDate currentDate = LocalDate.now();
+        for (Group g : groups) {
+            LocalDate startDate = g.getStartDate();
+            LocalDate endDate = g.getEndDate();
+            if (startDate != null && endDate != null &&
+                    currentDate.isAfter(startDate) && currentDate.isBefore(endDate)) {
+                activeGroups.add(g);
+            }
+        }
+        return activeGroups;
     }
 
     private void validateGroupDates(LocalDate startDate, LocalDate endDate) {

@@ -54,6 +54,7 @@ class GroupIntegrationTest {
     User user3;
     User user4;
     User user5;
+
     User user6;
     Group group1;
     Group group2;
