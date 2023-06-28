@@ -48,6 +48,7 @@ public class GroupController {
         return ResponseEntity.ok(groupOutputDtos);
     }
 
+
     @GetMapping("/admin/{groupId}")
     public ResponseEntity<GroupWithPicturesOutputDto> getSpecificGroup(@PathVariable Long groupId) {
         GroupWithPicturesOutputDto groupPicturesOutputDto = groupService.getSpecificGroup(groupId);

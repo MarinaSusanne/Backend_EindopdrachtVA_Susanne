@@ -22,7 +22,6 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -59,7 +58,6 @@ class GroupIntegrationTest {
     User user6;
     Group group1;
     Group group2;
-    Group group3;
     MessageBoard messageBoard1;
     MessageBoard messageBoard2;
     MessageBoard messageBoard3;
@@ -70,9 +68,6 @@ class GroupIntegrationTest {
 
     @BeforeEach
     void setUp() {
-
-        userRepository.deleteAll();
-        groupRepository.deleteAll();
 
         user1 = new User();
         user1.setId(1L);
@@ -163,13 +158,13 @@ class GroupIntegrationTest {
         usersList2 = Arrays.asList(user2, user4);
         usersList3 = Arrays.asList(user5, user6);
 
-        messageBoard1= new MessageBoard();
+        messageBoard1 = new MessageBoard();
         messageBoard1.setId(1L);
 
-        messageBoard2= new MessageBoard();
+        messageBoard2 = new MessageBoard();
         messageBoard2.setId(2L);
 
-        messageBoard3= new MessageBoard();
+        messageBoard3 = new MessageBoard();
         messageBoard3.setId(3L);
 
         messageBoardRepository.save(messageBoard1);
@@ -194,15 +189,6 @@ class GroupIntegrationTest {
         group2.setMessageBoard(messageBoard2);
         group2.setUsers(usersList2);
 
-//        group3 = new Group();
-//        group3.setId(3L);
-//        group3.setGroupName("Naam van Groep 3");
-//        group3.setStartDate(LocalDate.of(2023, 5, 14));
-//        group3.setEndDate(LocalDate.of(2023, 11, 21));
-//        group3.setGroupInfo("userloze groep");
-//        group3.setMessageBoard(messageBoard3);
-//        group3.setUsers((new ArrayList<>()));
-
         groupInputDto4 = new GroupInputDto();
         groupInputDto4.setGroupName("Naam van Groep 4");
         groupInputDto4.setStartDate(LocalDate.of(2022, 7, 29));
@@ -218,13 +204,13 @@ class GroupIntegrationTest {
 
         groupRepository.save(group1);
         groupRepository.save(group2);
-//        groupRepository.save(group3);
 
         userRepository.save(user1);
         userRepository.save(user2);
         userRepository.save(user3);
         userRepository.save(user4);
         userRepository.save(user5);
+        userRepository.save(user6);
     }
 
     @Test
@@ -238,7 +224,10 @@ class GroupIntegrationTest {
                 .andExpect(jsonPath("startDate").value("2023-05-12"))
                 .andExpect(jsonPath("endDate").value("2023-12-22"))
                 .andExpect(jsonPath("messageBoardId").value("1"))
-                .andExpect(jsonPath("groupInfo").value("groepinfo die vet leuk is"));
+                .andExpect(jsonPath("groupInfo").value("groepinfo die vet leuk is"))
+                .andExpect(jsonPath("userPictureOutputDtos[0].id").value(user1.getId()))
+                .andExpect(jsonPath("userPictureOutputDtos[1].id").value(user3.getId()));
+
     }
 
     @Test
@@ -252,7 +241,9 @@ class GroupIntegrationTest {
                 .andExpect(jsonPath("startDate").value("2023-05-13"))
                 .andExpect(jsonPath("endDate").value("2023-12-29"))
                 .andExpect(jsonPath("messageBoardId").value("2"))
-                .andExpect(jsonPath("groupInfo").value("groepinfo die nog veel leuker is"));
+                .andExpect(jsonPath("groupInfo").value("groepinfo die nog veel leuker is"))
+                .andExpect(jsonPath("userPictureOutputDtos[0].id").value(user2.getId()))
+                .andExpect(jsonPath("userPictureOutputDtos[1].id").value(user4.getId()));
     }
 
     @Test
@@ -266,7 +257,6 @@ class GroupIntegrationTest {
                 .andExpect(jsonPath("endDate").value("2023-08-21"))
                 .andExpect(jsonPath("groupInfo").value("Groep die niet meer actief is"));
     }
-
 
     public static String asJsonString(final Object obj) {
         try {

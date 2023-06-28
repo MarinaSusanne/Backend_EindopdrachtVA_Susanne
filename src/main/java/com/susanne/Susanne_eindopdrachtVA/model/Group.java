@@ -19,7 +19,6 @@ public class Group {
 
     @DateTimeFormat(pattern = "yyyy-mm-dd")
     private LocalDate startDate;
-    ;
 
     @DateTimeFormat(pattern = "yyyy-mm-dd")
     private LocalDate endDate;

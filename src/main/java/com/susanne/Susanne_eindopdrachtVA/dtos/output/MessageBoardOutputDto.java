@@ -16,5 +16,3 @@ public class MessageBoardOutputDto {
     private List<Message> messages;
     private Group group;
 }
-
-//TODO:check Mark, model eruit of een dto?

@@ -11,6 +11,7 @@ import com.susanne.Susanne_eindopdrachtVA.model.Message;
 import com.susanne.Susanne_eindopdrachtVA.model.MessageBoard;
 import com.susanne.Susanne_eindopdrachtVA.model.User;
 import com.susanne.Susanne_eindopdrachtVA.repository.GroupRepository;
+import com.susanne.Susanne_eindopdrachtVA.repository.MessageBoardRepository;
 import com.susanne.Susanne_eindopdrachtVA.repository.MessageRepository;
 import com.susanne.Susanne_eindopdrachtVA.repository.UserRepository;
 import org.springframework.stereotype.Service;
@@ -28,11 +29,13 @@ public class MessageService {
 
     private final GroupRepository groupRepository;
 
+    private final MessageBoardRepository messageBoardRepository;
 
-    public MessageService(MessageRepository messageRepository, UserRepository userRepository, GroupRepository groupRepository) {
+    public MessageService(MessageRepository messageRepository, UserRepository userRepository, GroupRepository groupRepository, MessageBoardRepository messageBoardRepository) {
         this.messageRepository = messageRepository;
         this.userRepository = userRepository;
         this.groupRepository=groupRepository;
+        this.messageBoardRepository = messageBoardRepository;
     }
 
     public List<MessageOutputDto> getAllMessages() {
@@ -72,8 +75,12 @@ public class MessageService {
         //page where the admin message is posts is given in the messageinputDTO
         Long groupId = inputDto.getGroupId();
         Optional <Group> optionalGroup = groupRepository.findById(groupId);
-        MessageBoard messageBoard = optionalGroup.get().getMessageBoard();
-        message.setMessageBoard(messageBoard);
+        Long messageBoardId = optionalGroup.get().getMessageBoard().getId();
+        Optional<MessageBoard> optionalMessageBoard = messageBoardRepository.findById(messageBoardId);
+        if(optionalMessageBoard.isPresent()) {
+         MessageBoard messageBoard = optionalMessageBoard.get();
+            message.setMessageBoard(messageBoard);
+        }
         }
         else {
             MessageBoard messageBoard = user.getGroup().getMessageBoard();
