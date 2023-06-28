@@ -21,7 +21,6 @@ public class HomeworkAssignmentController {
     private final HomeworkAssignmentService homeworkAssignmentService;
     private final FileController fileController;
 
-
     public HomeworkAssignmentController(HomeworkAssignmentService homeworkAssignmentService, FileController fileController) {
         this.homeworkAssignmentService = homeworkAssignmentService;
         this.fileController = fileController;

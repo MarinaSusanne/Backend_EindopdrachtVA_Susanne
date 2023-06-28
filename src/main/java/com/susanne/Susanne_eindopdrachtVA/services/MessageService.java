@@ -14,6 +14,7 @@ import com.susanne.Susanne_eindopdrachtVA.repository.GroupRepository;
 import com.susanne.Susanne_eindopdrachtVA.repository.MessageBoardRepository;
 import com.susanne.Susanne_eindopdrachtVA.repository.MessageRepository;
 import com.susanne.Susanne_eindopdrachtVA.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -34,7 +35,7 @@ public class MessageService {
     public MessageService(MessageRepository messageRepository, UserRepository userRepository, GroupRepository groupRepository, MessageBoardRepository messageBoardRepository) {
         this.messageRepository = messageRepository;
         this.userRepository = userRepository;
-        this.groupRepository=groupRepository;
+        this.groupRepository = groupRepository;
         this.messageBoardRepository = messageBoardRepository;
     }
 
@@ -50,15 +51,16 @@ public class MessageService {
         return messageOutputDtos;
     }
 
-    public List<MessageOutputDto> getUserMessagesByUserId(Long Id) {
-        User user = userRepository.findById(Id).orElseThrow(() -> new RecordNotFoundException("User not found"));
-        List<Message> messages = user.getMessages();
+    @Transactional
+    public List<MessageOutputDto> getUserMessagesByUserId(Long id) {
+        List<Message> messages = messageRepository.findByUserId(id);
         if (messages == null) {
             throw new RecordNotFoundException("No messages found");
         } else {
             List<MessageOutputDto> messageOutputDtos = new ArrayList<>();
             for (Message m : messages) {
-                MessageOutputDto mdto = MessageMapper.messageToMessageDto(m);
+                UserLeanOutputDto udto = UserMapper.userToUserLeanDto(m.getUser());
+                MessageOutputDto mdto = MessageMapper.messageToMessageDtoWithLeanUser(m, udto);
                 messageOutputDtos.add(mdto);
             }
             return messageOutputDtos;
@@ -72,24 +74,24 @@ public class MessageService {
         message.setUser(user);
 
         if (user.getUsername().equals("admin")) {
-        //page where the admin message is posts is given in the messageinputDTO
-        Long groupId = inputDto.getGroupId();
-        Optional <Group> optionalGroup = groupRepository.findById(groupId);
-        Long messageBoardId = optionalGroup.get().getMessageBoard().getId();
-        Optional<MessageBoard> optionalMessageBoard = messageBoardRepository.findById(messageBoardId);
-        if(optionalMessageBoard.isPresent()) {
-         MessageBoard messageBoard = optionalMessageBoard.get();
-            message.setMessageBoard(messageBoard);
-        }
-        }
-        else {
-            MessageBoard messageBoard = user.getGroup().getMessageBoard();
-            message.setMessageBoard(messageBoard);
+            //page where the admin message is posts is given in the messageinputDTO
+            Long groupId = inputDto.getGroupId();
+            Optional<Group> optionalGroup = groupRepository.findById(groupId);
+            Long messageBoardId = optionalGroup.get().getMessageBoard().getId();
+            Optional<MessageBoard> optionalMessageBoard = messageBoardRepository.findById(messageBoardId);
+            if (optionalMessageBoard.isPresent()) {
+                MessageBoard messageBoard = optionalMessageBoard.get();
+                message.setMessageBoard(messageBoard);
+            } else {
+                MessageBoard messageBoard = user.getGroup().getMessageBoard();
+                message.setMessageBoard(messageBoard);
+            }
         }
         messageRepository.save(message);
         UserLeanOutputDto userLeanOutputDto = UserMapper.userToUserLeanDto(user);
         return MessageMapper.messageToMessageDtoWithLeanUser(message, userLeanOutputDto);
     }
+
 
     public void deleteMessage(Long id) {
         if (!messageRepository.existsById(id)) {

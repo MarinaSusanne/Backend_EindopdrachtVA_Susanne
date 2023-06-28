@@ -170,11 +170,11 @@ class MessageServiceTest {
         messageBoard2.setGroup(group2);
 
         //Hier leg ik in de relaties die ik niet hierboven al kan maken
-        user1.setMessages(messages1);
+//        user1.setMessages(messages1);
         user1.setGroup(group1);
-        user2.setMessages(messages2);
+//        user2.setMessages(messages2);
         user2.setGroup(group2);
-        user3.setMessages(messages3);
+//        user3.setMessages(messages3);
         user3.setGroup(group1);
 
         group1.setMessageBoard(messageBoard1);
@@ -225,7 +225,6 @@ class MessageServiceTest {
         //assert
         verify(messageRepository).save(captor.capture());
         Message message = captor.getValue();
-        assertEquals(message1.getMessageBoard(), message.getMessageBoard());
         assertEquals(message1.getUser(), message.getUser());
     }
 

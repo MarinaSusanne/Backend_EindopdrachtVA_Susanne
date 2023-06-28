@@ -18,14 +18,13 @@ public class Message {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime submitDate;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "message_board_id")
     private MessageBoard messageBoard;
-
 
     public Message(Long id, String content, LocalDateTime submitDate, User user, MessageBoard messageBoard) {
         this.id = id;

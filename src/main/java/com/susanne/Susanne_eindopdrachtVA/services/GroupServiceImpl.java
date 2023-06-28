@@ -76,7 +76,6 @@ public class GroupServiceImpl implements GroupService {
         return createGroupPictureOutputDto(group);
     }
 
-
     @Override
     @Transactional
     public GroupWithPicturesOutputDto getGroup(Long id) {
@@ -84,7 +83,6 @@ public class GroupServiceImpl implements GroupService {
                 .orElseThrow(() -> new RecordNotFoundException("No group found"));
         return createGroupPictureOutputDto(group);
     }
-
 
     @Override
     @Transactional
@@ -106,7 +104,6 @@ public class GroupServiceImpl implements GroupService {
         }
         return activeGroups;
     }
-
 
     @Override
     @Transactional

@@ -104,8 +104,5 @@ public class Group {
         return homeworkAssignments;
     }
 
-    public void setHomeworkAssignments(List<HomeworkAssignment> homeworkAssignments) {
-        this.homeworkAssignments = homeworkAssignments;
-    }
 }
 

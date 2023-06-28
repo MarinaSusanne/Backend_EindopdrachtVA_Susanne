@@ -31,7 +31,6 @@ public class HomeworkAssignmentService {
         this.fileRepository = fileRepository;
     }
 
-
     public List<HomeworkAssignmentOutputDto> getAssignmentsByGroupId(Long groupId) {
         Group group = groupRepository.findById(groupId).orElseThrow(() -> new RecordNotFoundException("Group not found"));
         Iterable<HomeworkAssignment> homeworkAssignments = group.getHomeworkAssignments();

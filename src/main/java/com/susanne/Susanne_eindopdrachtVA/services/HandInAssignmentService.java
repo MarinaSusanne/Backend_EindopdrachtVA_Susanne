@@ -8,6 +8,7 @@ import com.susanne.Susanne_eindopdrachtVA.model.*;
 import com.susanne.Susanne_eindopdrachtVA.repository.FileRepository;
 import com.susanne.Susanne_eindopdrachtVA.repository.HandInAssignmentRepository;
 import com.susanne.Susanne_eindopdrachtVA.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
@@ -33,9 +34,9 @@ public class HandInAssignmentService {
         this.fileRepository = fileRepository;
     }
 
+    @Transactional
     public List<HandInAssignmentOutputDto> getAssignmentsByUserId(Long userId) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new RecordNotFoundException("User not found"));
-        Iterable<HandInAssignment> handInAssignments = user.getHandInAssignments();
+        Iterable<HandInAssignment> handInAssignments = handInAssignmentRepository.findByUserId(userId);
         List<HandInAssignmentOutputDto> handInAssignmentOutputDtos = new ArrayList<>();
         for (HandInAssignment h : handInAssignments) {
             HandInAssignmentOutputDto hODto = modelMapper.map(h, HandInAssignmentOutputDto.class);
@@ -50,7 +51,6 @@ public class HandInAssignmentService {
         handInAssignment.setUser(user);
         handInAssignment.setSendDate(LocalDate.now());
         handInAssignmentRepository.save(handInAssignment);
-        //nog even mappen naar een userlean outputDto
         return modelMapper.map(handInAssignment, HandInAssignmentOutputDto.class);
     }
 

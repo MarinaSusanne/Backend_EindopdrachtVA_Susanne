@@ -59,21 +59,14 @@ public class User {
     private Set<Authority> authorities = new HashSet<>();
 
 
-    @OneToMany(mappedBy = "user")
-    @JsonIgnore
-    private List<Message> messages;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "group_id")
     private Group group;
 
-    @OneToMany(mappedBy = "user")
-    @JsonIgnore
-    private List<HandInAssignment> handInAssignments;
 
     public User() {
     }
-
 
     public Long getId() {
         return id;
@@ -191,28 +184,12 @@ public class User {
         this.apikey = apikey;
     }
 
-    public List<Message> getMessages() {
-        return messages;
-    }
-
-    public void setMessages(List<Message> messages) {
-        this.messages = messages;
-    }
-
     public Group getGroup() {
         return group;
     }
 
     public void setGroup(Group groups) {
         this.group = groups;
-    }
-
-    public List<HandInAssignment> getHandInAssignments() {
-        return handInAssignments;
-    }
-
-    public void setHandInAssignments(List<HandInAssignment> handInAssignments) {
-        this.handInAssignments = handInAssignments;
     }
 
     public Set<Authority> getAuthorities() {

@@ -23,7 +23,6 @@ public class FileController {
         this.fileService = fileService;
     }
 
-
     @PostMapping("/upload")
     public FileUploadResponse singleFileUpload(@RequestParam("file") MultipartFile file) {
         String uri = ServletUriComponentsBuilder.fromCurrentContextPath().path("/download/").path(Objects.requireNonNull(file.getOriginalFilename())).toUriString();
@@ -31,7 +30,6 @@ public class FileController {
         String fileName = fileService.storeFile(file, uri);
         return new FileUploadResponse(fileName, contentType, uri);
     }
-
 
     @GetMapping("/download/{fileName}")
     public ResponseEntity<Resource> downLoadFile(@PathVariable String fileName, HttpServletRequest request) {
