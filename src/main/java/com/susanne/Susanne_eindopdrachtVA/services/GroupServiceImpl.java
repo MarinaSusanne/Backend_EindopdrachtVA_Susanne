@@ -200,6 +200,6 @@ public class GroupServiceImpl implements GroupService {
         if (startDate.isAfter(endDate)) {
             throw new BadRequestException("Start date cannot be after end date");
         }
-
     }
+
 }
