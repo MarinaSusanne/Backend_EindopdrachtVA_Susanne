@@ -2,13 +2,11 @@ package com.susanne.Susanne_eindopdrachtVA.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import org.hibernate.validator.internal.util.logging.Messages;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name="message_boards")
+@Table(name = "message_boards")
 public class MessageBoard {
 
     @Id
@@ -66,7 +64,5 @@ public class MessageBoard {
         this.group = group;
     }
 
-
 }
-
 

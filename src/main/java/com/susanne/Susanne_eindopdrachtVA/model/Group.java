@@ -8,17 +8,18 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Entity
-@Table (name="groups")
+@Table(name = "groups")
 public class Group {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false, unique = true)
     private String groupName;
 
     @DateTimeFormat(pattern = "yyyy-mm-dd")
-    private LocalDate startDate;;
+    private LocalDate startDate;
 
     @DateTimeFormat(pattern = "yyyy-mm-dd")
     private LocalDate endDate;
@@ -104,8 +105,5 @@ public class Group {
         return homeworkAssignments;
     }
 
-    public void setHomeworkAssignments(List<HomeworkAssignment> homeworkAssignments) {
-        this.homeworkAssignments = homeworkAssignments;
-    }
 }
 

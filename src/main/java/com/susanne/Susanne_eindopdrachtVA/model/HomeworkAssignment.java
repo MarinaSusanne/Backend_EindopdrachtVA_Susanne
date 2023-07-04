@@ -6,7 +6,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import java.time.LocalDate;
 
 @Entity
-@Table(name="homeworkAssignments")
+@Table(name = "homeworkAssignments")
 
 public class HomeworkAssignment {
     @Id
@@ -61,7 +61,6 @@ public class HomeworkAssignment {
     public void setSendDate(LocalDate sendDate) {
         this.sendDate = sendDate;
     }
-
 
     public Group getGroup() {
         return group;

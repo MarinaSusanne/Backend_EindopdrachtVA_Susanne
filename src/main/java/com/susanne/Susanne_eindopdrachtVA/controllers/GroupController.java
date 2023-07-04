@@ -1,4 +1,5 @@
 package com.susanne.Susanne_eindopdrachtVA.controllers;
+
 import com.susanne.Susanne_eindopdrachtVA.dtos.input.GroupInputDto;
 import com.susanne.Susanne_eindopdrachtVA.dtos.output.GroupOutputDto;
 import com.susanne.Susanne_eindopdrachtVA.dtos.output.GroupWithPicturesOutputDto;
@@ -34,11 +35,19 @@ public class GroupController {
         return ResponseEntity.ok(groupPicturesOutputDto);
     }
 
+    @GetMapping("/{groupId}")
+    public ResponseEntity<GroupWithPicturesOutputDto> getGroup(@PathVariable Long groupId) {
+        GroupWithPicturesOutputDto groupPicturesOutputDto = groupService.getGroup(groupId);
+        return ResponseEntity.ok(groupPicturesOutputDto);
+    }
+
+
     @GetMapping("/admin/all")
     public ResponseEntity<List<GroupOutputDto>> getMyActiveGroups() {
         List<GroupOutputDto> groupOutputDtos = groupService.getMyActiveGroups();
         return ResponseEntity.ok(groupOutputDtos);
     }
+
 
     @GetMapping("/admin/{groupId}")
     public ResponseEntity<GroupWithPicturesOutputDto> getSpecificGroup(@PathVariable Long groupId) {

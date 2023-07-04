@@ -4,10 +4,9 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 
 @Entity
-@Table (name="messages")
+@Table(name = "messages")
 
 public class Message {
     @Id
@@ -19,14 +18,13 @@ public class Message {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime submitDate;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "message_board_id")
     private MessageBoard messageBoard;
-
 
     public Message(Long id, String content, LocalDateTime submitDate, User user, MessageBoard messageBoard) {
         this.id = id;
@@ -63,7 +61,6 @@ public class Message {
         this.submitDate = submitDate;
     }
 
-
     public User getUser() {
         return user;
     }
@@ -79,8 +76,4 @@ public class Message {
     public void setMessageBoard(MessageBoard messageBoard) {
         this.messageBoard = messageBoard;
     }
-
-
-
-
 }

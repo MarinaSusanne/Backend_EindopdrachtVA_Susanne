@@ -19,26 +19,23 @@ import java.util.Objects;
 public class FileController {
     private final FileService fileService;
 
-    public FileController(FileService fileService){
+    public FileController(FileService fileService) {
         this.fileService = fileService;
     }
 
-
-
     @PostMapping("/upload")
-    public FileUploadResponse singleFileUpload(@RequestParam("file") MultipartFile file){
+    public FileUploadResponse singleFileUpload(@RequestParam("file") MultipartFile file) {
         String uri = ServletUriComponentsBuilder.fromCurrentContextPath().path("/download/").path(Objects.requireNonNull(file.getOriginalFilename())).toUriString();
         String contentType = file.getContentType();
         String fileName = fileService.storeFile(file, uri);
-        return new FileUploadResponse(fileName, contentType, uri );
+        return new FileUploadResponse(fileName, contentType, uri);
     }
-
 
     @GetMapping("/download/{fileName}")
     public ResponseEntity<Resource> downLoadFile(@PathVariable String fileName, HttpServletRequest request) {
         Resource resource = fileService.downLoadFile(fileName);
         String mimeType;
-        try{
+        try {
             mimeType = request.getServletContext().getMimeType(resource.getFile().getAbsolutePath());
         } catch (IOException e) {
             mimeType = MediaType.APPLICATION_OCTET_STREAM_VALUE;

@@ -1,15 +1,14 @@
 package com.susanne.Susanne_eindopdrachtVA.model;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.*;
 import org.springframework.format.annotation.DateTimeFormat;
+
 import java.time.LocalDate;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
-
 @Entity
-@Table(name= "users")
+@Table(name = "users")
 public class User {
 
     @Id
@@ -22,7 +21,7 @@ public class User {
     @Column(nullable = false, length = 255)
     private String password;
 
-    @Column
+    @Column (unique = true)
     private String email;
 
     private String firstName;
@@ -43,7 +42,6 @@ public class User {
     @Lob
     private byte[] photo;
 
-
     @Column(nullable = false)
     private boolean enabled = true;
 
@@ -59,23 +57,13 @@ public class User {
     private Set<Authority> authorities = new HashSet<>();
 
 
-    @OneToMany(mappedBy = "user")
-    @JsonIgnore
-    private List<Message> messages;
-
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "group_id")
     private Group group;
-
-    @OneToMany(mappedBy = "user")
-    @JsonIgnore
-    private List<HandInAssignment> handInAssignments;
 
 
     public User() {
     }
-
-//get.user> getauthotities. if authorities contains admin then else
 
     public Long getId() {
         return id;
@@ -109,7 +97,7 @@ public class User {
         return email;
     }
 
-      public void setEmail(String email) {
+    public void setEmail(String email) {
         this.email = email;
     }
 
@@ -161,56 +149,57 @@ public class User {
         this.city = city;
     }
 
-    public LocalDate getDateOfBirth() {return dateOfBirth;
+    public LocalDate getDateOfBirth() {
+        return dateOfBirth;
     }
 
     public void setDateOfBirth(LocalDate dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
     }
 
-    public byte[] getPhoto() { return photo;
+    public byte[] getPhoto() {
+        return photo;
     }
 
     public void setPhoto(byte[] photo) {
         this.photo = photo;
     }
 
-    public boolean isEnabled() { return enabled;}
-    public void setEnabled(boolean enabled) { this.enabled = enabled; }
-    public String getApikey() { return apikey; }
-    public void setApikey(String apikey) { this.apikey = apikey; }
-
-    public List<Message> getMessages() {
-        return messages;
+    public boolean isEnabled() {
+        return enabled;
     }
 
-    public void setMessages(List<Message> messages) {
-        this.messages = messages;
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+
+    public String getApikey() {
+        return apikey;
+    }
+
+    public void setApikey(String apikey) {
+        this.apikey = apikey;
     }
 
     public Group getGroup() {
-            return group;
-        }
-    public void setGroup( Group groups) {
+        return group;
+    }
+
+    public void setGroup(Group groups) {
         this.group = groups;
     }
 
-    public List<HandInAssignment> getHandInAssignments() {
-        return handInAssignments;
+    public Set<Authority> getAuthorities() {
+        return authorities;
     }
 
-    public void setHandInAssignments(List<HandInAssignment> handInAssignments) {
-        this.handInAssignments = handInAssignments;
-    }
-
-    public Set<Authority> getAuthorities() { return authorities; }
     public void addAuthority(Authority authority) {
         this.authorities.add(authority);
     }
+
     public void removeAuthority(Authority authority) {
         this.authorities.remove(authority);
     }
-
 }
 
 

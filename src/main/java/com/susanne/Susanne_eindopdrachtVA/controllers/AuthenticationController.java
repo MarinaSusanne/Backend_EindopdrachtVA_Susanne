@@ -29,13 +29,11 @@ public class AuthenticationController {
         this.jwtUtil = jwtUtil;
     }
 
-
     @GetMapping(value = "/authenticated")
     public ResponseEntity<Object> authenticated(Authentication authentication, Principal principal) {
         //Principal.getname();
         return ResponseEntity.ok().body(principal);
     }
-
 
     @PostMapping(value = "/authenticate")
     public ResponseEntity<?> createAuthenticationToken(@RequestBody AuthenticationRequest authenticationRequest) throws Exception {
@@ -53,7 +51,9 @@ public class AuthenticationController {
         final UserDetails userDetails = userDetailsService
                 .loadUserByUsername(username);
 
-        final String jwt = jwtUtil.generateToken(userDetails);
+        Long id = userDetailsService.getUserId(username);
+
+        final String jwt = jwtUtil.generateToken(userDetails, id);
 
         return ResponseEntity.ok(new AuthenticationResponse(jwt));
     }

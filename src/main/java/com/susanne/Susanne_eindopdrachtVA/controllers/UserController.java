@@ -22,9 +22,9 @@ import java.util.Set;
 @RequestMapping("/users")
 public class UserController {
 
-    private  final UserService userService;
+    private final UserService userService;
 
-    public UserController(UserService userService){
+    public UserController(UserService userService) {
         this.userService = userService;
     }
 
@@ -38,14 +38,6 @@ public class UserController {
     public ResponseEntity<UserOutputDto> getOneUserById(@PathVariable Long id) {
         UserOutputDto userOutputDto = userService.getOneUserById(id);
         return ResponseEntity.ok(userOutputDto);
-    }
-
-
-//TODO: naar messages verplaatsen
-    @GetMapping("/{id}/messages")
-    public ResponseEntity<List<MessageOutputDto>> getUserMessagesByUserId(@PathVariable Long id) {
-         List<MessageOutputDto> messageOutputDtos = userService.getUserMessagesByUserId(id);
-         return ResponseEntity.ok(messageOutputDtos);
     }
 
     @GetMapping("/nogroup")
@@ -74,13 +66,11 @@ public class UserController {
         return ResponseEntity.ok().body(userOutputDto);
     }
 
-
     @GetMapping(value = "/{id}/authorities")
     public ResponseEntity<Object> getUserAuthorities(@PathVariable Long id) {
-                Set<Authority> authorities = userService.getAuthorities(id);
+        Set<Authority> authorities = userService.getAuthorities(id);
         return ResponseEntity.ok().body(authorities);
     }
-
 
     @PostMapping(value = "/{id}/authorities")
     public ResponseEntity<Object> addUserAuthority(@PathVariable Long id, @RequestBody Map<String, Object> fields) {
@@ -89,8 +79,7 @@ public class UserController {
             String username = userService.getUsername(id);
             userService.addAuthority(username, authorityName);
             return ResponseEntity.noContent().build();
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             throw new BadRequestException();
         }
     }
@@ -100,7 +89,5 @@ public class UserController {
         userService.removeAuthority(id, authority);
         return ResponseEntity.noContent().build();
     }
-
-
 }
 

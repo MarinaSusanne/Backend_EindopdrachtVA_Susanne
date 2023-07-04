@@ -1,15 +1,20 @@
 package com.susanne.Susanne_eindopdrachtVA.services;
+
 import com.susanne.Susanne_eindopdrachtVA.dtos.input.MessageInputDto;
 import com.susanne.Susanne_eindopdrachtVA.dtos.output.MessageOutputDto;
 import com.susanne.Susanne_eindopdrachtVA.dtos.output.UserLeanOutputDto;
 import com.susanne.Susanne_eindopdrachtVA.exceptions.RecordNotFoundException;
 import com.susanne.Susanne_eindopdrachtVA.mappers.MessageMapper;
 import com.susanne.Susanne_eindopdrachtVA.mappers.UserMapper;
+import com.susanne.Susanne_eindopdrachtVA.model.Group;
 import com.susanne.Susanne_eindopdrachtVA.model.Message;
 import com.susanne.Susanne_eindopdrachtVA.model.MessageBoard;
 import com.susanne.Susanne_eindopdrachtVA.model.User;
+import com.susanne.Susanne_eindopdrachtVA.repository.GroupRepository;
+import com.susanne.Susanne_eindopdrachtVA.repository.MessageBoardRepository;
 import com.susanne.Susanne_eindopdrachtVA.repository.MessageRepository;
 import com.susanne.Susanne_eindopdrachtVA.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -23,10 +28,15 @@ public class MessageService {
     private final MessageRepository messageRepository;
     private final UserRepository userRepository;
 
+    private final GroupRepository groupRepository;
 
-    public MessageService(MessageRepository messageRepository, UserRepository userRepository) {
+    private final MessageBoardRepository messageBoardRepository;
+
+    public MessageService(MessageRepository messageRepository, UserRepository userRepository, GroupRepository groupRepository, MessageBoardRepository messageBoardRepository) {
         this.messageRepository = messageRepository;
         this.userRepository = userRepository;
+        this.groupRepository = groupRepository;
+        this.messageBoardRepository = messageBoardRepository;
     }
 
     public List<MessageOutputDto> getAllMessages() {
@@ -41,13 +51,44 @@ public class MessageService {
         return messageOutputDtos;
     }
 
+    @Transactional
+    public List<MessageOutputDto> getUserMessagesByUserId(Long id) {
+        List<Message> messages = messageRepository.findByUserId(id);
+        if (messages == null) {
+            throw new RecordNotFoundException("No messages found");
+        } else {
+            List<MessageOutputDto> messageOutputDtos = new ArrayList<>();
+            for (Message m : messages) {
+                UserLeanOutputDto udto = UserMapper.userToUserLeanDto(m.getUser());
+                MessageOutputDto mdto = MessageMapper.messageToMessageDtoWithLeanUser(m, udto);
+                messageOutputDtos.add(mdto);
+            }
+            return messageOutputDtos;
+        }
+    }
+
     public MessageOutputDto createAndAssignMessage(Long userId, MessageInputDto inputDto) {
         User user = userRepository.findById(userId).orElseThrow(() -> new RecordNotFoundException("User not found"));
         Message message = MessageMapper.messageDtoToMessage(inputDto);
         message.setSubmitDate(LocalDateTime.now());
         message.setUser(user);
-        MessageBoard messageBoard = user.getGroup().getMessageBoard();
-        message.setMessageBoard(messageBoard);
+
+        if (user.getUsername().equals("admin")) {
+            //page where the admin message is posts is given in the messageinputDTO
+            Long groupId = inputDto.getGroupId();
+            Optional<Group> optionalGroup = groupRepository.findById(groupId);
+            Long messageBoardId = optionalGroup.get().getMessageBoard().getId();
+            Optional<MessageBoard> optionalMessageBoard = messageBoardRepository.findById(messageBoardId);
+            if (optionalMessageBoard.isPresent()) {
+                MessageBoard messageBoard = optionalMessageBoard.get();
+                message.setMessageBoard(messageBoard);
+            } else {
+                throw new RecordNotFoundException("niet gevonden");
+            }
+        } else {
+            MessageBoard messageBoard = user.getGroup().getMessageBoard();
+            message.setMessageBoard(messageBoard);
+        }
         messageRepository.save(message);
         UserLeanOutputDto userLeanOutputDto = UserMapper.userToUserLeanDto(user);
         return MessageMapper.messageToMessageDtoWithLeanUser(message, userLeanOutputDto);

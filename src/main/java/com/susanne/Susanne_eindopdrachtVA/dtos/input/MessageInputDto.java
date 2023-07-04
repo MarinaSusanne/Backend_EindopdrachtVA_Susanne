@@ -24,4 +24,7 @@ public class MessageInputDto {
 
     private Long userId;
 
+    //for admin to add a message to messageboard ofthe page it's currently in, cause it's not in a groupId
+    private Long groupId;
+
    }

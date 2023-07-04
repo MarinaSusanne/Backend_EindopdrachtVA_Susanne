@@ -5,44 +5,30 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.susanne.Susanne_eindopdrachtVA.dtos.input.GroupInputDto;
-import com.susanne.Susanne_eindopdrachtVA.dtos.output.GroupOutputDto;
 import com.susanne.Susanne_eindopdrachtVA.model.Group;
+import com.susanne.Susanne_eindopdrachtVA.model.MessageBoard;
 import com.susanne.Susanne_eindopdrachtVA.model.User;
 import com.susanne.Susanne_eindopdrachtVA.repository.GroupRepository;
 import com.susanne.Susanne_eindopdrachtVA.repository.MessageBoardRepository;
 import com.susanne.Susanne_eindopdrachtVA.repository.UserRepository;
-import com.susanne.Susanne_eindopdrachtVA.services.GroupServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
-
-
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-
-import static org.springframework.http.RequestEntity.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 @SpringBootTest
 @AutoConfigureMockMvc(addFilters = false)
@@ -56,6 +42,9 @@ class GroupIntegrationTest {
     GroupRepository groupRepository;
 
     @Autowired
+    MessageBoardRepository messageBoardRepository;
+
+    @Autowired
     UserRepository userRepository;
 
     User user1;
@@ -63,22 +52,20 @@ class GroupIntegrationTest {
     User user3;
     User user4;
     User user5;
+
     User user6;
     Group group1;
     Group group2;
-    Group group3;
-
+    MessageBoard messageBoard1;
+    MessageBoard messageBoard2;
+    MessageBoard messageBoard3;
     List<User> usersList1;
     List<User> usersList2;
     List<User> usersList3;
-
     GroupInputDto groupInputDto4;
 
     @BeforeEach
     void setUp() {
-
-        userRepository.deleteAll();
-        groupRepository.deleteAll();
 
         user1 = new User();
         user1.setId(1L);
@@ -92,7 +79,6 @@ class GroupIntegrationTest {
         user1.setZipcode("3579EK");
         user1.setCity("Utrecht");
         user1.setDateOfBirth(LocalDate.of(1999, 6, 8));
-
 
         user2 = new User();
         user2.setId(2L);
@@ -146,58 +132,18 @@ class GroupIntegrationTest {
         user5.setCity("Utrecht");
         user5.setDateOfBirth(LocalDate.of(1990, 5, 15));
 
-        userRepository.save(user1);
-        userRepository.save(user2);
-        userRepository.save(user3);
-        userRepository.save(user4);
-        userRepository.save(user5);
-
-
-        usersList1 = Arrays.asList(user1, user3);
-        usersList2 = Arrays.asList(user2, user4);
-        usersList3 = Arrays.asList(user5);
-
-        group1 = new Group();
-        group1.setId(1L);
-        group1.setGroupName("Naam van Groep");
-        group1.setStartDate(LocalDate.of(2023, 5, 12));
-        group1.setEndDate(LocalDate.of(2023, 12, 22));
-        group1.setGroupInfo("groepinfo die vet leuk is");
-        group1.setUsers(usersList1);
-
-        group2 = new Group();
-        group2.setId(2L);
-        group2.setGroupName("Naam van Groep 2");
-        group2.setStartDate(LocalDate.of(2023, 5, 13));
-        group2.setEndDate(LocalDate.of(2023, 12, 29));
-        group2.setGroupInfo("groepinfo die nog veel leuker is");
-        group2.setUsers(usersList2);
-
-        group3 = new Group();
-        group3.setId(3L);
-        group3.setGroupName("Naam van Groep 3");
-        group3.setStartDate(LocalDate.of(2023, 5, 14));
-        group3.setEndDate(LocalDate.of(2023, 11, 21));
-        group3.setGroupInfo("userloze groep");
-        group3.setUsers((new ArrayList<>()));
-
-        groupInputDto4 = new GroupInputDto();
-        groupInputDto4.setGroupName("Naam van Groep 4");
-        groupInputDto4.setStartDate(LocalDate.of(2022, 7, 29));
-        groupInputDto4.setEndDate(LocalDate.of(2023, 8, 21));
-        groupInputDto4.setGroupInfo("Groep die niet meer actief is");
-        groupInputDto4.setUsers(usersList3.stream().map(User::getId).toList());
-
-
-        //Hier leg ik in de relaties die ik niet hierboven al kan maken
-        user1.setGroup(group1);
-        user2.setGroup(group2);
-        user3.setGroup(group1);
-        user4.setGroup(group2);
-
-        groupRepository.save(group1);
-        groupRepository.save(group2);
-        groupRepository.save(group3);
+        User user6 = new User();
+        user6.setId(6L);
+        user6.setUsername("TestGebruiker6");
+        user6.setEmail("gebruiker6@example.com");
+        user6.setPassword("wachtwoord789");
+        user6.setFirstName("Emma");
+        user6.setLastName("Jansen");
+        user6.setStreetName("Hoofdstraat");
+        user6.setHouseNumber("10");
+        user6.setZipcode("5678 CD");
+        user6.setCity("Amsterdam");
+        user6.setDateOfBirth(LocalDate.of(1995, 8, 20));
 
         userRepository.save(user1);
         userRepository.save(user2);
@@ -206,7 +152,63 @@ class GroupIntegrationTest {
         userRepository.save(user5);
         userRepository.save(user6);
 
+        usersList1 = Arrays.asList(user1, user3);
+        usersList2 = Arrays.asList(user2, user4);
+        usersList3 = Arrays.asList(user5, user6);
 
+        messageBoard1 = new MessageBoard();
+        messageBoard1.setId(1L);
+
+        messageBoard2 = new MessageBoard();
+        messageBoard2.setId(2L);
+
+        messageBoard3 = new MessageBoard();
+        messageBoard3.setId(3L);
+
+        messageBoardRepository.save(messageBoard1);
+        messageBoardRepository.save(messageBoard2);
+        messageBoardRepository.save(messageBoard3);
+
+        group1 = new Group();
+        group1.setId(1L);
+        group1.setGroupName("Naam van Groep");
+        group1.setStartDate(LocalDate.of(2023, 5, 12));
+        group1.setEndDate(LocalDate.of(2023, 12, 22));
+        group1.setGroupInfo("groepinfo die vet leuk is");
+        group1.setUsers(usersList1);
+        group1.setMessageBoard(messageBoard1);
+
+        group2 = new Group();
+        group2.setId(2L);
+        group2.setGroupName("Naam van Groep 2");
+        group2.setStartDate(LocalDate.of(2023, 5, 13));
+        group2.setEndDate(LocalDate.of(2023, 12, 29));
+        group2.setGroupInfo("groepinfo die nog veel leuker is");
+        group2.setMessageBoard(messageBoard2);
+        group2.setUsers(usersList2);
+
+        groupInputDto4 = new GroupInputDto();
+        groupInputDto4.setGroupName("Naam van Groep 4");
+        groupInputDto4.setStartDate(LocalDate.of(2022, 7, 29));
+        groupInputDto4.setEndDate(LocalDate.of(2023, 8, 21));
+        groupInputDto4.setGroupInfo("Groep die niet meer actief is");
+        groupInputDto4.setUsers(usersList3.stream().map(User::getId).toList());
+
+        //Here I add the relations
+        user1.setGroup(group1);
+        user2.setGroup(group2);
+        user3.setGroup(group1);
+        user4.setGroup(group2);
+
+        groupRepository.save(group1);
+        groupRepository.save(group2);
+
+        userRepository.save(user1);
+        userRepository.save(user2);
+        userRepository.save(user3);
+        userRepository.save(user4);
+        userRepository.save(user5);
+        userRepository.save(user6);
     }
 
     @Test
@@ -219,7 +221,11 @@ class GroupIntegrationTest {
                 .andExpect(jsonPath("groupName").value("Naam van Groep"))
                 .andExpect(jsonPath("startDate").value("2023-05-12"))
                 .andExpect(jsonPath("endDate").value("2023-12-22"))
-                .andExpect(jsonPath("groupInfo").value("groepinfo die vet leuk is"));
+                .andExpect(jsonPath("messageBoardId").value("1"))
+                .andExpect(jsonPath("groupInfo").value("groepinfo die vet leuk is"))
+                .andExpect(jsonPath("userPictureOutputDtos[0].id").value(user1.getId()))
+                .andExpect(jsonPath("userPictureOutputDtos[1].id").value(user3.getId()));
+
     }
 
     @Test
@@ -232,7 +238,10 @@ class GroupIntegrationTest {
                 .andExpect(jsonPath("groupName").value("Naam van Groep 2"))
                 .andExpect(jsonPath("startDate").value("2023-05-13"))
                 .andExpect(jsonPath("endDate").value("2023-12-29"))
-                .andExpect(jsonPath("groupInfo").value("groepinfo die nog veel leuker is"));
+                .andExpect(jsonPath("messageBoardId").value("2"))
+                .andExpect(jsonPath("groupInfo").value("groepinfo die nog veel leuker is"))
+                .andExpect(jsonPath("userPictureOutputDtos[0].id").value(user2.getId()))
+                .andExpect(jsonPath("userPictureOutputDtos[1].id").value(user4.getId()));
     }
 
     @Test
@@ -246,8 +255,6 @@ class GroupIntegrationTest {
                 .andExpect(jsonPath("endDate").value("2023-08-21"))
                 .andExpect(jsonPath("groupInfo").value("Groep die niet meer actief is"));
     }
-
-
 
     public static String asJsonString(final Object obj) {
         try {

@@ -1,4 +1,5 @@
 package com.susanne.Susanne_eindopdrachtVA.utils;
+
 import java.util.Random;
 
 public class RandomStringGenerator {
@@ -17,6 +18,5 @@ public class RandomStringGenerator {
 
         return generatedString;
     }
-
 }
 
