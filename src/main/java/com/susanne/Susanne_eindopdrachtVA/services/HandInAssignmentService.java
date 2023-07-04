@@ -4,6 +4,7 @@ import com.susanne.Susanne_eindopdrachtVA.dtos.input.HandInAssignmentInputDto;
 import com.susanne.Susanne_eindopdrachtVA.dtos.output.HandInAssignmentOutputDto;
 import com.susanne.Susanne_eindopdrachtVA.exceptions.FileNotFoundException;
 import com.susanne.Susanne_eindopdrachtVA.exceptions.RecordNotFoundException;
+import com.susanne.Susanne_eindopdrachtVA.mappers.UserMapper;
 import com.susanne.Susanne_eindopdrachtVA.model.*;
 import com.susanne.Susanne_eindopdrachtVA.repository.FileRepository;
 import com.susanne.Susanne_eindopdrachtVA.repository.HandInAssignmentRepository;
@@ -51,7 +52,9 @@ public class HandInAssignmentService {
         handInAssignment.setUser(user);
         handInAssignment.setSendDate(LocalDate.now());
         handInAssignmentRepository.save(handInAssignment);
-        return modelMapper.map(handInAssignment, HandInAssignmentOutputDto.class);
+        HandInAssignmentOutputDto hidto = modelMapper.map(handInAssignment, HandInAssignmentOutputDto.class);
+        hidto.setAuthor(UserMapper.userToUserLeanDto(user));
+        return hidto;
     }
 
     public HandInAssignmentOutputDto assignFileToHandInAssignment(String name, Long handInAssignmentId) throws FileNotFoundException {

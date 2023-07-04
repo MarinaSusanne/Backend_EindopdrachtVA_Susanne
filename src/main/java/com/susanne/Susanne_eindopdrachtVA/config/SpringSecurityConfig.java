@@ -47,17 +47,18 @@ public class SpringSecurityConfig {
                 .httpBasic().disable()
                 .cors().and()
                 .authorizeHttpRequests()
-                //TODO:Deze hieronder wel uitzetten!!!!
-                .requestMatchers("/**").permitAll()
+//                .requestMatchers("/**").permitAll()
                 .requestMatchers(HttpMethod.POST, "/users").permitAll()
                 .requestMatchers(HttpMethod.GET, "/users").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.GET, "/users/{id}").hasAnyRole("ADMIN", "USER")
                 .requestMatchers(HttpMethod.GET, "/users/nogroup").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.PUT, "/users/admin/{id}").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.POST, "/users/**").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.DELETE, "/users/**").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.POST, "/users/{id}/authorities").hasRole("ADMIN")
                 //-----------------------------entiteit messages-------------------------------
                 .requestMatchers(HttpMethod.GET, "/messages").hasAnyRole("ADMIN", "USER")
+                .requestMatchers(HttpMethod.GET, "/messages/{id}").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.POST, "/messages/**").permitAll()
                 .requestMatchers(HttpMethod.PUT, "/messages/**").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.DELETE, "/messages/**").hasRole("ADMIN")
@@ -72,6 +73,7 @@ public class SpringSecurityConfig {
                 .requestMatchers(HttpMethod.POST, "/handinassignments/users/{id}").hasAnyRole("ADMIN", "USER")
                 .requestMatchers(HttpMethod.POST, "/handinassignments/{id}/file").hasAnyRole("ADMIN", "USER")
                 //-----------------------------entiteit groups-------------------------------
+                .requestMatchers(HttpMethod.GET, "/groups/{id}").hasAnyRole("ADMIN", "USER")
                 .requestMatchers(HttpMethod.GET, "/groups/users/**").hasAnyRole("ADMIN", "USER")
                 .requestMatchers(HttpMethod.GET, "/groups/{id}/users}").hasAnyRole("ADMIN", "USER")
                 .requestMatchers(HttpMethod.GET, "/groups/admin/**").hasRole("ADMIN")

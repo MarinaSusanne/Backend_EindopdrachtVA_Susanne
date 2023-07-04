@@ -83,9 +83,11 @@ public class MessageService {
                 MessageBoard messageBoard = optionalMessageBoard.get();
                 message.setMessageBoard(messageBoard);
             } else {
-                MessageBoard messageBoard = user.getGroup().getMessageBoard();
-                message.setMessageBoard(messageBoard);
+                throw new RecordNotFoundException("niet gevonden");
             }
+        } else {
+            MessageBoard messageBoard = user.getGroup().getMessageBoard();
+            message.setMessageBoard(messageBoard);
         }
         messageRepository.save(message);
         UserLeanOutputDto userLeanOutputDto = UserMapper.userToUserLeanDto(user);

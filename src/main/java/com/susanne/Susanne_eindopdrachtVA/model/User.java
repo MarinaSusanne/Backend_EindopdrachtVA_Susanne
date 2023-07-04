@@ -1,12 +1,10 @@
 package com.susanne.Susanne_eindopdrachtVA.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -23,7 +21,7 @@ public class User {
     @Column(nullable = false, length = 255)
     private String password;
 
-    @Column
+    @Column (unique = true)
     private String email;
 
     private String firstName;
@@ -57,7 +55,6 @@ public class User {
             orphanRemoval = true,
             fetch = FetchType.EAGER)
     private Set<Authority> authorities = new HashSet<>();
-
 
 
     @ManyToOne(fetch = FetchType.LAZY)
