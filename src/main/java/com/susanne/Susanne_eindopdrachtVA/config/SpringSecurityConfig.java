@@ -47,7 +47,8 @@ public class SpringSecurityConfig {
                 .httpBasic().disable()
                 .cors().and()
                 .authorizeHttpRequests()
-//                .requestMatchers("/**").permitAll()
+                //Regel hieronder uitzetten
+                .requestMatchers("/**").permitAll()
                 .requestMatchers(HttpMethod.POST, "/users").permitAll()
                 .requestMatchers(HttpMethod.GET, "/users").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.GET, "/users/{id}").hasAnyRole("ADMIN", "USER")
@@ -81,7 +82,6 @@ public class SpringSecurityConfig {
                 .requestMatchers("/users", "/groups", "/messages", "/messageboards").hasAnyRole("ADMIN", "USER")
                 .requestMatchers("/authenticated").authenticated()
                 .requestMatchers(HttpMethod.POST, "/authenticate").permitAll()
-                .requestMatchers("/authenticate").permitAll()
                 .anyRequest().denyAll()
                 .and()
                 .sessionManagement()
